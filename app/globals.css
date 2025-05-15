@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Great+Vibes&family=Monoton&family=Oxanium:wght@200..800&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik+Wet+Paint&family=Syne:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Glegoo:wght@400;700&family=Laila:wght@300;400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Yatra+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+@import "tailwindcss";
+
+.comforta {
+  font-family: "Comfortaa", sans-serif;
+  font-style: normal;
+}
+.laila {
+  font-family: "Laila", serif;
+  font-style: normal;
+}
+.glegoo {
+  font-family: "Glegoo", serif;
+  font-style: normal;
+}
+.yatra {
+  font-family: "Yatra One", system-ui;
+  font-style: normal;
+}
+.pragati {
+  font-family: "Pragati Narrow", sans-serif;
+  font-style: normal;
+}
+.monoton {
+  font-family: "Monoton", serif;
+  font-style: normal;
+}
+.exo {
+  font-family: "Exo 2", serif;
+  font-style: normal;
+}
+.syne {
+  font-family: "Syne", serif;
+  font-style: normal;
+}
+
+.roboto {
+  font-family: "Roboto", serif;
+  font-style: normal;
+}
+
+.philosopher {
+  font-family: "Philosopher", serif;
+  font-style: normal;
+}
+
+.caveat {
+  font-family: "Caveat", serif;
+  font-style: normal;
+}
+
+.oxanium {
+  font-family: "Oxanium", serif;
+  font-style: normal;
+}
+.gvibes {
+  font-family: "Great Vibes", serif;
+  font-style: normal;
+}
+
+.popin {
+  font-family: "Poppins", serif;
+  font-style: normal;
+}
+
+.rubik {
+  font-family: "Rubik Wet Paint", serif;
+  font-style: normal;
+}
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 142.1 76.2% 36.3%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142.1 76.2% 36.3%;
+    --radius: 0.5rem;
+
+    /* Sidebar specific variables */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 142.1 76.2% 36.3%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 142.1 76.2% 96%;
+    --sidebar-accent-foreground: 142.1 76.2% 36.3%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 142.1 76.2% 36.3%;
+  }
+
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 0 0% 95%;
+    --card: 24 9.8% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 142.1 70.6% 45.3%;
+    --primary-foreground: 144.9 80.4% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 142.4 71.8% 29.2%;
+
+    /* Sidebar specific variables */
+    --sidebar-background: 240 240 249;
+    --sidebar-foreground: 240 240 249;
+    --sidebar-primary: 142.1 70.6% 45.3%;
+    --sidebar-primary-foreground: 144.9 80.4% 10%;
+    --sidebar-accent: 142.1 76.2% 15.9%;
+    --sidebar-accent-foreground: 142.1 76.2% 96%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 142.1 76.2% 36.3%;
+  }
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: rgba(75, 85, 99, 1);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: rgba(34, 197, 94, 1);
+}
+
+.sidebar-link.active {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: rgba(34, 197, 94, 1);
+  font-weight: 500;
+}
+
+.dashboard-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(203, 213, 225, 1);
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: rgba(34, 197, 94, 1);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: rgba(34, 197, 94, 0.8);
+}
+
+.btn-outline {
+  border: 1px solid rgba(203, 213, 225, 1);
+}
+
+.btn-outline:hover {
+  background-color: rgba(248, 250, 252, 1);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(203, 213, 225, 1);
+  border-radius: 0.5rem;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 1);
+  border-color: transparent;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(55, 65, 81, 1);
+  margin-bottom: 0.25rem;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(203, 213, 225, 1);
+}
+
+.admin-table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  padding: 1.5rem 1.5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(107, 114, 128, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-table td {
+  padding: 1rem 1.5rem;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  color: rgba(75, 85, 99, 1);
+}
+
+.admin-table tr:hover {
+  background-color: rgba(248, 250, 252, 1);
+}
+
