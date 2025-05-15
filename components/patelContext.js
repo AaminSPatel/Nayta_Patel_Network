@@ -1,13 +1,13 @@
 // app/context/SidebarContext.js
-"use client"
+"use client";
 
-import React, { createContext, useState, useEffect ,useContext } from 'react';
-import axios from 'axios';
+import React, { createContext, useState, useEffect, useContext } from "react";
+import axios from "axios";
 
-const AppContext = createContext()
+const AppContext = createContext();
 
 export function AppProvider({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
@@ -20,134 +20,360 @@ export function AppProvider({ children }) {
   const [likes, setLikes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [token, setToken] = useState(null);  // Store token in state
-const path = 'http://localhost:5000'
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yourwebsite.com";
- const siteBrand = 'Nayta Patel Network'
- const siteLogo = '/cow1.avif'
+  const [token, setToken] = useState(null); // Store token in state
+  const path = process.env.NEXT_PUBLIC_API_URL;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const siteBrand = "Nayta Patel Network";
+  const siteLogo = "/cow1.avif";
 
-const tags = [
-  // Farming & Agriculture
-  "farming", "kheti", "agriculture", "krishi", "organic farming", "jaivik kheti",
-  "crop rotation", "fasal chakkar", "soil health", "mitti swasthya",
-  "fertilizers", "khad", "pesticides", "keetnashak", "irrigation", "sinchai",
-  "harvest", "katai", "tractor", "traktor", "plough", "hal",
-  
-  // Animals & Dairy
-  "cow", "gay", "buffalo", "bhains", "dairy", "dudh",
-  "milk", "doodh", "cattle", "pashu", "livestock", "janwar",
-  "animal husbandry", "pashupalan", "goat", "bakri", "sheep", "bhed",
-  "poultry", "murgi", "fish farming", "machli palan",
-  
-  // Crops
-  "wheat", "gehu", "rice", "chawal", "corn", "makka",
-  "sugarcane", "ganna", "cotton", "kapas", "soybean", "soyabean",
-  "pulses", "dal", "vegetables", "sabzi", "fruits", "phal",
-  
-  // Patel Community
-  "patel",  "community", "samaj", "leuva patel", "kadva patel",
-  "farmer community", "kisan samaj", "nayata patel", "nayata samaj", 'patel pariwar','hajj','umrah', 'makka madina', 'ajmer',
-  
-  // Islamic Terms
-  "islam", "islamic", "muslim", "muslim community", "namaz", "salah",
-  "roza", "fasting", "ramzan", "ramadan", "eid", "eid mubarak",
-  "quran", "hadith", "masjid", "mosque", "imam", "mullah",
-  "halal", "zakat", "charity", "sadaqah",
-  
-  // Weather & Disasters
-  "weather", "mosam", "rain", "baarish", "drought", "sukha",
-  "flood", "aapda", "cyclone", "toofan", "storm", "aandhi",
-  "heatwave", "garmi", "cold wave", "sardi", "climate", "jalvayu",
-  
-  // Village Life
-  "village", "gaon", "rural", "gramin", "panchayat", "sarpanch",
-  "well", "kuan", "pond", "talab", "farm", "khet",
-  "farmer", "kisan", "farmer protest", "kisan andolan",
-  
-  // Social & Cultural
-  "marriage", "shaadi", "wedding", "vivah", "festival", "tyohar",
-  "diwali", "deepawali", "holi", "eid", "bakrid", "eid al-adha",
-  "community program", "samajik karyakram", "religious", "dharmik",
-  
-  // Development
-  "development", "vikas", "roads", "sadak", "infrastructure", "sanrachna",
-  "electricity", "bijli", "water", "pani", "education", "shiksha",
-  "health", "swasthya", "hospital", "aspatal",
-  
-  // Food & Nutrition
-  "roti", "chapati", "bread", "dairy products", "dudh utpad",
-  "ghee", "clarified butter", "butter", "makhan", "curd", "dahi",
-  "cheese", "paneer", "milk powder", "doodh powder",
-  
-  // Farming Tools
-  "plough", "hal", "sickle", "hasiya", "hoe", "kudal",
-  "shovel", "phavda", "trowel", "trowel", "rake", "rake",
-  
-  // Natural Elements
-  "earth", "prithvi", "water", "jal", "air", "vayu",
-  "fire", "agni", "sky", "aakash", "sun", "surya",
-  "moon", "chandra", "stars", "tare",
-  
-  // Animal Products
-  "manure", "khad", "compost", "compost", "wool", "oon",
-  "leather", "chamda", "honey", "shahad", "beekeeping", "madhu makhi palan",
-  
-  // Financial
-  "loan", "karz", "subsidy", "anudan", "insurance", "bima",
-  "market", "mandi", "price", "daam", "profit", "munafa",
-  "loss", "nuksan",
-  
-  // Seasons
-  "summer", "garmi", "winter", "sardi", "monsoon", "barsaat",
-  "spring", "basant", "autumn", "patjhad",
-  
-  // Measurement
-  "acre", "ekar", "hectare", "hectare", "kilogram", "kilo",
-  "quintal", "kwintal", "liter", "liter",
-  
-  // Family
-  "family", "parivar", "children", "bacche", "elders", "buzurg",
-  "women", "mahila", "men", "purush",
-  
-  // Additional Terms
-  "organic", "jaivik", "sustainable", "sambhav", "tradition", "parampara",
-  "modern", "adhunik", "technology", "takniki", "innovation", "navachar",
-  "cooperative", "sahkari", "self-help group", "swayam sahayata samuh"
-];
-// Auto-login if token exists
-const fetchUserFromToken = async () => {
-  try {
-    const token = localStorage.getItem('token'); // Or wherever you store the JWT
-    axios.defaults.headers['Authorization'] = `Bearer ${token}`;
+  const tags = [
+    // Farming & Agriculture
+    "farming",
+    "kheti",
+    "agriculture",
+    "krishi",
+    "organic farming",
+    "jaivik kheti",
+    "crop rotation",
+    "fasal chakkar",
+    "soil health",
+    "mitti swasthya",
+    "fertilizers",
+    "khad",
+    "pesticides",
+    "keetnashak",
+    "irrigation",
+    "sinchai",
+    "harvest",
+    "katai",
+    "tractor",
+    "traktor",
+    "plough",
+    "hal",
 
-    if (!token) {
-      setError('No token found');
-      return;
-    }
+    // Animals & Dairy
+    "cow",
+    "gay",
+    "buffalo",
+    "bhains",
+    "dairy",
+    "dudh",
+    "milk",
+    "doodh",
+    "cattle",
+    "pashu",
+    "livestock",
+    "janwar",
+    "animal husbandry",
+    "pashupalan",
+    "goat",
+    "bakri",
+    "sheep",
+    "bhed",
+    "poultry",
+    "murgi",
+    "fish farming",
+    "machli palan",
 
-    const response = await axios.get(path + '/api/auth/me', {
-      headers: {
-        Authorization: `Bearer ${token}`
+    // Crops
+    "wheat",
+    "gehu",
+    "rice",
+    "chawal",
+    "corn",
+    "makka",
+    "sugarcane",
+    "ganna",
+    "cotton",
+    "kapas",
+    "soybean",
+    "soyabean",
+    "pulses",
+    "dal",
+    "vegetables",
+    "sabzi",
+    "fruits",
+    "phal",
+
+    // Patel Community
+    "patel",
+    "community",
+    "samaj",
+    "leuva patel",
+    "kadva patel",
+    "farmer community",
+    "kisan samaj",
+    "nayata patel",
+    "nayata samaj",
+    "patel pariwar",
+    "hajj",
+    "umrah",
+    "makka madina",
+    "ajmer",
+
+    // Islamic Terms
+    "islam",
+    "islamic",
+    "muslim",
+    "muslim community",
+    "namaz",
+    "salah",
+    "roza",
+    "fasting",
+    "ramzan",
+    "ramadan",
+    "eid",
+    "eid mubarak",
+    "quran",
+    "hadith",
+    "masjid",
+    "mosque",
+    "imam",
+    "mullah",
+    "halal",
+    "zakat",
+    "charity",
+    "sadaqah",
+
+    // Weather & Disasters
+    "weather",
+    "mosam",
+    "rain",
+    "baarish",
+    "drought",
+    "sukha",
+    "flood",
+    "aapda",
+    "cyclone",
+    "toofan",
+    "storm",
+    "aandhi",
+    "heatwave",
+    "garmi",
+    "cold wave",
+    "sardi",
+    "climate",
+    "jalvayu",
+
+    // Village Life
+    "village",
+    "gaon",
+    "rural",
+    "gramin",
+    "panchayat",
+    "sarpanch",
+    "well",
+    "kuan",
+    "pond",
+    "talab",
+    "farm",
+    "khet",
+    "farmer",
+    "kisan",
+    "farmer protest",
+    "kisan andolan",
+
+    // Social & Cultural
+    "marriage",
+    "shaadi",
+    "wedding",
+    "vivah",
+    "festival",
+    "tyohar",
+    "diwali",
+    "deepawali",
+    "holi",
+    "eid",
+    "bakrid",
+    "eid al-adha",
+    "community program",
+    "samajik karyakram",
+    "religious",
+    "dharmik",
+
+    // Development
+    "development",
+    "vikas",
+    "roads",
+    "sadak",
+    "infrastructure",
+    "sanrachna",
+    "electricity",
+    "bijli",
+    "water",
+    "pani",
+    "education",
+    "shiksha",
+    "health",
+    "swasthya",
+    "hospital",
+    "aspatal",
+
+    // Food & Nutrition
+    "roti",
+    "chapati",
+    "bread",
+    "dairy products",
+    "dudh utpad",
+    "ghee",
+    "clarified butter",
+    "butter",
+    "makhan",
+    "curd",
+    "dahi",
+    "cheese",
+    "paneer",
+    "milk powder",
+    "doodh powder",
+
+    // Farming Tools
+    "plough",
+    "hal",
+    "sickle",
+    "hasiya",
+    "hoe",
+    "kudal",
+    "shovel",
+    "phavda",
+    "trowel",
+    "trowel",
+    "rake",
+    "rake",
+
+    // Natural Elements
+    "earth",
+    "prithvi",
+    "water",
+    "jal",
+    "air",
+    "vayu",
+    "fire",
+    "agni",
+    "sky",
+    "aakash",
+    "sun",
+    "surya",
+    "moon",
+    "chandra",
+    "stars",
+    "tare",
+
+    // Animal Products
+    "manure",
+    "khad",
+    "compost",
+    "compost",
+    "wool",
+    "oon",
+    "leather",
+    "chamda",
+    "honey",
+    "shahad",
+    "beekeeping",
+    "madhu makhi palan",
+
+    // Financial
+    "loan",
+    "karz",
+    "subsidy",
+    "anudan",
+    "insurance",
+    "bima",
+    "market",
+    "mandi",
+    "price",
+    "daam",
+    "profit",
+    "munafa",
+    "loss",
+    "nuksan",
+
+    // Seasons
+    "summer",
+    "garmi",
+    "winter",
+    "sardi",
+    "monsoon",
+    "barsaat",
+    "spring",
+    "basant",
+    "autumn",
+    "patjhad",
+
+    // Measurement
+    "acre",
+    "ekar",
+    "hectare",
+    "hectare",
+    "kilogram",
+    "kilo",
+    "quintal",
+    "kwintal",
+    "liter",
+    "liter",
+
+    // Family
+    "family",
+    "parivar",
+    "children",
+    "bacche",
+    "elders",
+    "buzurg",
+    "women",
+    "mahila",
+    "men",
+    "purush",
+
+    // Additional Terms
+    "organic",
+    "jaivik",
+    "sustainable",
+    "sambhav",
+    "tradition",
+    "parampara",
+    "modern",
+    "adhunik",
+    "technology",
+    "takniki",
+    "innovation",
+    "navachar",
+    "cooperative",
+    "sahkari",
+    "self-help group",
+    "swayam sahayata samuh",
+  ];
+  // Auto-login if token exists
+  const fetchUserFromToken = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Or wherever you store the JWT
+      axios.defaults.headers["Authorization"] = `Bearer ${token}`;
+
+      if (!token) {
+        setError("No token found");
+        return;
       }
-    });
 
-   // document.cookie = `token=${token}; path=/`;
-    setUser(response.data);
-    //console.log(response.data, 'data of user');
-    
-  } catch (err) {
-    setError('Failed to fetch user');
-    console.error(err);
-  }
-};
+      const response = await axios.get(path + "/api/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // document.cookie = `token=${token}; path=/`;
+      setUser(response.data);
+      //console.log(response.data, 'data of user');
+    } catch (err) {
+      setError("Failed to fetch user");
+      console.error(err);
+    }
+  };
 
   // Fetch all posts
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(path + '/api/posts');
+      const response = await axios.get(path + "/api/posts");
       setPosts(response.data);
       //console.log(response.data);
-      
     } catch (err) {
       setError(err.message);
     }
@@ -155,21 +381,19 @@ const fetchUserFromToken = async () => {
   // Fetch all posts
   const fetchStories = async () => {
     try {
-      const response = await axios.get(path + '/api/stories');
+      const response = await axios.get(path + "/api/stories");
       setStories(response.data);
       //console.log(response.data);
-      
     } catch (err) {
       setError(err.message);
     }
   };
- // Fetch all prices
+  // Fetch all prices
   const fetchPrices = async () => {
     try {
-      const response = await axios.get(path + '/api/prices');
+      const response = await axios.get(path + "/api/prices");
       setPrices(response.data);
       //console.log(response.data);
-      
     } catch (err) {
       setError(err.message);
     }
@@ -178,19 +402,18 @@ const fetchUserFromToken = async () => {
   // Fetch all blogs
   const fetchBlogs = async () => {
     try {
-      const response = await axios.get(path + '/api/blogs');
+      const response = await axios.get(path + "/api/blogs");
       setBlogs(response.data);
-     // console.log(response.data);
-      
+      // console.log(response.data);
     } catch (err) {
       setError(err.message);
     }
   };
- 
- // Fetch all posts
+
+  // Fetch all posts
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(path + '/api/events');
+      const response = await axios.get(path + "/api/events");
       setEvents(response.data);
     } catch (err) {
       setError(err.message);
@@ -222,11 +445,11 @@ const fetchUserFromToken = async () => {
     try {
       const response = await axios.get(path + `/api/users/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       setUser(response.data);
-     //document.cookie = `token=${token}; path=/`;
+      //document.cookie = `token=${token}; path=/`;
     } catch (err) {
       setError(err.message);
     }
@@ -236,8 +459,8 @@ const fetchUserFromToken = async () => {
     try {
       const response = await axios.get(path + `/api/users`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       setUsers(response.data);
     } catch (err) {
@@ -254,113 +477,114 @@ const fetchUserFromToken = async () => {
     }
   };
 
- const updateBlog = async (id, updatedData) => {
-  const token = localStorage.getItem('token');
-  //console.log('blog update function called', updatedData);
+  const updateBlog = async (id, updatedData) => {
+    const token = localStorage.getItem("token");
+    //console.log('blog update function called', updatedData);
 
-  try {
-    const response = await fetch(`${path}/api/blogs/${id}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: updatedData, // updatedData must be an instance of FormData
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update blog');
-    }
-
-    const updatedBlog = await response.json();
-
-    setBlogs(prev => prev.map(blog =>
-      blog._id === id ? updatedBlog : blog
-    ));
-
-    return updatedBlog;
-  } catch (error) {
-    console.error('Error updating blog:', error);
-    throw error;
-  }
-};
-
-const updatePrice = async (id, updatedData) => {
-  const token = localStorage.getItem('token');
-  console.log('Sending data:', updatedData);
-  
-  try {
-    const response = await axios.put(
-      `${path}/api/prices/${id}`,
-      updatedData,
-      {
+    try {
+      const response = await fetch(`${path}/api/blogs/${id}`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
+        body: updatedData, // updatedData must be an instance of FormData
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update blog");
       }
-    );
 
-    // Axios stores response data in response.data
-    setPrices(response.data);
-    return response.data;
-    
-  } catch (error) {
-    console.error('Update error:', {
-      message: error.message,
-      response: error.response?.data
-    });
-    throw error;
-  }
-};
+      const updatedBlog = await response.json();
 
+      setBlogs((prev) =>
+        prev.map((blog) => (blog._id === id ? updatedBlog : blog))
+      );
 
-  useEffect(()=>{
-    const token = localStorage.getItem('token'); // Or wherever you store the JWT
+      return updatedBlog;
+    } catch (error) {
+      console.error("Error updating blog:", error);
+      throw error;
+    }
+  };
+
+  const updatePrice = async (id, updatedData) => {
+    const token = localStorage.getItem("token");
+    console.log("Sending data:", updatedData);
+
+    try {
+      const response = await axios.put(
+        `${path}/api/prices/${id}`,
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Axios stores response data in response.data
+      setPrices(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Update error:", {
+        message: error.message,
+        response: error.response?.data,
+      });
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // Or wherever you store the JWT
 
     fetchUsers(token);
-  },[token])
+  }, [token]);
 
-  useEffect(()=>{
-    const token = localStorage.getItem('token'); // Or wherever you store the JWT
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // Or wherever you store the JWT
 
     fetchPosts();
     fetchUsers(token);
     fetchBlogs();
     fetchPrices();
-    fetchStories()
-    fetchVillages()
-    fetchEvents()
-    fetchUserFromToken()
-    setToken(localStorage.getItem('token'))
-   //fetchUserFromToken()
-  },[])
+    fetchStories();
+    fetchVillages();
+    fetchEvents();
+    fetchUserFromToken();
+    setToken(localStorage.getItem("token"));
+    //fetchUserFromToken()
+  }, []);
   // Sign in function (generate token)
   const signIn = async (email, password) => {
     try {
-      const response = await axios.post(path + '/api/auth/login', { email, password });
+      const response = await axios.post(path + "/api/auth/login", {
+        email,
+        password,
+      });
       setUser(response.data.user);
       setToken(response.data.token);
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
     } catch (err) {
       // More specific error handling
       if (err.response) {
-        setError(err.response.data.message || 'Login failed');
+        setError(err.response.data.message || "Login failed");
       } else {
-        setError('Network error or server unavailable');
+        setError("Network error or server unavailable");
       }
     }
   };
   // Sign up function
   const signUp = async (userData) => {
     console.log(userData);
-    
+
     try {
-      const response = await axios.post(path + '/api/auth/register', userData);
+      const response = await axios.post(path + "/api/auth/register", userData);
       setUser(response.data.user);
-     // console.log(response.data.token);
-      
+      // console.log(response.data.token);
+
       setToken(response.data.token); // Set the token received from backend
-      localStorage.setItem('token', response.data.token); // Store token in local storage for persistence
+      localStorage.setItem("token", response.data.token); // Store token in local storage for persistence
     } catch (err) {
       setError(err.message);
     }
@@ -369,7 +593,7 @@ const updatePrice = async (id, updatedData) => {
   // Create a post
   const createPost = async (postData) => {
     try {
-      const response = await axios.post(path + '/api/posts', postData);
+      const response = await axios.post(path + "/api/posts", postData);
       setPosts([...posts, response.data]);
     } catch (err) {
       setError(err.message);
@@ -380,7 +604,7 @@ const updatePrice = async (id, updatedData) => {
   const updatePost = async (id, updatedData) => {
     try {
       const response = await axios.put(path + `/api/posts/${id}`, updatedData);
-      setPosts(posts.map(post => post._id === id ? response.data : post));
+      setPosts(posts.map((post) => (post._id === id ? response.data : post)));
     } catch (err) {
       setError(err.message);
     }
@@ -390,19 +614,17 @@ const updatePrice = async (id, updatedData) => {
   const deletePost = async (id) => {
     try {
       await axios.delete(path + `/api/posts/${id}`);
-      setPosts(posts.filter(post => post._id !== id));
+      setPosts(posts.filter((post) => post._id !== id));
     } catch (err) {
       setError(err.message);
     }
   };
 
-  
-
   // Delete a comment
   const deleteComment = async (commentId) => {
     try {
       await axios.delete(path + `/api/comments/${commentId}`);
-      setComments(comments.filter(comment => comment._id !== commentId));
+      setComments(comments.filter((comment) => comment._id !== commentId));
     } catch (err) {
       setError(err.message);
     }
@@ -422,7 +644,7 @@ const updatePrice = async (id, updatedData) => {
   const unlikePost = async (postId) => {
     try {
       await axios.delete(path + `/api/likes/${postId}`);
-      setLikes(likes.filter(like => like.post !== postId));
+      setLikes(likes.filter((like) => like.post !== postId));
     } catch (err) {
       setError(err.message);
     }
@@ -442,88 +664,114 @@ const updatePrice = async (id, updatedData) => {
   const logOut = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem('token'); // Remove token from local storage
+    localStorage.removeItem("token"); // Remove token from local storage
   };
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev)
-  const closeSidebar = () => setIsSidebarOpen(false)
-
-  
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+  const closeSidebar = () => setIsSidebarOpen(false);
 
   function formatDate(dateString) {
-   const date = new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
-  
+    const date = new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+
     return date; // Example: "27/04/2025"
   }
 
-function timeAgo(timestamp) {
-  // Convert the timestamp to a Date object if it isn't already
-  const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
-  const now = new Date();
-  const seconds = Math.floor((now - date) / 1000);
-  
-  // Time intervals in seconds
-  const intervals = {
-    year: 31536000,
-    month: 2592000,
-    week: 604800,
-    day: 86400,
-    hour: 3600,
-    minute: 60,
-    second: 1
-  };
-  
-  // Calculate the time difference for each interval
-  for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-    const interval = Math.floor(seconds / secondsInUnit);
-    
-    if (interval >= 1) {
-      return interval === 1 ? `${interval} ${unit} ago` : `${interval} ${unit}s ago`;
-    }
-  }
-  
-  return 'just now';
-}
+  function timeAgo(timestamp) {
+    // Convert the timestamp to a Date object if it isn't already
+    const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
 
+    // Time intervals in seconds
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+      second: 1,
+    };
+
+    // Calculate the time difference for each interval
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsInUnit);
+
+      if (interval >= 1) {
+        return interval === 1
+          ? `${interval} ${unit} ago`
+          : `${interval} ${unit}s ago`;
+      }
+    }
+
+    return "just now";
+  }
 
   return (
-    <AppContext.Provider value={{ isSidebarOpen, toggleSidebar, closeSidebar ,
-      user,users,path,
-        posts,setPosts,
-        blogs,setBlogs,
-        comments,updatePrice ,
+    <AppContext.Provider
+      value={{
+        isSidebarOpen,
+        toggleSidebar,
+        closeSidebar,
+        user,
+        users,
+        path,
+        posts,
+        setPosts,
+        blogs,
+        setBlogs,
+        comments,
+        updatePrice,
         likes,
         loading,
         error,
         token,
-        fetchPosts,updateBlog,
+        fetchPosts,
+        updateBlog,
         fetchPostById,
         fetchComments,
-        fetchUser,fetchEvents,
-        signIn,fetchVillages,
+        fetchUser,
+        fetchEvents,
+        signIn,
+        fetchVillages,
         signUp,
         createPost,
         updatePost,
         deletePost,
-        deleteComment,events, setEvents,
+        deleteComment,
+        events,
+        setEvents,
         likePost,
-        unlikePost,timeAgo,siteUrl,siteBrand, siteLogo,
+        unlikePost,
+        timeAgo,
+        siteUrl,
+        siteBrand,
+        siteLogo,
         deleteContact,
-        logOut,stories,tags,
-        formatDate,prices,villages,setVillages,setToken, setUser, setError
-    }}>
+        logOut,
+        stories,
+        tags,
+        formatDate,
+        prices,
+        villages,
+        setVillages,
+        setToken,
+        setUser,
+        setError,
+      }}
+    >
       {children}
     </AppContext.Provider>
-  )
+  );
 }
 
 export function usePatel() {
-  const context = useContext(AppContext)
+  const context = useContext(AppContext);
   if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider")
+    throw new Error("useSidebar must be used within a SidebarProvider");
   }
-  return context
+  return context;
 }

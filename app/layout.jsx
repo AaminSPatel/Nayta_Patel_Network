@@ -7,7 +7,7 @@ import Footer from "../components/footer"
 import { AppProvider } from "../components/patelContext"
 import Sidebar from "../components/SidebarAdmin"
 import HeaderAdmin from "../components/HeaderAdmin"
-
+import { Analytics } from "@vercel/analytics/next"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
@@ -28,7 +28,9 @@ export default function RootLayout({ children }) {
                  <AppSidebar/>
               <div className="flex flex-col flex-1 overflow-hidden">
                 <Header />
-                <main className="flex-1">{children}</main>
+                <main className="flex-1">
+                  <Analytics/>
+                  {children}</main>
                 <Footer />
               </div>
             </div>
