@@ -15,7 +15,7 @@ import Head from "next/head";
 const ProfileDashboard = () => {
   const [activeTab, setActiveTab] = useState("profile")
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-const {user} = usePatel()
+const {user,siteUrl} = usePatel()
 const [userData,setUserData] = useState({
     _id:'',
     fullName: "John Doe",
@@ -60,7 +60,7 @@ useEffect(()=>{
   }
 
   function handleUserUpdate(newuser){
-    console.log(newuser,'new user');
+    //console.log(newuser,'new user');
     
     setUserData({
       _id     : newuser._id   ,
