@@ -22,6 +22,7 @@ export function AppProvider({ children }) {
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null); // Store token in state
   const path = process.env.NEXT_PUBLIC_API_URL;
+  //const path = 'http://localhost:5000';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteBrand = "Nayta Patel Network";
   const siteLogo = "/cow1.avif";
@@ -353,12 +354,13 @@ export function AppProvider({ children }) {
         return;
       }
 
+
       const response = await axios.get(path + "/api/auth/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+//console.log('User data',response.data);
       // document.cookie = `token=${token}; path=/`;
       setUser(response.data);
       //console.log(response.data, 'data of user');
