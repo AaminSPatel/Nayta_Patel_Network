@@ -5,15 +5,13 @@ import AppSidebar from "../components/appSidebar.jsx"
 import Header from "../components/header"
 import Footer from "../components/footer"
 import { AppProvider } from "../components/patelContext"
-import Sidebar from "../components/SidebarAdmin"
-import HeaderAdmin from "../components/HeaderAdmin"
 import { Analytics } from "@vercel/analytics/next"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
   title: "Apna Gaon Network",
   description: "Digital Voice of Our Rural Power",
-    generator: 'v0.dev'
+    generator: 'Nayta Patel Network and Company'
 }
 
 export default function RootLayout({ children }) {

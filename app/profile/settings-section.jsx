@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { FiBell, FiLock, FiEye, FiToggleLeft, FiToggleRight } from "react-icons/fi"
+import { usePatel } from "../../components/patelContext"
 
 const SettingsSection = () => {
   const [notifications, setNotifications] = useState({
@@ -40,6 +41,7 @@ const SettingsSection = () => {
       profileVisibility: e.target.value,
     }))
   }
+const {logOut}= usePatel()
 
   return (
     <motion.div
@@ -203,10 +205,13 @@ const SettingsSection = () => {
           <div className="pt-4 border-t border-gray-200">
             <h4 className="font-medium mb-3">Account Actions</h4>
             <div className="space-y-3">
-              <button className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+              <button onClick={logOut} className="cursor-pointer w-full px-4 py-2 border border-orange-300 text-orange-500 rounded-md hover:bg-gray-50 transition-colors">
+               Log Out
+              </button>
+              <button className="cursor-pointer w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
                 Download My Data
               </button>
-              <button className="w-full px-4 py-2 border border-red-300 text-red-600 rounded-md hover:bg-red-50 transition-colors">
+              <button className="cursor-pointer w-full px-4 py-2 border border-red-300 text-red-600 rounded-md hover:bg-red-50 transition-colors">
                 Deactivate Account
               </button>
             </div>
