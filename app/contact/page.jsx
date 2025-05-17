@@ -100,11 +100,9 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium mb-1">Office Address</h3>
                     <p className="text-gray-600">
-                      Apna Gaon Network
+                      Nayta Patel Network
                       <br />
-                      123 Rural Development Road
-                      <br />
-                      Chandpur, Uttar Pradesh 201301
+                     No Any Office
                     </p>
                   </div>
                 </div>
@@ -116,11 +114,11 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium mb-1">Phone</h3>
                     <p className="text-gray-600">
-                      <a href="tel:+919876543210" className="hover:text-emerald-500">
-                        +91 9876 543 210
+                      <a href="tel:+917747074841" className="hover:text-emerald-500">
+                        +91 7747 074 841
                       </a>
                       <br />
-                      <span className="text-sm">(Monday to Saturday, 9AM to 6PM)</span>
+                      <span className="text-sm">(Monday to Saturday, 4PM to 6PM)</span>
                     </p>
                   </div>
                 </div>
@@ -132,13 +130,10 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium mb-1">Email</h3>
                     <p className="text-gray-600">
-                      <a href="mailto:info@apnagaon.network" className="hover:text-emerald-500">
-                        info@apnagaon.network
+                      <a href="mailto:naytapatelnetwork@gmail.com" className="hover:text-emerald-500">
+                        naytapatelnetwork@gmail.com
                       </a>
-                      <br />
-                      <a href="mailto:support@apnagaon.network" className="hover:text-emerald-500">
-                        support@apnagaon.network
-                      </a>
+                      
                     </p>
                   </div>
                 </div>
@@ -151,12 +146,12 @@ export default function ContactPage() {
                     <h3 className="font-medium mb-1">WhatsApp</h3>
                     <p className="text-gray-600">
                       <a
-                        href="https://wa.me/919876543210"
+                        href="https://wa.me/917747074841"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-emerald-500"
                       >
-                        +91 9876 543 210
+                        +91 7747 074 841
                       </a>
                       <br />
                       <span className="text-sm">(For quick queries and support)</span>
@@ -169,7 +164,7 @@ export default function ContactPage() {
                 <h3 className="font-medium mb-3">Follow Us</h3>
                 <div className="flex space-x-4">
                   <a
-                    href="#"
+                    href="https://wa.me/917747074841"
                     className="bg-emerald-100 p-3 rounded-full text-emerald-500 hover:bg-emerald-500 hover:text-white transition-colors"
                   >
                     <FaWhatsapp />
@@ -340,7 +335,7 @@ export default function ContactPage() {
     <div>
       <h3 className="font-bold mb-2">क्या मैं भी इस प्लेटफॉर्म पर कुछ जानकारी साझा कर सकता हूँ?</h3>
       <p className="text-gray-700">
-        बिल्कुल! आप अपने अनुभव, सफलता की कहानियाँ और ज्ञान हमारी कम्युनिटी वॉल पर साझा कर सकते हैं। यदि आप शैक्षिक जानकारी या ब्लॉग लेख साझा करना चाहते हैं, तो कृपया हमारी कंटेंट टीम से संपर्क करें: <a href="mailto:content@apnagaon.network" className="text-emerald-600 underline">content@apnagaon.network</a>
+        बिल्कुल! आप अपने अनुभव, सफलता की कहानियाँ और ज्ञान हमारी कम्युनिटी वॉल पर साझा कर सकते हैं। यदि आप शैक्षिक जानकारी या ब्लॉग लेख साझा करना चाहते हैं, तो कृपया हमारी कंटेंट टीम से संपर्क करें: <a href="mailto:naytapatelnetwork@gmail.com" className="text-emerald-600 underline">naytapatelnetwork@gmail.com</a>
       </p>
     </div>
   </div>

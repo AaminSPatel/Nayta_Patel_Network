@@ -263,7 +263,7 @@ export default function Home() {
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent h-20" />
                   </div>
 
-                  <div className="px-6 py-4">
+                  <div className="px-3 py-4">
                     <div className="flex items-center text-sm text-gray-500 mb-5">
                       <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs font-medium">
                         {blog.category}
@@ -377,7 +377,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-lg shadow-md p-6 w-full sm:w-72"
+                className="bg-white rounded-lg shadow-md p-4 py-6 w-full sm:w-72"
               >
                 <div className="flex items-center mb-4">
                   <Image

@@ -321,9 +321,9 @@ console.log(events);
                         <span> attending</span>
                       </div>
                       <p className="text-gray-600 mb-4">{event.content}</p>
-                      <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-md transition-colors">
+                     {/*  <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-md transition-colors">
                         Register Now
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </motion.div>
