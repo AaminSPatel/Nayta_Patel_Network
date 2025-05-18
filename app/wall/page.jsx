@@ -585,7 +585,7 @@ fetchPosts()
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div className="flex-1 relative">
-                    <input
+                    {/* <input
                       ref={commentInputRef}
                       type="text"
                       value={newComment}
@@ -599,7 +599,24 @@ fetchPosts()
                           : "Write a comment..."
                       }
                       className="w-full py-2 px-4 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pr-12"
-                    />
+                    /> */}
+                    <input
+  ref={commentInputRef}
+  type="text"  // Keep as type="text"
+  inputMode="text"  // Explicitly set input mode
+  autoComplete="off"  // Disable autocomplete
+  autoCorrect="off"  // Disable autocorrect
+  spellCheck="false"  // Disable spellcheck
+  value={newComment}
+  onChange={(e) => setNewComment(e.target.value)}
+  onKeyPress={(e) => e.key === "Enter" && addComment(post._id)}
+  placeholder={
+    replyingTo 
+      ? `Reply to ${replyingTo.user.fullname}...` 
+      : "Write a comment..."
+  }
+  className="w-full py-2 px-4 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pr-12"
+/>
                     <button
                       onClick={() => addComment(post._id)}
                       disabled={!newComment.trim()}

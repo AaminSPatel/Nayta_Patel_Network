@@ -63,13 +63,13 @@ useEffect(()=>{
   <meta property="og:url" content={`${siteUrl}/directory`} />
   <meta property="og:title" content="MP Village Directory | Kisani & Samaj Info" />
   <meta property="og:description" content="Find agricultural data and community info of over 250 villages." />
-  <meta property="og:image" content={`${siteUrl}/directory.jpg`} />
+  <meta property="og:image" content={`${siteUrl}/directory.avif`} />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:url" content={`${siteUrl}/directory`} />
   <meta name="twitter:title" content="Village Directory | 250+ MP Farming Villages" />
   <meta name="twitter:description" content="Explore milk production, mandi data, and kisani updates of your village." />
-  <meta name="twitter:image" content={`${siteUrl}/directory.jpg`} />
+  <meta name="twitter:image" content={`${siteUrl}/directory.avif`} />
 
   <link rel="canonical" href={`${siteUrl}/directory`} />
   <link rel="icon" href={`${siteUrl}/favicon.ico`} />

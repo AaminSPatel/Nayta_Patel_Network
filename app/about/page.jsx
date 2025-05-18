@@ -197,7 +197,7 @@ export default function AboutPage() {
               <div className="md:w-1/2">
                 <div className="relative h-64 md:h-full">
                   <Image
-                    src="/placeholder.svg?height=600&width=800"
+                    src="/prices.avif"
                     alt="Apna Gaon community members"
                     fill
                     className="object-cover"
@@ -294,8 +294,8 @@ export default function AboutPage() {
 </div>
 
 
-        {/* Our Team */}
-        <div className="mb-16">
+       {/*   Our Team 
+        <div className="mb-16 ">
           <h2 className="text-2xl font-bold mb-6">Our Team</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {teamMembers.map((member, index) => (
@@ -325,7 +325,7 @@ export default function AboutPage() {
             ))}
           </div>
         </div>
-
+ */}
         {/* Impact */}
         <div className="mb-16">
           <h2 className="text-2xl font-bold mb-6">Our Impact</h2>

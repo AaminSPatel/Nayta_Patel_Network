@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
-//import { Button } from "@/components/ui/button"
 import { usePatel } from "../components/patelContext"
 import { Menu } from "lucide-react"
 import HeaderAdmin from "./HeaderAdmin"
@@ -12,9 +11,13 @@ import HeaderAdmin from "./HeaderAdmin"
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
-  const { toggleSidebar,isSidebarOpen, closeSidebar,user ,siteBrand,siteLogo} = usePatel()
+  const { toggleSidebar,isSidebarOpen,user ,siteBrand,siteLogo} = usePatel()
   const isAdmin = pathname.startsWith("/admin"); // Check if the path starts with /admin
- 
+ const [userData , setUserData] = useState({})
+ useEffect(()=>{
+    setUserData(user)
+  
+ },[user])
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
@@ -71,19 +74,19 @@ export default function Header() {
           ))}
         </nav>
 
-        {!user && (<div>
+        {!userData && (<div>
           <button  className="bg-emerald-500 hover:bg-emerald-600 text-white py-1 px-2 rounded-md">
             <Link href="/signup">Join Now</Link>
           </button>
         </div>) }
-        {user &&   <Link href="/profile"><div className="cursor-pointer flex gap-0.5">
+        {userData &&   <Link href="/profile"><div className="cursor-pointer flex gap-0.5">
                      
 
           <div className="h-9 w-9 rounded-full overflow-hidden bg-emerald-500">
-            <img src={user?.profilepic?.url} alt={user?.fullname} className="h-9 w-9"/>
+            <img src={userData?.profilepic?.url} alt={userData?.fullname} className="h-9 w-9 border-emerald-300 border rounded-full"/>
           </div>
-          <button  className="text-emerald-500 border-2  hover:bg-emerald-600 py-1 px-2 rounded-3xl cursor-pointer">
-            {user?.fullname}
+          <button  className="text-emerald-500 border-2 line-clamp-1 hover:bg-emerald-600 max-h-9 hidden md:flex overflow-hidden py-1 px-2 hover:text-white rounded-3xl cursor-pointer">
+            {userData?.fullname}
           </button>
          
         </div> </Link>}

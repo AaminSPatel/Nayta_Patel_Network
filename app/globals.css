@@ -258,3 +258,121 @@
   background-color: rgba(248, 250, 252, 1);
 }
 
+/* AmbassadorCard.css */
+.ambassador-card {
+  background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%);
+  border: 1px solid #059669;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.ambassador-card.landscape {
+  width: 400px;
+  height: 250px;
+}
+
+.ambassador-card.portrait {
+  width: 300px;
+  height: auto;
+}
+
+.social-share-container {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.social-share-button {
+  background: #059669;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.75rem 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+  position: relative;
+}
+
+.social-icons-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.social-icons-wrapper.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.social-icon {
+  background: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+
+.social-icon.facebook {
+  color: #1877F2;
+  transform: translateX(28px);
+}
+
+.social-icon.twitter {
+  color: #1DA1F2;
+    transform: translateX(24px) translateY(45px);
+
+}
+
+.social-icon.whatsapp {
+  color: #25D366;
+    transform: translateX(-24px) translateY(-45px);
+
+}
+
+.social-icon.linkedin {
+  color: #0077B5;
+    transform: translateX(-28px);
+
+}
+
+.download-button {
+  background: #059669;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+/* styles.css or your preferred CSS file */
+
+.village-info-card {
+  opacity: 0.7;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); /* shadow-inner equivalent */
+}
+.square-image-box{
+    transition: 5s ease;
+    position: absolute;
+}
+

@@ -26,11 +26,16 @@ export default function BlogDetail() {
   useEffect(() => {
     if (blogs && id) {
       try {
+      setLoading(true)
         const selectedBlog = blogs.find(item => item._id === id)
+      // Navigate to home after 2 seconds
+      setTimeout(() => {
         if (!selectedBlog) {
-          throw new Error('Blog not found')
+          throw new Error(`Blog not found ${id}`)
         }
+        setLoading(false)
         setBlog(selectedBlog)
+      }, 2000);
       } catch (err) {
         setError(err.message)
       } finally {

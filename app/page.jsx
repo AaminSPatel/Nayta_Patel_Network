@@ -17,20 +17,64 @@ import {
 
 import "swiper/css";
 import "swiper/css/pagination";
-import { usePatel } from "../components/patelContext";
+import AmbassadorPortal from "../components/AmbassadorPortal.jsx";
+import HeroEventTicker from "../components/events.jsx";
 import Head from "next/head";
+import { usePatel } from "../components/patelContext.js";
 
 // Sample data
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
-  const { blogs, formatDate, user, stories, posts, siteUrl } =
+  const { blogs, formatDate, user, stories, posts, siteUrl,prices} =
     usePatel();
-
+const [priceData,setPriceData] = useState([])
   useEffect(() => {
     setMounted(true);
   }, []);
 
+   const [userData,setUserData] = useState({})
+useEffect(()=>{
+  if(user)
+  setUserData(user)
+}, [user])
+useEffect(()=>{
+  if(prices){
+    
+      if(!prices || !prices[0]?.prices?.grain){
+console.log('price nhi he' , prices[0]?.prices?.grain);
+
+      } 
+      else{
+        console.log('prices he');
+        
+      const result = []
+      const categoryData = prices[0].prices.grain
+
+      Object.entries(categoryData).forEach(([itemName,itemData])=>{
+         if (typeof itemData === "object" && !itemData.currentPrice) {
+        Object.entries(itemData).forEach(([subItemName, subItemData]) => {
+          result.push({
+            name: `${itemName} (${subItemName.replace(/_/g, " ")})`,
+            ...subItemData,
+          })
+        })
+      } else {
+        // Handle simple items
+        result.push({
+          name: itemName.replace(/_/g, " "),
+          ...itemData,
+        })
+      }
+      })
+      //console.log('Data of prices',result);
+      
+    setPriceData(result)
+      }
+      
+  }
+
+}, [prices])
   if (!mounted) return null;
 
   return (
@@ -65,7 +109,7 @@ export default function Home() {
           property="og:description"
           content="Join 250+ villages in transforming agriculture and community life."
         />
-        <meta property="og:image" content={`${siteUrl}/v2.avif`} />
+        <meta property="og:image" content={`${siteUrl}/hom2.jpeg`} />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={`${siteUrl}`} />
@@ -77,14 +121,14 @@ export default function Home() {
           name="twitter:description"
           content="Stay updated with mandi prices, farming guides, and village empowerment programs."
         />
-        <meta name="twitter:image" content={`${siteUrl}/v2.avif`} />
+        <meta name="twitter:image" content={`${siteUrl}/home.png`} />
 
         <link rel="canonical" href={`${siteUrl}`} />
         <link rel="icon" href={`${siteUrl}/favicon.ico`} />
       </Head>
 
       {/* Hero Section */}
-      <section className="relative h-[500px] flex items-center">
+      <section className="relative  h-[450px] flex items-center">
         <div className="absolute inset-0 z-0 sm:w-auto w-screen">
           <Image
             src="/hom4.jpeg"
@@ -137,12 +181,16 @@ export default function Home() {
             )}
           </motion.div>
         </div>
+        <div className="sm:block hidden">
+          <HeroEventTicker/>
+        </div>
+        
       </section>
-
+     
       {/* Top Posts Carousel */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-6 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">
             Community Posts
           </h2>
 
@@ -156,7 +204,7 @@ export default function Home() {
             }}
             autoplay={{ delay: 5000 }}
             pagination={{ clickable: true }}
-            className="pb-12 mb-6"
+            className="pb-12"
           >
             {posts
               .filter((item) => item.verificationStatus === "verified")
@@ -193,6 +241,7 @@ export default function Home() {
           </Swiper>
         </div>
       </section>
+
 
       {/* Upcoming Events */}
       {/* <section className="py-12">
@@ -411,92 +460,177 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
-      {/*      
-<section className="py-12 bg-gray-50">
-  <div className="container mx-auto px-4">
-    <div className="text-center mb-10">
-      <h2 className="text-2xl md:text-3xl font-bold mb-3">Latest Mandi Prices</h2>
-      <p className="text-gray-600 max-w-2xl mx-auto">
-        Real-time agricultural commodity prices from major mandis across India
-      </p>
-    </div>
-
-    <div className="flex overflow-x-auto pb-2 mb-6 justify-center">
-      {['ujjain', 'indore', 'bhopal', 'neemuch', 'mandsaur','dhar'].map((mandi) => (
-        <button
-          key={mandi}
-          className={`px-4 py-2 mx-1 rounded-lg capitalize font-medium ${
-            activeMandi === mandi
-              ? 'bg-emerald-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-100'
-          }`}
-          onClick={() => setMandi(mandi)}
-        >
-          {mandi}
-        </button>
+  {/* <section className="py-8 px-4 sm:px-6 lg:px-8">
+  <div className="mx-auto max-w-7xl">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 md:gap-7 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      {priceData.map((item, index) => (
+        <PriceCard key={`${item.name}-${index}`} item={item} />
       ))}
-    </div>
-
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay:  0.1 }}
-          whileHover={{ y: -5 }}
-          className="relative bg-white rounded-lg shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow"
-        >
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-semibold text-xl mb-1 hidden capitalize">
-                
-              </h3>
-              <p className="text-gray-600 text-sm mb-3">
-                {activeMandi?.mandiName}, {activeMandi?.state}
-              </p>
-            </div>
-            <div className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">
-              Grain
-            </div>
-          </div>
-          {['gram','wheat','soyabean','alsi','sarso','mungfali'].map((name,index)=>(
-            <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Current:</span>
-              <span className="text-lg font-bold">₹{activeMandi?.prices?.grain[name].currentPrice}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Min:</span>
-              <span>₹{activeMandi?.prices?.grain[name].minPrice || 'NA'}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Max:</span>
-              <span>₹{activeMandi?.prices?.grain[name].maxPrice || 'NA'}</span>
-            </div>
-            <div className="absolute top-4 right-4">
-            {getCommodityIcon(activeMandi?.prices?.grain[name])}
-          </div>
-          </div>
-
-          ))}
-          
-          
-        </motion.div>
-    </div>
-
-    <div className="text-center mt-8">
-      <Link href="/prices">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
-        >
-          View All Prices
-        </motion.button>
-      </Link>
     </div>
   </div>
 </section> */}
+<PriceSection priceData={priceData}/>
+      
     </div>
   );
 }
+
+/* import { motion } from "framer-motion";
+import Link from "next/link";
+ */
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  }
+};
+
+const PriceSection = (priceData) => {
+  return (
+    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <div className="mx-auto max-w-7xl">
+        {/* Heading and Description */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
+            Current Market Prices
+          </h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            Get real-time updates on agricultural commodity prices in your region. 
+            Our data is updated daily to help you make informed decisions.
+          </p>
+        </motion.div>
+
+        {/* Price Cards Grid */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="columns-1 gap-6 sm:columns-2 lg:columns-3 xl:columns-3 [&>div:not(:first-child)]:mt-6"
+        >
+          {priceData.priceData.map((item, index) => (
+            <motion.div 
+              key={`${item.name}-${index}`} 
+              variants={itemVariants}
+              className="break-inside-avoid mb-6"
+            >
+              <PriceCard item={item} />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* View More Button */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="text-center mt-12"
+        >
+          <Link href="/prices" passHref>
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-block px-8 py-3 bg-emerald-600 text-white font-medium rounded-lg shadow-md hover:bg-emerald-700 transition-colors"
+            >
+              View Detailed Price Charts
+            </motion.a>
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+
+
+// Price Card Component
+const PriceCard = ({ item }) => {
+  const priceChange =
+    item.currentPrice && item.previousPrice
+      ? (((item.currentPrice - item.previousPrice) / item.previousPrice) * 100)
+      : null;
+
+  // Get product icon based on name
+  const getProductIcon = (name) => {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('soyabean')) return '🌱';
+    if (lowerName.includes('wheat')) return '🌾';
+    if (lowerName.includes('gram') || lowerName.includes('chana')) return '🟤';
+    if (lowerName.includes('mungfali')) return '🥜';
+    if (lowerName.includes('alsi')) return '🫘';
+    return '🌿'; // Default icon
+  };
+
+  // Format name with proper capitalization
+  const formatName = (name) => {
+    let formatted = name.toLowerCase();
+    formatted = formatted.replace(/\bgram\b/g, "चना");
+    formatted = formatted.replace(/\bdaler\b/g, "डालर");
+    formatted = formatted.replace(/\bbitki\b/g, "काबुली");
+    formatted = formatted.replace(/\bkala\b/g, "काला");
+    formatted = formatted.replace(/\bnew\b/g, "नया");
+    formatted = formatted.replace(/\balsi\b/g, "अलसी");
+    formatted = formatted.replace(/\bsarso\b/g, "सरसो");
+    formatted = formatted.replace(/\bsoyabean\b/g, "सोयाबीन");
+    formatted = formatted.replace(/\bwheat\b/g, "गेंहू");
+    formatted = formatted.replace(/\bmungfali\b/g, "मुंगफली");
+    // Capitalize first letter of each word
+    return formatted.replace(/\b\w/g, char => char.toUpperCase());
+  };
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-2xl">{getProductIcon(item.name)}</span>
+        <h3 className="text-md font-semibold border-b-emerald-400 border-b pb-2 flex-1">
+          {formatName(item.name)}
+        </h3>
+      </div>
+      
+      <div className="space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-600">Current Price:</span>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-lg">₹{item.currentPrice}</span>
+            {priceChange && (
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full ${
+                  priceChange > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                }`}
+              >
+                {priceChange > 0 ? `+${priceChange.toFixed(1)}%` : `${priceChange.toFixed(1)}%`}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {item.previousPrice && (
+          <div className="flex justify-between items-center text-sm">
+            <span className="text-gray-600">Previous Price:</span>
+            <span>₹{item.previousPrice}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

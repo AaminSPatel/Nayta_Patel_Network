@@ -1,122 +1,134 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaCheckCircle } from "react-icons/fa"
-import { usePatel } from "../../components/patelContext"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FaEnvelope,
+  FaLock,
+  FaEye,
+  FaEyeSlash,
+  FaGoogle,
+  FaFacebook,
+  FaCheckCircle,
+} from "react-icons/fa";
+import { usePatel } from "../../components/patelContext";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({
-    form: '',
-    email: '',
-    password: ''
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const [showForgotPassword, setShowForgotPassword] = useState(false)
-  const [forgotEmail, setForgotEmail] = useState("")
-  const [forgotError, setForgotError] = useState("")
-  const [forgotSuccess, setForgotSuccess] = useState("")
-  const { path, setToken, setUser, setError } = usePatel()
-  const router = useRouter()
+    form: "",
+    email: "",
+    password: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotError, setForgotError] = useState("");
+  const [forgotSuccess, setForgotSuccess] = useState("");
+  const { path, setToken, setUser, setError } = usePatel();
+  const router = useRouter();
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setErrors({ form: '', email: '', password: '' })
-    setError(null)
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrors({ form: "", email: "", password: "" });
+    setError(null);
 
     // Client-side validation
-    const trimmedEmail = email.trim()
-    const trimmedPassword = password.trim()
-    const validationErrors = {}
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+    const validationErrors = {};
 
-    if (!trimmedEmail) validationErrors.email = "Email is required"
-    else if (!/\S+@\S+\.\S+/.test(trimmedEmail)) validationErrors.email = "Email is invalid"
-    if (!trimmedPassword) validationErrors.password = "Password is required"
+    if (!trimmedEmail) validationErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(trimmedEmail))
+      validationErrors.email = "Email is invalid";
+    if (!trimmedPassword) validationErrors.password = "Password is required";
 
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(prev => ({ ...prev, ...validationErrors }))
-      setIsSubmitting(false)
-      return
+      setErrors((prev) => ({ ...prev, ...validationErrors }));
+      setIsSubmitting(false);
+      return;
     }
 
     try {
-      const response = await fetch(path + '/api/auth/login', {
-        method: 'POST',
+      const response = await fetch(path + "/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: trimmedEmail,
-          password: trimmedPassword
+          password: trimmedPassword,
         }),
-        credentials: 'include'
-      })
+        credentials: "include",
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
-      if (!response.ok) throw new Error(data.message || 'Login failed')
+      if (!response.ok) throw new Error(data.message || "Login failed");
+console.log('Data after login',data.user);
 
       // Success case
-      setUser(data.user)
-      setToken(data.token)
-      localStorage.setItem('token', data.token)
-      setIsSuccess(true)
-      
+      setUser(data.user);
+      setToken(data.token);
+      localStorage.setItem("token", data.token);
+      setIsSuccess(true);
+
       // Navigate to home after 2 seconds
       setTimeout(() => {
-        router.push('/')
-      }, 2000)
-
+        router.push("/");
+      }, 2000);
     } catch (err) {
-      setErrors(prev => ({ ...prev, form: err.message || 'Login failed. Please try again.' }))
-      setError(err.message || 'Login failed. Please try again.')
+      setErrors((prev) => ({
+        ...prev,
+        form: err.message || "Login failed. Please try again.",
+      }));
+      setError(err.message || "Login failed. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleForgotPassword = async (e) => {
-    e.preventDefault()
-    setForgotError("")
-    setForgotSuccess("")
+    e.preventDefault();
+    setForgotError("");
+    setForgotSuccess("");
 
     if (!forgotEmail.trim()) {
-      setForgotError("Email is required")
-      return
+      setForgotError("Email is required");
+      return;
     }
 
     try {
-      const response = await fetch(path + '/api/auth/forgot-password', {
-        method: 'POST',
+      const response = await fetch(path + "/api/auth/forgot-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: forgotEmail.trim() })
-      })
+        body: JSON.stringify({ email: forgotEmail.trim() }),
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
-      if (!response.ok) throw new Error(data.message || 'Failed to send reset email')
+      if (!response.ok)
+        throw new Error(data.message || "Failed to send reset email");
 
-      setForgotSuccess("Password reset link sent to your email")
-      setForgotEmail("")
-      
+      setForgotSuccess("Password reset link sent to your email");
+      setForgotEmail("");
+
       // Hide the forgot password form after 3 seconds
       setTimeout(() => {
-        setShowForgotPassword(false)
-      }, 3000)
-
+        setShowForgotPassword(false);
+      }, 3000);
     } catch (err) {
-      setForgotError(err.message || 'Failed to process request')
+      setForgotError(err.message || "Failed to process request");
     }
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -133,8 +145,10 @@ export default function LoginPage() {
                 <span className="text-white text-xl font-bold">AG</span>
               </div>
               <h1 className="text-2xl font-bold mb-2">Welcome Back</h1>
-              <p className="text-gray-600">Sign in to access your Apna Gaon account</p>
-              
+              <p className="text-gray-600">
+                Sign in to access your Apna Gaon account
+              </p>
+
               {/* Success message */}
               <AnimatePresence>
                 {isSuccess && (
@@ -162,7 +176,10 @@ export default function LoginPage() {
               <form onSubmit={handleLogin}>
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Email Address
                     </label>
                     <div className="relative">
@@ -175,18 +192,25 @@ export default function LoginPage() {
                         name="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className={`w-full py-2 pl-10 rounded-md border ${errors.email ? "border-red-500" : "border-gray-300"} shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200`}
+                        className={`w-full py-2 pl-10 rounded-md border ${
+                          errors.email ? "border-red-500" : "border-gray-300"
+                        } shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200`}
                         placeholder="Enter your email"
                         disabled={isSubmitting || isSuccess}
                       />
                     </div>
                     {errors.email && (
-                      <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.email}
+                      </p>
                     )}
                   </div>
 
                   <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Password
                     </label>
                     <div className="relative">
@@ -199,7 +223,9 @@ export default function LoginPage() {
                         name="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className={`w-full py-2 pl-10 pr-10 rounded-md border ${errors.password ? "border-red-500" : "border-gray-300"} shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200`}
+                        className={`w-full py-2 pl-10 pr-10 rounded-md border ${
+                          errors.password ? "border-red-500" : "border-gray-300"
+                        } shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200`}
                         placeholder="Enter your password"
                         disabled={isSubmitting || isSuccess}
                       />
@@ -215,7 +241,9 @@ export default function LoginPage() {
                       </div>
                     </div>
                     {errors.password && (
-                      <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.password}
+                      </p>
                     )}
                   </div>
 
@@ -233,13 +261,27 @@ export default function LoginPage() {
                   </div>
 
                   <div>
-                    <button
+                    <motion.button
+                      initial={{ scale: 1 }}
+                      whileTap={{ scale: 0.98 }} // Shrink effect when pressed
+                      whileHover={{ scale: 1.01 }} // Slight grow on hover
+                      animate={{ scale: 1 }} // Default state
+                      transition={{
+                        duration: 0.3,
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 15,
+                      }}
                       type="submit"
                       className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-md transition-colors font-medium disabled:opacity-70 disabled:cursor-not-allowed"
                       disabled={isSubmitting || isSuccess}
                     >
-                      {isSubmitting ? 'Signing In...' : isSuccess ? 'Success!' : 'Sign In'}
-                    </button>
+                      {isSubmitting
+                        ? "Signing In..."
+                        : isSuccess
+                        ? "Success!"
+                        : "Sign In"}
+                    </motion.button>
                   </div>
                 </div>
               </form>
@@ -250,13 +292,13 @@ export default function LoginPage() {
                 className="space-y-4"
               >
                 <h2 className="text-xl font-bold mb-4">Reset Password</h2>
-                
+
                 {forgotError && (
                   <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
                     {forgotError}
                   </div>
                 )}
-                
+
                 {forgotSuccess && (
                   <div className="p-3 bg-green-100 border border-green-400 text-green-700 rounded">
                     {forgotSuccess}
@@ -264,7 +306,10 @@ export default function LoginPage() {
                 )}
 
                 <div>
-                  <label htmlFor="forgot-email" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="forgot-email"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Email Address
                   </label>
                   <div className="relative">
@@ -307,7 +352,9 @@ export default function LoginPage() {
                       <div className="w-full border-t border-gray-300"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                      <span className="px-2 bg-white text-gray-500">
+                        Or continue with
+                      </span>
                     </div>
                   </div>
 
@@ -332,7 +379,10 @@ export default function LoginPage() {
                 <div className="mt-6 text-center">
                   <p className="text-sm text-gray-600">
                     Don't have an account?{" "}
-                    <Link href="/signup" className="font-medium text-emerald-600 hover:text-emerald-500">
+                    <Link
+                      href="/signup"
+                      className="font-medium text-emerald-600 hover:text-emerald-500"
+                    >
                       Sign up
                     </Link>
                   </p>
@@ -343,5 +393,5 @@ export default function LoginPage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

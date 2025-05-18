@@ -539,8 +539,10 @@ const path = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const token = localStorage.getItem("token"); // Or wherever you store the JWT
-
-    fetchUsers(token);
+if(user){
+   fetchUsers(token);
+}
+   
   }, []);
 
   useEffect(() => {
@@ -564,6 +566,8 @@ const path = process.env.NEXT_PUBLIC_API_URL;
         email,
         password,
       });
+      console.log('login data',response.data.user);
+      
       setUser(response.data.user);
       setToken(response.data.token);
       localStorage.setItem("token", response.data.token);

@@ -14,7 +14,6 @@ import {
   FaLinkedin,
   FaLink,
 } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
 import { usePatel } from "../../components/patelContext";
 import Link from "next/link";
 

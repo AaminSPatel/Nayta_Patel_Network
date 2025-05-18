@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { FiSettings, FiEdit2, FiUser, FiMapPin, FiMail, FiPhone, FiMessageSquare, FiFileText } from "react-icons/fi"
+import { FiSettings, FiEdit2, FiUser, FiMapPin, FiMail, FiPhone, FiMessageSquare, FiFileText, FiStar } from "react-icons/fi"
 import { FaRegThumbsUp } from "react-icons/fa"
 import ProfileHeader from "./profile-header"
 import ActivitySection from "./activity-section.jsx"
 import SettingsSection from "./settings-section"
 import VillageDetails from "./village-details"
 import { usePatel } from "../../components/patelContext"
+import AmbassadorPortal from "../../components/AmbassadorPortal"
 import EditProfileModal from "./edit-profile-modal"
 import Head from "next/head";
 
@@ -36,6 +37,7 @@ useEffect(()=>{
     email     : user.email      ,
     mobile    : user.mobile     ,
     village   : user.village    ,
+    createdAt   : user.createdAt    ,
     role   : user.role    ,
     profilePic: user.profilepic?.url ,
     posts     : user.posts.length      ,
@@ -65,6 +67,7 @@ useEffect(()=>{
     setUserData({
       _id     : newuser._id   ,
     fullName  : newuser.fullname   ,
+    createdAt  : newuser.createdAt   ,
     email     : newuser.email      ,
     mobile    : newuser.mobile     ,
     village   : newuser.village    ,
@@ -173,7 +176,20 @@ useEffect(()=>{
             <FiSettings className="mr-2" />
             Settings
           </button>
+           {userData.role ==='ambassador' || userData.role ==='admin' && <button
+            onClick={() => setActiveTab("ambassador")}
+            className={`flex items-center px-6 py-4 text-sm font-medium ${
+              activeTab === "ambassador"
+                ? "text-emerald-600 border-b-2 border-emerald-600"
+                : "text-gray-500 hover:text-emerald-500"
+            }`}
+          >
+            <FiStar className="mr-2"/>
+            Ambassador
+          </button>}
+          
         </div>
+{/*  */}
 
         <div className="p-6">
           {activeTab === "profile" && (
@@ -257,6 +273,9 @@ useEffect(()=>{
           {activeTab === "activity" && <ActivitySection userData={userData} />}
           {activeTab === "village" && <VillageDetails villageData={villageData} />}
           {activeTab === "settings" && <SettingsSection />}
+  {activeTab === "ambassador" && userData?.role ==='ambassador' || userData?.role ==='admin'  && (
+    <AmbassadorPortal user={userData}/>
+  )}
         </div>
       </div>
 

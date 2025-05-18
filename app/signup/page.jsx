@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa"
 import { usePatel } from "../../components/patelContext"
 import axios from "axios"
+import { useRouter } from "next/navigation"
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -26,13 +27,14 @@ export default function SignupPage() {
     confirmPassword: "",
     agreeTerms: false,
   });
+  const router = useRouter()
 
   const {path, setToken, setUser, setError} = usePatel()
   //const { setUser, setToken, setError } = usePatel(); // Assuming your context provides these
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
-
+ const [isSignUp,setIsSignUp] = useState(false)
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -103,7 +105,13 @@ export default function SignupPage() {
            // document.cookie = `token=${data.token}; path=/`;
 
       localStorage.setItem('token', data.token);
-      console.log('Signup successful:', data.user);
+       setIsSignUp(true)
+      // Navigate to home after 2 seconds
+      setTimeout(() => {
+        router.push('/')
+      }, 2000)
+
+      console.log('Signup successful:');
     } catch (err) {
       console.error('Signup error:', err.response?.data?.message || err.message);
       setError(err.response?.data?.message || 'Signup failed');
@@ -125,6 +133,7 @@ export default function SignupPage() {
             <div className="mb-8">
               <h1 className="text-3xl font-bold mb-2">Create Your Account</h1>
               <p className="text-gray-600">Join our community of farmers, dairy producers, and rural entrepreneurs.</p>
+              <p className="py-3 text-md text-emerald-600">Account created Succesfully!!</p>
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -300,12 +309,22 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <button
-                    type="submit"
-                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-md transition-colors font-medium"
-                  >
-                    Create Account
-                  </button>
+                  <motion.button
+      initial={{ scale: 1 }}
+      whileTap={{ scale: 0.98 }} // Shrink effect when pressed
+      whileHover={{ scale: 1.01 }} // Slight grow on hover
+      animate={{ scale: 1 }} // Default state
+      transition={{ 
+        duration: 0.3,
+        type: "spring",
+        stiffness: 500,
+        damping: 15
+      }}
+      type="submit"
+      className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-md transition-colors font-medium"
+    >
+      {isSignUp ? 'Account Created...' : 'Create Account'}
+    </motion.button>
                 </div>
               </div>
             </form>

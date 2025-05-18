@@ -121,7 +121,7 @@ export default function Footer() {
                   href="https://wa.me/917747074841"
                   className="text-gray-600 hover:text-emerald-500"
                 >
-                  +91 9876543210
+                  +91 7747 074 810
                 </a>
               </p>
               <p className="mt-4">

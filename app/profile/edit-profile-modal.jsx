@@ -4,33 +4,37 @@ import { motion, AnimatePresence } from "framer-motion"
 import { FiX } from "react-icons/fi"
 import { usePatel } from "../../components/patelContext"
 
+// List of predefined villages
+
+
 const EditProfileModal = ({ isOpen, onClose, userData, onUpdate }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     mobile: "",
     village: "",
-    image: null, // Changed to null for file handling
+    image: null,
   })
 
   const [previewImage, setPreviewImage] = useState("")
   const [showCustomInput, setShowCustomInput] = useState(false)
-  const [showInput, setShowInput] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { path } = usePatel()
+  const { path, villages } = usePatel()
+const VILLAGE_OPTIONS = villages.map((item,i)=>item.name)
 
   useEffect(() => {
     if (userData) {
       setFormData({
-        _id:userData._id,
+        _id: userData._id,
         fullName: userData.fullName || "",
         email: userData.email || "",
         mobile: userData.mobile || "",
         village: userData.village || "",
-        image: null, // Reset image file on open
+        image: null,
       })
       setPreviewImage(userData.profilePic || "")
+      setShowCustomInput(!VILLAGE_OPTIONS.includes(userData.village) && userData.village !== "")
     }
   }, [userData, isOpen])
 
@@ -46,19 +50,16 @@ const EditProfileModal = ({ isOpen, onClose, userData, onUpdate }) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validate file type
     if (!file.type.match('image.*')) {
       setError('Please select an image file (JPEG, PNG, etc.)')
       return
     }
 
-    // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       setError('Image must be smaller than 5MB')
       return
     }
 
-    // Create preview URL
     const reader = new FileReader()
     reader.onloadend = () => {
       setPreviewImage(reader.result)
@@ -67,6 +68,17 @@ const EditProfileModal = ({ isOpen, onClose, userData, onUpdate }) => {
 
     setFormData(prev => ({ ...prev, image: file }))
     setError('')
+  }
+
+  const handleVillageSelect = (e) => {
+    const value = e.target.value
+    if (value === "other") {
+      setShowCustomInput(true)
+      setFormData(prev => ({ ...prev, village: "" }))
+    } else {
+      setShowCustomInput(false)
+      setFormData(prev => ({ ...prev, village: value }))
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -101,8 +113,8 @@ const EditProfileModal = ({ isOpen, onClose, userData, onUpdate }) => {
       }
 
       const updatedUser = await response.json()
-      onUpdate(updatedUser) // Call parent callback with updated data
-      onClose() // Close modal on success
+      onUpdate(updatedUser)
+      onClose()
     } catch (err) {
       console.error('Update error:', err)
       setError(err.message || 'Failed to update profile')
@@ -211,41 +223,50 @@ const EditProfileModal = ({ isOpen, onClose, userData, onUpdate }) => {
                     />
                   </div>
 
-                  {!showCustomInput&&<div>
+                  <div>
                     <label htmlFor="village" className="block text-sm font-medium text-gray-700 mb-1">
                       Village
                     </label>
-                    <select
-                      id="village"
-                      name="village"
-                      value={formData.village}
-                      onClick={()=>{setShowInput(true)}}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                      <option value="" onClick={()=>{setShowCustomInput(true)}}>
-                       {!showInput ?'Select your village' : 'Select to type here...'}
-                        </option>
-                      <option value="Green Valley">Green Valley</option>
-                      <option value="Blue Ridge">Blue Ridge</option>
-                      <option value="Sunny Hills">Sunny Hills</option>
-                      <option value="Maple Woods">Maple Woods</option>
-                    </select>
-                  </div>}
-                  {showCustomInput && (
-        <div className="mt-2">
-          <input
-            type="text"
-            name="village"
-            value={formData.village}
-            onChange={handleChange}
-            placeholder="Enter your village name"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            autoFocus
-          />
-          <button onClick={()=>{setShowCustomInput(false); setShowInput(false)}} className="p-1 bg-emerald-400 rounded-md m-1 cursor-pointer">Select village</button>
-        </div>
-      )}
+                    
+                    {!showCustomInput ? (
+                      <select
+                        id="village"
+                        name="village"
+                        value={formData.village}
+                        onChange={handleVillageSelect}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      >
+                        <option value="">Select your village</option>
+                        {VILLAGE_OPTIONS.map(village => (
+                          <option key={village} value={village}>{village}</option>
+                        ))}
+                        <option value="other">Other (enter manually)</option>
+                      </select>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          id="village"
+                          name="village"
+                          value={formData.village}
+                          onChange={handleChange}
+                          placeholder="Enter village name"
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowCustomInput(false)
+                            setFormData(prev => ({ ...prev, village: "" }))
+                          }}
+                          className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                        >
+                          Back
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="mt-6 flex justify-end space-x-3">

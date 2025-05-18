@@ -19,11 +19,14 @@ import {
   FaUserShield
 } from 'react-icons/fa';
 import { usePatel } from '../../../components/patelContext';
+import CompactAmbassadorCard from '../../../components/CompactAmbassadorCard';
+import { GiKing } from 'react-icons/gi';
 
 const VillageDetailPage = () => {
   const {villageId} = useParams();
   //const { villageId } = router.query;
   const [village, setVillage] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -38,6 +41,9 @@ const {villages} = usePatel();
       
       // In a real app, you would fetch this data from an API
       const foundVillage = villages.find(v => v._id === villageId);
+      if(foundVillage?.ambassador){
+        setUserData(foundVillage?.ambassador)
+      }
       setVillage(foundVillage);
       setLoading(false);
     }
@@ -266,6 +272,7 @@ const {villages} = usePatel();
                         It has grown significantly over the years and has become a landmark location in the region.
                       </p>
                     </div>
+
                   </div>
                 )}
 
@@ -334,15 +341,16 @@ const {villages} = usePatel();
                         className="flex items-center bg-gray-50 p-6 rounded-lg mb-4"
                       >
                         <div className="h-16 w-16 bg-emerald-500 rounded-full flex items-center justify-center text-white text-2xl mr-4">
-                          {village.headOfVillage.split(' ').map(name => name[0]).join('')}
+                         {/*  {village.headOfVillage.split(' ').map(name => name[0]).join('')} */}
+                         <GiKing/>
                         </div>
                         <div>
-                          <h3 className="text-xl font-medium text-gray-800">{village.headOfVillage}</h3>
+                          <h3 className="text-xl font-medium text-gray-800">{village.headOfVillage || '-'}</h3>
                           <p className="text-gray-600">Head of Village</p>
                         </div>
                       </motion.div>
 
-                      {village.ambassador && (
+                      
                         <motion.div 
                           initial={{ y: 20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
@@ -353,11 +361,11 @@ const {villages} = usePatel();
                             <FaUserShield />
                           </div>
                           <div>
-                            <h3 className="text-xl font-medium text-gray-800">{village.ambassador.name}</h3>
-                            <p className="text-gray-600">{village.ambassador.role}</p>
+                            <h3 className="text-xl font-medium text-gray-800">{village?.ambassador?.fullname || '-'}</h3>
+                            <p className="text-gray-600">Village Ambassador</p>
                           </div>
                         </motion.div>
-                      )}
+                      
                     </div>
                   </div>
                 )}
@@ -424,6 +432,9 @@ const {villages} = usePatel();
                 </div>
               </div>
               
+                    {userData &&<div>
+ <CompactAmbassadorCard user = { userData }/>
+</div>}
               {/* Action Buttons */}
               <div className="flex space-x-3">
                 <button 
