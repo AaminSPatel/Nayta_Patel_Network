@@ -220,11 +220,21 @@ const containerVariants = {
         </div>
         
       </section>
-     <section className="w-full h-full  sm:hidden flex items-center justify-center p-20">
-      <div className="w-96 h-96  top-0 right-0">
+      
+     <section className="w-full h-full sm:hidden flex items-center justify-center py-18 p-12 flex-col">
+      <div className="w-76 sm:h-96 h-[530px]">
           <EventCubeSlider />
+          
         </div>
-        
+         <div className="text-center mt-10">
+            <Link
+              href="/events"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
+            >
+              View All Events
+              <FaArrowRight className="ml-2" />
+            </Link>
+          </div>
      </section>
      <PriceSection priceData={priceData}/>
 

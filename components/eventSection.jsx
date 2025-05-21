@@ -38,15 +38,15 @@ const EventCubeSlider = () => {
 
   return (
     <div className="relative max-w-xl mx-auto py-4 px-4">
-     {/*  <motion.div
+       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-8 text-center"
+        className="mb-8 sm:hidden text-center"
       >
         <h2 className="text-3xl font-bold text-gray-800 mb-2">Upcoming Events</h2>
         <p className="text-gray-600">Discover our latest community gatherings and programs</p>
-      </motion.div> */}
+      </motion.div> 
 
       <div className="relative sm:h-[350px] h-[380px]">
         <Swiper
