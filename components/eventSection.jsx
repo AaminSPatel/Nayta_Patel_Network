@@ -48,7 +48,7 @@ const EventCubeSlider = () => {
         <p className="text-gray-600">Discover our latest community gatherings and programs</p>
       </motion.div> */}
 
-      <div className="relative h-[350px]">
+      <div className="relative sm:h-[350px] h-[380px]">
         <Swiper
           effect={'cube'}
           grabCursor={true}
@@ -95,7 +95,7 @@ const EventCubeSlider = () => {
                       <span className="inline-block px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-full mb-2">
                         {event.type}
                       </span>
-                      <h3 className="text-xl font-bold text-gray-800  line-clamp-3 ">{event.eventName}</h3>
+                      <h3 className="text-xl font-bold text-gray-800  line-clamp-3  sm:pt-1 pt-2">{event.eventName}</h3>
                     </div>
                     {event.eventStatus && (
                       <span className={`text-xs px-2 py-1 rounded-full ${

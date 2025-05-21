@@ -215,12 +215,17 @@ const containerVariants = {
             )}
           </motion.div>
         </div>
-        <div className="w-68  top-0 right-0">
+        <div className="w-68 hidden sm:block top-0 right-0">
           <EventCubeSlider />
         </div>
         
       </section>
-     
+     <section className="w-full h-full  sm:hidden flex items-center justify-center p-20">
+      <div className="w-96 h-96  top-0 right-0">
+          <EventCubeSlider />
+        </div>
+        
+     </section>
      <PriceSection priceData={priceData}/>
 
       {/* Top Posts Carousel */}
