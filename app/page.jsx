@@ -18,9 +18,11 @@ import "swiper/css";
 import "swiper/css/pagination";
 import Head from "next/head";
 import { usePatel } from "../components/patelContext.js";
-import "swiper/css";
+import EventCubeSlider from "../components/eventSection.jsx";
 import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
+
+
+
 
 // Sample data
  
@@ -146,6 +148,18 @@ const containerVariants = {
         <link rel="canonical" href={`${siteUrl}`} />
         <link rel="icon" href={`${siteUrl}/favicon.ico`} />
       </Head>
+   {/*    This is Logo section */}
+{/* <section className="relative w-screen h-screen flex items-center justify-center flex-col">
+  <img src="./tactor.png" className="h-44" alt="" />
+  <h1 className="font-extrabold text-5xl pb-1 pt-2 text-emerald-900 pragati">
+    नायता पटेल नेटवर्क
+  </h1>
+  <h3  className="font-semibold text-2xl pragati flex gap-1">
+
+  शिक्षा, खेती और समाज का विकास <span className=" text-emerald-700"><GiWheat /></span>
+  </h3>
+
+</section> */}
 
       {/* Hero Section */}
       <section className="relative  h-[450px] flex items-center">
@@ -201,7 +215,8 @@ const containerVariants = {
             )}
           </motion.div>
         </div>
-        <div className="sm:block hidden">
+        <div className="w-68  top-0 right-0">
+          <EventCubeSlider />
         </div>
         
       </section>
@@ -550,7 +565,7 @@ const PriceSection = ({ priceData }) => {
           </motion.p>
         </motion.div>
 
-        {/* Swiper Coverflow Price Cards */}
+        {/* Swiper with Grab Cursor and Auto-scroll */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -558,33 +573,33 @@ const PriceSection = ({ priceData }) => {
           className="mb-12"
         >
           <Swiper
-            effect={"coverflow"}
             grabCursor={true}
             centeredSlides={true}
-            slidesPerView={2} // Default for mobile
+            slidesPerView={1} // Default for mobile
+            spaceBetween={20}
             breakpoints={{
-              // When window width is >= 768px
-              768: {
+              640: {
+                slidesPerView: 2,
+              },
+              1024: {
                 slidesPerView: 3,
               }
             }}
-            coverflowEffect={{
-              rotate: 30, // Less rotation for better mobile view
-              stretch: 0,
-              depth: 100,
-              modifier: 1,
-              slideShadows: false,
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true
             }}
             pagination={{
               clickable: true,
               dynamicBullets: true
             }}
-            modules={[EffectCoverflow, Pagination]}
-            className="w-full"
+            modules={[Autoplay, Pagination]}
+            className="w-auto"
           >
             {priceData.map((item, index) => (
-              <SwiperSlide key={index} className="flex justify-center">
-                <motion.div variants={itemVariants} className="mb-14">
+              <SwiperSlide key={index} className="flex justify-center pb-10 items-center px-10 max-w-full">
+                <motion.div variants={itemVariants}>
                   <PriceCard item={item} />
                 </motion.div>
               </SwiperSlide>
@@ -649,7 +664,7 @@ const PriceCard = ({ item }) => {
   };
 
   return (
-    <div className="bg-white w-64 h-32 py-6 border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
+    <div className="bg-white md:w-72 w-full h-32 py-6 min-w-48 border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-2xl">{getProductIcon(item.name)}</span>
         <h3 className="text-md font-semibold border-b-emerald-400 border-b pb-2 flex-1">

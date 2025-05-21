@@ -349,7 +349,7 @@ console.log(formDataToSend); */
         </div>
 
         {/* Map */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-12">
+        <div className="bg-white hidden rounded-lg shadow-md p-6 mb-12">
           <h2 className="text-xl font-bold mb-6">Find Us</h2>
           <div className="h-96 bg-gray-200 rounded-lg">
             {/* In a real app, you would embed a Google Map or similar here */}

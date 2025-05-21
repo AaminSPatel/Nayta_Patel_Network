@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-lg mb-4">Nayta Patel Network</h3>
             <p className="text-gray-600 mb-4">
-              Digital Voice of Our Rural Power
+<span className="font-semibold">नायता पटेल नेटवर्क </span> - जहाँ शिक्षा की रोशनी, किसानों की ताकत और समाज की प्रगति एक साथ मिलती है!
             </p>
             <div className="flex space-x-4">
               <a
@@ -68,7 +68,7 @@ export default function Footer() {
           <div>
             <h3 className="font-bold mb-4">Resources</h3>
             <ul className="space-y-2">
-              <li>
+           {/*    <li>
                 <Link
                   href="/learning"
                   className="text-gray-600 hover:text-emerald-500"
@@ -83,7 +83,7 @@ export default function Footer() {
                 >
                   Marketplace
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   href="/directory"
