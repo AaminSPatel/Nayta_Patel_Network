@@ -21,10 +21,13 @@ import {
   FaFacebook,
   FaInstagram,
   FaTelegram,
+  FaEye,
+  FaRegEye,
 } from "react-icons/fa";
 import CreatePostCard from "./create-post-card";
 import { usePatel } from "../../components/patelContext";
 import Head from "next/head"
+import Link from "next/link";
 
 const PostsSection = () => {
   const { user, posts, setPosts,siteUrl, timeAgo, path,fetchPosts } = usePatel();
@@ -316,7 +319,7 @@ fetchPosts()
   const copyPostLink = (postId) => {
     const postUrl = `${window.location.origin}/post/${postId}`;
     navigator.clipboard.writeText(postUrl);
-    alert("Post link copied to clipboard!");
+   // alert("Post link copied to clipboard!");
   };
 
   const handleAddPost = (newPost) => {
@@ -347,17 +350,18 @@ fetchPosts()
       <div
         key={comment._id}
         className={`flex space-x-3 ${isReply ? "ml-10" : ""}`}
-      >
+      >      <Link href={`/profile/${comment.user?._id}`}> 
         <img
           src={comment.user?.profilepic?.url || "/placeholder.svg"}
           alt={comment.user?.fullname}
           className="w-8 h-8 rounded-full object-cover mt-1"
-        />
+        /> </Link>
         <div className="flex-1">
           <div className="bg-white p-3 rounded-lg shadow-sm">
             <h5 className="font-semibold text-sm">{comment.user?.fullname}</h5>
             <p className="text-gray-800 text-sm mt-1"><span className="font-semibold">{isReply?'@'+ comment.replyTo.fullname:''} </span> {comment.content}</p>
           </div>
+         
           <div className="flex items-center mt-1 text-xs text-gray-500 space-x-3">
             <span>{timeAgo(comment.createdAt)}</span>
             <button
@@ -412,13 +416,13 @@ fetchPosts()
   <meta property="og:url" content={`${siteUrl}/wall`} />
   <meta property="og:title" content="Community Wall | Connect with Local Villages" />
   <meta property="og:description" content="An open space to voice, post, and interact for village growth." />
-  <meta property="og:image" content={`${siteUrl}/wall.jpg`} />
+  <meta property="og:image" content={`${siteUrl}/eid.avif`} />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:url" content={`${siteUrl}/wall`} />
   <meta name="twitter:title" content="Farmer & Village Wall | Share & Connect" />
   <meta name="twitter:description" content="Share your experiences with other farmers and villagers." />
-  <meta name="twitter:image" content={`${siteUrl}/wall.jpg`} />
+  <meta name="twitter:image" content={`${siteUrl}/eid.avif`} />
 
   <link rel="canonical" href={`${siteUrl}/wall`} />
   <link rel="icon" href={`${siteUrl}/favicon.ico`} />
@@ -426,7 +430,7 @@ fetchPosts()
 
       <CreatePostCard onAddPost={handleAddPost} userData={userData} />
 
-      {posts.reverse().map((post) => (
+      {posts.map((post) => (
         <motion.div
           key={post._id}
           initial={{ opacity: 0, y: 20 }}
@@ -436,7 +440,8 @@ fetchPosts()
         >
           {/* Post Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-100">
-            <div className="flex items-center space-x-3">
+           
+             <Link href={`/profile/${post?.user?._id}`}> <div className="flex items-center space-x-3">
               <img
                 src={post?.user?.profilepic?.url || "/placeholder.svg"}
                 alt={post?.user?.fullname}
@@ -448,13 +453,12 @@ fetchPosts()
                 </h4>
                 <div className="flex items-center text-xs text-gray-500">
                   <span>{post.user.village || "India"}</span>
-                  <span className="mx-1">•</span>
-                  <span>{timeAgo(post.dateOfCreation)}</span>
-                  <span className="mx-1">•</span>
-                  <span>{post.views || 0} views</span>
                 </div>
               </div>
             </div>
+           
+         
+          </Link>
             <div className="relative">
               <button
                 onClick={() => toggleOptions(post._id)}
@@ -493,7 +497,10 @@ fetchPosts()
                 ))}
               </div>
             )}
-          </div>
+          </div> 
+            <div className="w-auto flex items-center pl-4">
+                  <span className="text-gray-400">{timeAgo(post.dateOfCreation)}</span>
+            </div>
 
           {/* Post Stats */}
           <div className="px-4 py-2 flex items-center justify-between text-sm text-gray-500 border-t border-gray-100">
@@ -502,18 +509,23 @@ fetchPosts()
                 <span className="bg-emerald-100 p-1 rounded-full mr-1">
                   <FaHeart className="text-emerald-500" size={10} />
                 </span>
-                {post.likes?.length || 0}
+                {post?.likes?.length || 0}
               </span>
             </div>
             <div className="flex items-center space-x-3">
-              <span>{post.comments?.length || 0} comments</span>
+               <FiMessageSquare className="mr-1" />
+              <span>{post?.comments?.length || 0}</span>
+            </div>
+            <div className="fle hidden items-center space-x-3">
+               <FaRegEye className="mr-1" />
+              <span>{post?.views || 0}</span>
             </div>
           </div>
 
           {/* Post Actions */}
           <div className="flex border-t border-gray-200">
             <button
-              onClick={() => toggleLike(post._id)}
+              onClick={() => user ? toggleLike(post._id) : ''}
               className={`flex-1 py-2 cursor-pointer flex items-center justify-center space-x-2 ${
                 post.likes?.includes(userId)
                   ? "text-emerald-600"
@@ -528,7 +540,7 @@ fetchPosts()
               <span>Like</span>
             </button>
             <button
-              onClick={() => toggleComments(post._id)}
+              onClick={() => user? toggleComments(post._id):''}
               className="flex-1 py-2 flex cursor-pointer items-center justify-center space-x-2 text-gray-500 hover:text-emerald-600"
             >
               <FiMessageSquare className="mr-1" />

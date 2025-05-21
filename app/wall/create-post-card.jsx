@@ -136,24 +136,24 @@ const CreatePostCard = ({ onAddPost, userData }) => {
             animate={{ opacity: 1, height: "auto" }}
             transition={{ duration: 0.2 }}
           >
-            <div className="mt-4 flex flex-wrap gap-2">
+     {/*        <div className="mt-4 flex flex-wrap gap-2">
               <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-sm flex items-center">
                 <FiMapPin className="mr-1" />
                 {userData.village}
               </div>
-            </div>
+            </div> */}
 
             <div className="mt-4 flex justify-between items-center">
-              <div className="flex space-x-2">
-                <button type="button" className="p-2 text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-full">
+             <div className="flex space-x-2">
+               {/*    <button type="button" className="p-2 text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-full">
                   <FiImage />
                 </button>
-                <button type="button" className="p-2 text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-full">
+               <button type="button" className="p-2 text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-full">
                   <FiVideo />
                 </button>
                 <button type="button" className="p-2 text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-full">
                   <FiSmile />
-                </button>
+                </button> */}
               </div>
 
               <div className="flex space-x-2">
@@ -190,7 +190,7 @@ const CreatePostCard = ({ onAddPost, userData }) => {
         )}
       </div>
 
-      {!isExpanded && (
+   {/*    {!isExpanded && (
         <div className="border-t border-gray-200 px-4 py-2">
           <div className="flex justify-around">
             <button type="button" className="flex-1 py-1 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-md">
@@ -207,7 +207,7 @@ const CreatePostCard = ({ onAddPost, userData }) => {
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </motion.div>
   )
 }

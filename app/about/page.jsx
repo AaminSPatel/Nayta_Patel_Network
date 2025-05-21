@@ -140,12 +140,49 @@ export default function AboutPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold mb-2">About Apna Gaon Network</h1>
-        <p className="text-gray-600 mb-8">
-          Learn about our mission, vision, and the team behind Apna Gaon
-          Network.
-        </p>
-
+  <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }}
+          className="text-center mb-12"
+        >
+          <motion.h2 
+            variants={{ hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }}}
+            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+          >
+          नायता पटेल नेटवर्क के बारे
+          </motion.h2>
+          <motion.p 
+            variants={{
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  }}
+            className="text-lg text-gray-700"
+          >
+          नायता पटेल नेटवर्क की प्रेरणादायक यात्रा, हमारे सपने और समर्पित टीम के बारे में जानें। गाँवों को डिजिटल युग से जोड़ने का हमारा मिशन
+    </motion.p>
+        </motion.div>
         {/* Mission and Vision */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           <div className="bg-white rounded-lg shadow-md p-8">
@@ -373,8 +410,7 @@ export default function AboutPage() {
             <div className="mb-6 md:mb-0 md:mr-6">
               <h3 className="text-2xl font-bold mb-2">Join Our Mission</h3>
               <p className="text-gray-600">
-                Be part of our growing community and help us build a stronger,
-                more connected rural network.
+                हमारे बढ़ते परिवार का हिस्सा बनें! आपके सहयोग से हम नायता पटेल समाज को और मजबूत व आपस में जुड़ा हुआ बना सकते हैं।
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">

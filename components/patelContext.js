@@ -21,9 +21,9 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null); // Store token in state
-const path = process.env.NEXT_PUBLIC_API_URL;
-//  const path = 'http://localhost:5000';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const path = process.env.NEXT_PUBLIC_API_URL;
+//const path = 'http://localhost:5000';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteBrand = "Nayta Patel Network";
   const siteLogo = "/cow1.avif";
 

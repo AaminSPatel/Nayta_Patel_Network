@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
+import { Autoplay, EffectCoverflow, Pagination  } from "swiper/modules";
 import {
   FaHeart,
   FaArrowRight,
@@ -14,16 +14,16 @@ import {
   FaFacebook,
   FaWhatsapp,
 } from "react-icons/fa";
-
 import "swiper/css";
 import "swiper/css/pagination";
-import AmbassadorPortal from "../components/AmbassadorPortal.jsx";
-import HeroEventTicker from "../components/events.jsx";
 import Head from "next/head";
 import { usePatel } from "../components/patelContext.js";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
 
 // Sample data
-
+ 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const { blogs, formatDate, user, stories, posts, siteUrl,prices} =
@@ -77,6 +77,26 @@ console.log('price nhi he' , prices[0]?.prices?.grain);
 }, [prices])
   if (!mounted) return null;
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  }
   return (
     <div className="flex flex-col max-w-[96vw]">
       <Head>
@@ -182,18 +202,35 @@ console.log('price nhi he' , prices[0]?.prices?.grain);
           </motion.div>
         </div>
         <div className="sm:block hidden">
-          <HeroEventTicker/>
         </div>
         
       </section>
      
-      {/* Top Posts Carousel */}
-      <section className="py-6 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">
-            Community Posts
-          </h2>
+     <PriceSection priceData={priceData}/>
 
+      {/* Top Posts Carousel */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+         
+<motion.div
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="text-center mb-12"
+        >
+          <motion.h2 
+            variants={itemVariants}
+            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+          >
+           समुदाय की आवाज़
+          </motion.h2>
+          <motion.p 
+            variants={itemVariants}
+            className="text-lg text-gray-700"
+          >
+यहाँ आपकी आवाज़ सुनी जाती है! हमारे सदस्यों द्वारा लिखे गए विचार, सफलता की कहानियाँ और गाँव की प्रगति के समाचार देखें। अपनी राय साझा करें और समुदाय का हिस्सा बनें – क्योंकि साथ मिलकर हम अधिक मजबूत हैं!
+    </motion.p>
+        </motion.div>
           <Swiper
             modules={[Autoplay, Pagination]}
             spaceBetween={20}
@@ -228,7 +265,7 @@ console.log('price nhi he' , prices[0]?.prices?.grain);
                         <p className="text-sm text-gray-500">{post?.village}</p>
                       </div>
                     </div>
-                    <p className="mb-4 text-gray-700  line-clamp-4">
+                    <p className="mb-4 text-gray-700  line-clamp-3">
                       {post.content}
                     </p>
                     <div className="flex items-center text-gray-500">
@@ -240,55 +277,41 @@ console.log('price nhi he' , prices[0]?.prices?.grain);
               ))}
           </Swiper>
         </div>
-      </section>
-
-
-      {/* Upcoming Events */}
-      {/* <section className="py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">What's Happening in Our Gaon?</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {upcomingEvents.map((event, index) => (
-              <motion.div
-                key={event.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
-              >
-                <div className="relative h-48">
-                  <Image src={event.image || "/placeholder.svg"} alt={event.name} fill className="object-cover" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{event.name}</h3>
-                  <p className="text-sm text-gray-600 mb-2">
-                    <FaCalendarAlt className="inline mr-2" />
-                    {event.date}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <FaMapMarkerAlt className="inline mr-2" />
-                    {event.location}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+          <div className="text-center mt-10">
+            <Link
+              href="/wall"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
+            >
+              View All Posts
+              <FaArrowRight className="ml-2" />
+            </Link>
           </div>
-        </div>
       </section>
- */}
+
+
       {/* Featured Blogs Section */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-16  bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Blogs for Our Community
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Discover the latest news, stories, and updates from our community
-            </p>
-          </div>
+         
+          <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="text-center mb-12"
+        >
+          <motion.h2 
+            variants={itemVariants}
+            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+          >
+           हमारे समुदाय के लिए ब्लॉग
+          </motion.h2>
+          <motion.p 
+            variants={itemVariants}
+            className="text-lg text-gray-700"
+          >
+ज्ञान का खजाना: जानिए आपके गाँव और समाज की ताज़ा खबरें, प्रेरक कहानियाँ और उपयोगी जानकारी!
+</motion.p>
+        </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogs.slice(0, 3).map((blog, index) => (
@@ -407,17 +430,29 @@ console.log('price nhi he' , prices[0]?.prices?.grain);
           </div>
         </div>
       </section>
+
       {/* Success Stories */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="mb-5 flex flex-col gap-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-center ">
-              Stories From Our Nayata Patel Community
-            </h2>
-            <p className="text-gray-600 text-center  max-w-2xl mx-auto">
-              Discover the latest stories from our community
-            </p>
-          </div>
+        
+          <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="text-center mb-12"
+        >
+          <motion.h2 
+            variants={itemVariants}
+            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+          >
+            सफलता की प्रेरक कहानियाँ
+          </motion.h2>
+          <motion.p 
+            variants={itemVariants}
+            className="text-lg text-gray-700"
+          >
+हमारे नायता पटेल समाज के सदस्यों के जीवन में आए वास्तविक बदलाव और प्रगति की गाथाएँ। ये कहानियाँ न सिर्फ प्रेरणा देती हैं, बल्कि सामूहिक प्रयासों से गाँवों में आए ऐतिहासिक परिवर्तन की मिसाल भी पेश करती हैं।          </motion.p>
+        </motion.div>
           <div className="flex flex-wrap gap-8 justify-center">
             {stories.slice(0, 3).map((story, index) => (
               <motion.div
@@ -460,16 +495,7 @@ console.log('price nhi he' , prices[0]?.prices?.grain);
           </Link>
         </div>
       </section>
-  {/* <section className="py-8 px-4 sm:px-6 lg:px-8">
-  <div className="mx-auto max-w-7xl">
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 md:gap-7 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-      {priceData.map((item, index) => (
-        <PriceCard key={`${item.name}-${index}`} item={item} />
-      ))}
-    </div>
-  </div>
-</section> */}
-<PriceSection priceData={priceData}/>
+  
       
     </div>
   );
@@ -478,15 +504,16 @@ console.log('price nhi he' , prices[0]?.prices?.grain);
 /* import { motion } from "framer-motion";
 import Link from "next/link";
  */
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
+      delayChildren: 0.2,
+    },
+  },
 };
 
 const itemVariants = {
@@ -496,47 +523,73 @@ const itemVariants = {
     opacity: 1,
     transition: {
       duration: 0.5,
-      ease: "easeOut"
-    }
-  }
+      ease: "easeOut",
+    },
+  },
 };
 
-const PriceSection = (priceData) => {
+const PriceSection = ({ priceData }) => {
   return (
     <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="mx-auto max-w-7xl">
         {/* Heading and Description */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
-            Current Market Prices
-          </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Get real-time updates on agricultural commodity prices in your region. 
-            Our data is updated daily to help you make informed decisions.
-          </p>
+          <motion.h2
+            variants={itemVariants}
+            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+          >
+            आज के मंडी भाव
+          </motion.h2>
+          <motion.p variants={itemVariants} className="text-lg text-gray-700">
+            संपूर्ण मंडी भाव: पूरे भारत की कृषि मंडियों के लाइव भाव, एक क्लिक में!
+          </motion.p>
         </motion.div>
 
-        {/* Price Cards Grid */}
+        {/* Swiper Coverflow Price Cards */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="columns-1 gap-6 sm:columns-2 lg:columns-3 xl:columns-3 [&>div:not(:first-child)]:mt-6"
+          className="mb-12"
         >
-          {priceData.priceData.map((item, index) => (
-            <motion.div 
-              key={`${item.name}-${index}`} 
-              variants={itemVariants}
-              className="break-inside-avoid mb-6"
-            >
-              <PriceCard item={item} />
-            </motion.div>
-          ))}
+          <Swiper
+            effect={"coverflow"}
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView={2} // Default for mobile
+            breakpoints={{
+              // When window width is >= 768px
+              768: {
+                slidesPerView: 3,
+              }
+            }}
+            coverflowEffect={{
+              rotate: 30, // Less rotation for better mobile view
+              stretch: 0,
+              depth: 100,
+              modifier: 1,
+              slideShadows: false,
+            }}
+            pagination={{
+              clickable: true,
+              dynamicBullets: true
+            }}
+            modules={[EffectCoverflow, Pagination]}
+            className="w-full"
+          >
+            {priceData.map((item, index) => (
+              <SwiperSlide key={index} className="flex justify-center">
+                <motion.div variants={itemVariants} className="mb-14">
+                  <PriceCard item={item} />
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </motion.div>
 
         {/* View More Button */}
@@ -544,7 +597,7 @@ const PriceSection = (priceData) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-center mt-12"
+          className="text-center"
         >
           <Link href="/prices" passHref>
             <motion.a
@@ -561,9 +614,6 @@ const PriceSection = (priceData) => {
   );
 };
 
-
-
-// Price Card Component
 const PriceCard = ({ item }) => {
   const priceChange =
     item.currentPrice && item.previousPrice
@@ -599,7 +649,7 @@ const PriceCard = ({ item }) => {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
+    <div className="bg-white w-64 h-32 py-6 border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-2xl">{getProductIcon(item.name)}</span>
         <h3 className="text-md font-semibold border-b-emerald-400 border-b pb-2 flex-1">
@@ -634,3 +684,4 @@ const PriceCard = ({ item }) => {
     </div>
   );
 };
+

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePatel } from "../../components/patelContext";
 import { FaMosque, FaSchool } from "react-icons/fa";
 import Head from "next/head"
-
+import {motion} from 'framer-motion'
 /* const villages = [
   {
     id: 1,
@@ -45,10 +45,54 @@ useEffect(()=>{
     );
   };
 
+  
+
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-semibold text-gray-800 mb-6">Village Directory</h1>
-<Head>
+      <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }}
+          className="text-center mb-12"
+        >
+          <motion.h2 
+            variants={{ hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }}}
+            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+          >
+            हमारे गाँवों की गौरवशाली विरासत
+          </motion.h2>
+          <motion.p 
+            variants={{
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  }}
+            className="text-lg text-gray-700"
+          >
+नायता पटेल समाज से जुड़े गाँवों की अनूठी पहचान, संस्कृति और प्रगति की कहानी यहाँ देखें। हर गाँव के विशेष तथ्य, समाज के योगदान और सामुदायिक उपलब्धियों को जानें। साथ मिलकर हम लिख रहे हैं ग्रामीण विकास की नई इबारत!
+    </motion.p>
+        </motion.div>
+     <Head>
   <title>Village Directory | 250+ MP Villages Farming & Nayta Patel Info</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />

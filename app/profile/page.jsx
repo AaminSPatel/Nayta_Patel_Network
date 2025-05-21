@@ -16,11 +16,15 @@ import Head from "next/head";
 const ProfileDashboard = () => {
   const [activeTab, setActiveTab] = useState("profile")
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-const {user,siteUrl} = usePatel()
+const {user,siteUrl,villages} = usePatel()
+  const [loading, setLoading] = useState(true)
+const [villageData,setVillageData] = useState({});
+
 const [userData,setUserData] = useState({
     _id:'',
     fullName: "John Doe",
     email: "",
+    visibilityStatus: null,
     role: "",
     mobile: "",
     village: "",
@@ -37,26 +41,34 @@ useEffect(()=>{
     email     : user.email      ,
     mobile    : user.mobile     ,
     village   : user.village    ,
-    createdAt   : user.createdAt    ,
-    role   : user.role    ,
+    createdAt : user.createdAt    ,
+    visibilityStatus : user.visibilityStatus    ,
+    role      : user.role    ,
     profilePic: user.profilepic?.url ,
     posts     : user.posts.length      ,
     comments  : user.comments.length   ,
     likes     : user.likes.length      ,
   })
+    setLoading(false)
     }
 },[user])
 
+useEffect(()=>{
+  if(villages && user){
+    const filterVillage = villages.filter((item)=> item.name === user.village)
+    setVillageData(filterVillage[0])
+  }
 
+},[villages, user])
   // Mock village data
-  const villageData = {
+  /* const villageData = {
     name: "Green Valley",
     population: 5240,
     established: 1967,
     location: "Northern Region",
     mainCrops: ["Wheat", "Corn", "Barley"],
     climate: "Temperate",
-  }
+  } */
  const handleEditProfile = () => {
     setIsEditModalOpen(true)
   }
@@ -78,6 +90,83 @@ useEffect(()=>{
     likes     : newuser.likes.length      ,
     })
 
+  }
+    if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+      </div>
+    )
+  }
+  if(!user){
+    return(<div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-emerald-50 to-white p-6 text-center">
+      <div className="max-w-md mx-auto">
+        {/* Animated Icon */}
+        <div className="mb-8 flex justify-center">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="animate-ping h-24 w-24 rounded-full bg-emerald-100 opacity-75"></div>
+            </div>
+            <div className="relative flex items-center justify-center h-20 w-20 rounded-full bg-white border-2 border-emerald-500 shadow-lg">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-10 w-10 text-emerald-600" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Hindi Content */}
+        <h1 className="text-2xl md:text-3xl font-bold text-emerald-800 mb-4">
+          कृपया अपनी जानकारी देखने के लिए लॉग इन करें
+        </h1>
+        
+        <p className="text-gray-600 mb-6 leading-relaxed">
+          इस पेज तक पहुँचने के लिए आपको अपना खाता बनाना होगा। हमारे समुदाय का हिस्सा बनें और विशेष सुविधाओं का लाभ उठाएं।
+        </p>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <Link href="/login">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg shadow-md hover:bg-emerald-700 transition-colors font-medium"
+            >
+              लॉग इन करें
+            </motion.button>
+          </Link>
+          
+          <Link href="/signup">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full sm:w-auto px-6 py-3 border border-emerald-600 text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors font-medium"
+            >
+              नया खाता बनाएं
+            </motion.button>
+          </Link>
+        </div>
+
+        {/* Additional Help */}
+        <p className="mt-8 text-sm text-gray-500">
+          क्या आपको मदद चाहिए?{' '}
+          <Link href="/contact" className="text-emerald-600 hover:underline">
+            हमसे संपर्क करें
+          </Link>
+        </p>
+      </div>
+    </div>)
   }
   return (
    <div className="container mx-auto px-4 py-8">
@@ -143,7 +232,7 @@ useEffect(()=>{
             Profile
           </button>
           
-          <button
+        {/*   <button
             onClick={() => setActiveTab("activity")}
             className={`flex items-center px-6 py-4 text-sm font-medium ${
               activeTab === "activity"
@@ -153,7 +242,7 @@ useEffect(()=>{
           >
             <FiMessageSquare className="mr-2" />
             Activity
-          </button>
+          </button> */}
           <button
             onClick={() => setActiveTab("village")}
             className={`flex items-center px-6 py-4 text-sm font-medium ${
@@ -176,7 +265,7 @@ useEffect(()=>{
             <FiSettings className="mr-2" />
             Settings
           </button>
-           {userData.role ==='ambassador' || userData.role ==='admin' && <button
+           {(userData.role ==='ambassador' || userData.role ==='admin') && <button
             onClick={() => setActiveTab("ambassador")}
             className={`flex items-center px-6 py-4 text-sm font-medium ${
               activeTab === "ambassador"
@@ -270,10 +359,10 @@ useEffect(()=>{
             </motion.div>
           )}
 
-          {activeTab === "activity" && <ActivitySection userData={userData} />}
+       {/*    {activeTab === "activity" && <ActivitySection userData={userData} />} */}
           {activeTab === "village" && <VillageDetails villageData={villageData} />}
-          {activeTab === "settings" && <SettingsSection />}
-  {activeTab === "ambassador" && userData?.role ==='ambassador' || userData?.role ==='admin'  && (
+          {activeTab === "settings" && <SettingsSection privacyStatus={userData?.visibilityStatus}/>}
+  {activeTab === "ambassador" && (userData?.role ==='ambassador' ||userData ?.role ==='admin')  && (
     <AmbassadorPortal user={userData}/>
   )}
         </div>

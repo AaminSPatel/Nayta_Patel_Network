@@ -1,7 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { FaCrown } from "react-icons/fa"
 import { FiMapPin, FiUsers, FiCalendar, FiMap, FiSun } from "react-icons/fi"
+import { GiCrown, GiKing, GiPerson } from "react-icons/gi"
 
 const VillageDetails = ({ villageData }) => {
   return (
@@ -17,7 +19,7 @@ const VillageDetails = ({ villageData }) => {
         </div>
         <div>
           <h2 className="text-xl font-bold">{villageData.name}</h2>
-          <p className="text-gray-600">{villageData.location}</p>
+          <p className="text-gray-600">{villageData?.dist}</p>
         </div>
       </div>
 
@@ -43,20 +45,27 @@ const VillageDetails = ({ villageData }) => {
               <FiMap className="text-emerald-500 mr-3" />
               <div>
                 <p className="text-sm text-gray-500">Location</p>
-                <p className="font-medium">{villageData.location}</p>
+                <p className="font-medium">{villageData.name}</p>
               </div>
             </div>
             <div className="flex items-center">
-              <FiSun className="text-emerald-500 mr-3" />
+              <GiKing className="text-emerald-500 mr-3" />
               <div>
-                <p className="text-sm text-gray-500">Climate</p>
-                <p className="font-medium">{villageData.climate}</p>
+                <p className="text-sm text-gray-500">Sarpanch</p>
+                <p className="font-medium">{villageData?.headOfVillage ||'-'}</p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <FaCrown className="text-emerald-500 mr-3" />
+              <div>
+                <p className="text-sm text-gray-500">Ambessador</p>
+                <p className="font-medium">{villageData?.ambassador?.fullname ||'-'}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-5">
+        {/* <div className="bg-white border border-gray-200 rounded-lg p-5">
           <h3 className="text-lg font-semibold mb-4">Agricultural Information</h3>
           <div className="mb-4">
             <p className="text-sm text-gray-500 mb-2">Main Crops</p>
@@ -124,7 +133,7 @@ const VillageDetails = ({ villageData }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-5">

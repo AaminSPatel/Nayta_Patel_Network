@@ -7,16 +7,16 @@ import { usePatel } from "../../components/patelContext"
 import Head from "next/head"
 
 export default function ContactPage() {
-  const {siteUrl}= usePatel()
+  const {siteUrl,path}= usePatel()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
-    subject: "",
+    mobile: "",
     message: "",
   })
   const [formStatus, setFormStatus] = useState(null)
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -24,7 +24,41 @@ export default function ContactPage() {
       [name]: value,
     }))
   }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+  
+    try {
+      // Create FormData object
+     /*  const formDataToSend = new FormData();
+      // Append all fields including the image file
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('email',formData.email);
+      formDataToSend.append('mobile', formData.mobile);
+      formDataToSend.append('message', formData.message);
+console.log(formDataToSend); */
 
+      const response = await fetch(path + '/api/contacts', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        } ,
+        body: JSON.stringify(formData),
+      });
+       if (response.status === 201) {
+        console.log(response);
+        
+      } 
+    } catch (err) {
+      console.error('Error creating event:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to create event');
+    } finally {
+      setLoading(false);
+      setFormStatus("success")
+    }
+  };
+/* 
   const handleSubmit = (e) => {
     e.preventDefault()
     // In a real app, this would send the form data to an API
@@ -42,7 +76,7 @@ export default function ContactPage() {
       })
       setFormStatus(null)
     }, 3000)
-  }
+  } */
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -81,11 +115,50 @@ export default function ContactPage() {
 </Head>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <h1 className="text-3xl font-bold mb-2">Contact Us</h1>
-        <p className="text-gray-600 mb-8">
-          Have questions or feedback? We'd love to hear from you. Reach out to our team using any of the methods below.
-        </p>
-
+     
+  <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }}
+          className="text-center mb-12"
+        >
+          <motion.h2 
+            variants={{ hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }}}
+            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+          >
+           संपर्क करें
+          </motion.h2>
+          <motion.p 
+            variants={{
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  }}
+            className="text-lg text-gray-700"
+          >
+         क्या आपके कोई सवाल या सुझाव हैं? हम आपकी आवाज सुनना चाहते हैं! नीचे दिए गए किसी भी तरीके से हमारी टीम से संपर्क करें।
+    </motion.p>
+        </motion.div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           {/* Contact Information */}
           <div className="lg:col-span-1">
@@ -194,7 +267,7 @@ export default function ContactPage() {
 
     {formStatus === "success" && (
       <div className="bg-green-100 border-l-4 border-green-400 text-green-700 px-6 py-4 rounded-md mb-6">
-        <p>Thank you for your message! We'll get back to you soon.</p>
+        <p>आपका संदेश मिल गया है! हम जल्द ही आपसे संपर्क करेंगे। हमारी टीम आपकी हर जरूरत का ध्यान रखेगी।</p>
       </div>
     )}
 
@@ -232,32 +305,19 @@ export default function ContactPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 mb-2">
             Phone Number
           </label>
           <input
             type="tel"
-            id="phone"
-            name="phone"
-            value={formData.phone}
+            id="mobile"
+            name="mobile"
+            value={formData.mobile}
             onChange={handleChange}
             className="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 p-4 transition-all duration-200 ease-in-out"
           />
         </div>
-        <div>
-          <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-            Subject *
-          </label>
-          <input
-            type="text"
-            id="subject"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-            required
-            className="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 p-4 transition-all duration-200 ease-in-out"
-          />
-        </div>
+        
       </div>
 
       <div className="mb-6">

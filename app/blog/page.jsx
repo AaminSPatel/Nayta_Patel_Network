@@ -120,11 +120,49 @@ export default function BlogPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl font-bold mb-2">Knowledge Hub</h1>
-          <p className="text-gray-600 mb-8">
-            Explore our collection of articles, guides, and insights on
-            agriculture, technology, and rural development.
-          </p>
+         
+<motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }}
+          className="text-center mb-12"
+        >
+          <motion.h2 
+            variants={{ hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }}}
+            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+          >
+          ज्ञान का खजाना
+          </motion.h2>
+          <motion.p 
+            variants={{
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  }}
+            className="text-lg text-gray-700"
+          >
+ज्ञान का खजाना: कृषि, तकनीक और ग्रामीण विकास पर नवीनतम लेख, मार्गदर्शिकाएँ और विशेष जानकारियाँ एक ही स्थान पर! </motion.p>
+        </motion.div>
 
           {/* Filters */}
           <div className="bg-white rounded-lg shadow-lg p-6 mb-10">

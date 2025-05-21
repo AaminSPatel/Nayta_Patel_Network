@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { FiBell, FiLock, FiEye, FiToggleLeft, FiToggleRight } from "react-icons/fi"
 import { usePatel } from "../../components/patelContext"
 
-const SettingsSection = () => {
+const SettingsSection = (privacyStatus) => {
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
     smsNotifications: false,
@@ -14,12 +14,7 @@ const SettingsSection = () => {
     mentions: true,
   })
 
-  const [privacy, setPrivacy] = useState({
-    profileVisibility: "public",
-    showEmail: false,
-    showPhone: false,
-    showVillage: true,
-  })
+  const [privacy, setPrivacy] = useState(privacyStatus.privacyStatus)
 
   const toggleSetting = (section, setting) => {
     if (section === "notifications") {
@@ -34,13 +29,48 @@ const SettingsSection = () => {
       }))
     }
   }
-
+  useEffect(()=>{
+    console.log('visibilityStatus',privacy);
+    
+  },[privacy])
+const {path} = usePatel()
   const handleProfileVisibilityChange = (e) => {
     setPrivacy((prev) => ({
       ...prev,
       profileVisibility: e.target.value,
     }))
   }
+  const handleProfileVisibilityUpdate = async (e) => {
+  e.preventDefault();
+  try {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
+    const response = await fetch(`${path}/api/users/updateVisibility`, {
+      method: "PUT", // Changed to match backend
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ visibilityStatus: privacy }), // Make sure 'privacy' is defined
+    });
+
+    const data = await response.json(); // Parse response
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to update visibility");
+    }
+
+    console.log("Visibility updated successfully:", data);
+    // Optionally update local state or show success message
+  } catch (err) {
+    console.error("Error updating visibility:", err.message);
+    // Show error to user (e.g., using toast or alert)
+  }
+};
 const {logOut}= usePatel()
 
   return (
@@ -52,115 +82,22 @@ const {logOut}= usePatel()
     >
       <div>
         <h3 className="text-lg font-semibold mb-4 flex items-center">
-          <FiBell className="mr-2 text-emerald-500" /> Notification Settings
-        </h3>
-        <div className="space-y-4 bg-white border border-gray-200 rounded-lg p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium">Email Notifications</h4>
-              <p className="text-sm text-gray-500">Receive notifications via email</p>
-            </div>
-            <button
-              onClick={() => toggleSetting("notifications", "emailNotifications")}
-              className="text-2xl text-emerald-600"
-            >
-              {notifications.emailNotifications ? <FiToggleRight /> : <FiToggleLeft />}
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium">SMS Notifications</h4>
-              <p className="text-sm text-gray-500">Receive notifications via SMS</p>
-            </div>
-            <button
-              onClick={() => toggleSetting("notifications", "smsNotifications")}
-              className="text-2xl text-emerald-600"
-            >
-              {notifications.smsNotifications ? <FiToggleRight /> : <FiToggleLeft />}
-            </button>
-          </div>
-
-          <div className="pt-4 border-t border-gray-200">
-            <h4 className="font-medium mb-3">Notify me about:</h4>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p>New posts in my village</p>
-                <button
-                  onClick={() => toggleSetting("notifications", "newPosts")}
-                  className="text-2xl text-emerald-600"
-                >
-                  {notifications.newPosts ? <FiToggleRight /> : <FiToggleLeft />}
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <p>Comments on my posts</p>
-                <button
-                  onClick={() => toggleSetting("notifications", "newComments")}
-                  className="text-2xl text-emerald-600"
-                >
-                  {notifications.newComments ? <FiToggleRight /> : <FiToggleLeft />}
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <p>Mentions and tags</p>
-                <button
-                  onClick={() => toggleSetting("notifications", "mentions")}
-                  className="text-2xl text-emerald-600"
-                >
-                  {notifications.mentions ? <FiToggleRight /> : <FiToggleLeft />}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-semibold mb-4 flex items-center">
           <FiEye className="mr-2 text-emerald-500" /> Privacy Settings
         </h3>
         <div className="space-y-4 bg-white border border-gray-200 rounded-lg p-5">
           <div>
             <h4 className="font-medium mb-2">Profile Visibility</h4>
             <select
-              value={privacy.profileVisibility}
-              onChange={handleProfileVisibilityChange}
+              value={privacy}
+              onChange={(e)=>{setPrivacy(e.target.value)}}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
             >
-              <option value="public">Public - Anyone can view</option>
-              <option value="village">Village Only - Only people from your village</option>
-              <option value="private">Private - Only you</option>
+              <option value={false}>Private - Only you</option>
+{/*               <option value="village">Village Only - Only people from your village</option>
+ */}              <option value={true}>Public - Anyone can view</option>
             </select>
           </div>
-
-          <div className="pt-4 border-t border-gray-200">
-            <h4 className="font-medium mb-3">Information Visibility:</h4>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p>Show email to others</p>
-                <button onClick={() => toggleSetting("privacy", "showEmail")} className="text-2xl text-emerald-600">
-                  {privacy.showEmail ? <FiToggleRight /> : <FiToggleLeft />}
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <p>Show phone number to others</p>
-                <button onClick={() => toggleSetting("privacy", "showPhone")} className="text-2xl text-emerald-600">
-                  {privacy.showPhone ? <FiToggleRight /> : <FiToggleLeft />}
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <p>Show village information</p>
-                <button onClick={() => toggleSetting("privacy", "showVillage")} className="text-2xl text-emerald-600">
-                  {privacy.showVillage ? <FiToggleRight /> : <FiToggleLeft />}
-                </button>
-              </div>
-            </div>
-          </div>
+          <button onClick={handleProfileVisibilityUpdate} className="px-4 py-1 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors">Save</button>
         </div>
       </div>
 
@@ -208,12 +145,12 @@ const {logOut}= usePatel()
               <button onClick={logOut} className="cursor-pointer w-full px-4 py-2 border border-orange-300 text-orange-500 rounded-md hover:bg-gray-50 transition-colors">
                Log Out
               </button>
-              <button className="cursor-pointer w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+              {/* <button className="cursor-pointer w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
                 Download My Data
               </button>
               <button className="cursor-pointer w-full px-4 py-2 border border-red-300 text-red-600 rounded-md hover:bg-red-50 transition-colors">
                 Deactivate Account
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

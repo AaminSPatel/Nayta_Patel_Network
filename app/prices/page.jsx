@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa"
 import { usePatel } from "../../components/patelContext"
 import Head from "next/head"
+import {motion} from "framer-motion"
 
 export default function MandiPricesPage() {
   const { prices,siteUrl } = usePatel()
@@ -148,10 +149,47 @@ export default function MandiPricesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Mandi Price Dashboard</h1>
-        <p className="text-gray-600">Comprehensive market prices from agricultural mandis across India</p>
-      </div>
+      <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }}
+          className="text-center mb-12"
+        >
+          <motion.h2 
+            variants={{ hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }}}
+            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+          >
+Mandi Price Dashboard          </motion.h2>
+          <motion.p 
+            variants={{
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  }}
+            className="text-lg text-gray-700"
+          >
+ताजा बाजार भाव: आपके क्षेत्र के कृषि उत्पादों के रीयल-टाइम अपडेट्स। हमारा डेटा रोजाना अपडेट होता है ताकि आप सही निर्णय ले सकें!   </motion.p>
+        </motion.div>
 <Head>
   <title>Daily Mandi Prices | Vegetables, Grains & Milk Rates in MP</title>
   <meta charset="UTF-8" />
