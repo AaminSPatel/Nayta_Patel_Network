@@ -71,10 +71,10 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.message || "Login failed");
-console.log('Data after login',data.user);
+console.log('Data after login');
 
       // Success case
-      setUser(data.user);
+      setUser(data.user[0]);
       setToken(data.token);
       localStorage.setItem("token", data.token);
       setIsSuccess(true);

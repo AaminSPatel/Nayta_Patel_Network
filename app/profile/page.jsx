@@ -5,13 +5,13 @@ import { motion } from "framer-motion"
 import { FiSettings, FiEdit2, FiUser, FiMapPin, FiMail, FiPhone, FiMessageSquare, FiFileText, FiStar } from "react-icons/fi"
 import { FaRegThumbsUp } from "react-icons/fa"
 import ProfileHeader from "./profile-header"
-import ActivitySection from "./activity-section.jsx"
 import SettingsSection from "./settings-section"
 import VillageDetails from "./village-details"
 import { usePatel } from "../../components/patelContext"
 import AmbassadorPortal from "../../components/AmbassadorPortal"
 import EditProfileModal from "./edit-profile-modal"
 import Head from "next/head";
+import Link from "next/link"
 
 const ProfileDashboard = () => {
   const [activeTab, setActiveTab] = useState("profile")
@@ -51,6 +51,9 @@ useEffect(()=>{
   })
     setLoading(false)
     }
+    else{
+      setLoading(false)
+    }
 },[user])
 
 useEffect(()=>{
@@ -83,7 +86,7 @@ useEffect(()=>{
     email     : newuser.email      ,
     mobile    : newuser.mobile     ,
     village   : newuser.village    ,
-    role   : newuser.role    ,
+    role      : newuser.role    ,
     profilePic: newuser.profilepic?.url ,
     posts     : newuser.posts.length      ,
     comments  : newuser.comments.length   ,
