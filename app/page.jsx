@@ -221,8 +221,27 @@ const containerVariants = {
         
       </section>
       
-     <section className="w-full h-full sm:hidden flex items-center justify-center py-18 p-12 flex-col">
-      <div className="w-76 sm:h-96 h-[530px]">
+     <section className="w-full h-full sm:hidden flex items-center justify-center py-12 p-12 flex-col">
+    
+    <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+              className="text-center mb-4"
+            >
+              <motion.h2 
+                variants={itemVariants}
+                className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+              >
+                आगामी कार्यक्रम
+              </motion.h2>
+              <motion.p 
+                variants={itemVariants}
+                className="text-lg text-gray-700"
+              >
+    सीखें, जुड़ें और एक साथ बढ़ें! कृषि प्रशिक्षण से लेकर समाज के कार्यक्रमों तक - हर किसी के लिए है खास आयोजन। </motion.p>
+            </motion.div>
+      <div className="w-76 sm:h-96 h-[430px] ">
           <EventCubeSlider />
           
         </div>
@@ -252,7 +271,7 @@ const containerVariants = {
             variants={itemVariants}
             className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
           >
-           समुदाय की आवाज़
+            समाज की आवाज़
           </motion.h2>
           <motion.p 
             variants={itemVariants}
@@ -333,7 +352,7 @@ const containerVariants = {
             variants={itemVariants}
             className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
           >
-           हमारे समुदाय के लिए ब्लॉग
+           हमारे समाज के लिए ब्लॉग
           </motion.h2>
           <motion.p 
             variants={itemVariants}

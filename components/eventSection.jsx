@@ -9,6 +9,28 @@ import 'swiper/css/effect-cube'
 import 'swiper/css/pagination'
 import { usePatel } from './patelContext'
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut",
+    },
+  },
+};
 const EventCubeSlider = () => {
   const [allEvents, setAllEvents] = useState([])
   const [loading, setLoading] = useState(true)
@@ -37,18 +59,9 @@ const EventCubeSlider = () => {
   }
 
   return (
-    <div className="relative max-w-xl mx-auto py-4 px-4">
-       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-8 sm:hidden text-center"
-      >
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">Upcoming Events</h2>
-        <p className="text-gray-600">Discover our latest community gatherings and programs</p>
-      </motion.div> 
-
-      <div className="relative sm:h-[350px] h-[380px]">
+    <div className="relative max-w-xl h-auto mx-auto py-4 px-4">
+  
+      <div className="relative sm:h-[350px] h-[400px] sm:mb-0 mb-12">
         <Swiper
           effect={'cube'}
           grabCursor={true}
