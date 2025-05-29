@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fa';
 //import './AmbassadorCard.css';
 
-const ResponsiveAmbassadorCard = ({ ambassador }) => {
+const ResponsiveAmbassadorCard = (ambassador) => {
   const cardRef = useRef(null);
   const [isLandscape, setIsLandscape] = useState(false);
   const [showSocialIcons, setShowSocialIcons] = useState(false);
@@ -42,17 +42,17 @@ const ResponsiveAmbassadorCard = ({ ambassador }) => {
   }, []);
 
   useEffect(() => {
-    if(user) {
+    
       setDefaultAmbassador({
-        name: user.fullname,
-        village: user.village,
-        image: user.profilepic.url,
+        name: ambassador.user.fullname,
+        village: ambassador.user.village,
+        image: ambassador.user.profilepic.url,
         role: 'Village Ambassador',
-        contact: user.email,
+        contact: ambassador.user.email,
         achievements: 'Organized community events, Environmental initiatives'
       });
-    }
-  }, [user]);
+    
+  }, []);
 
   // Merge with passed data
   const data = { ...defaultAmbassador, ...ambassador };
@@ -108,7 +108,7 @@ const ResponsiveAmbassadorCard = ({ ambassador }) => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
+    <div className="flex flex-col items-center  p-4">
       {/* Responsive Card Container */}
       <div 
         ref={cardRef}
@@ -119,9 +119,9 @@ const ResponsiveAmbassadorCard = ({ ambassador }) => {
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#10b981] opacity-10 rounded-tr-full"></div>
         
         {/* Card Content - changes layout based on orientation */}
-        <div className={`h-full flex ${isLandscape ? 'flex-row' : 'flex-col'} items-center`}>
+        <div className={`h-full flex ${isLandscape ? 'flex-row' : 'flex-col'} items-center w-full`}>
           {/* Profile Image Section */}
-          <div className={`${isLandscape ? 'w-1/3 h-full' : 'w-full h-1/3'} flex items-center justify-center p-4`}>
+          <div className={`${isLandscape ? 'w-1/3 h-full' : 'w-full mx-2 h-1/3'} flex items-center justify-center p-4`}>
             <div className={`${isLandscape ? 'w-32 h-32' : 'w-24 h-24'} rounded-full border-4 border-[#10b981] overflow-hidden shadow-md bg-white`}>
               <img 
                 className="w-full h-full object-cover" 

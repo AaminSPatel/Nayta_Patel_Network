@@ -19,6 +19,11 @@ import "swiper/css/pagination";
 import Head from "next/head";
 import { usePatel } from "../components/patelContext.js";
 import EventCubeSlider from "../components/eventSection.jsx";
+import ComplimentCardsSlider from "../components/cardSlider.jsx";
+import Poster from "../components/poster.jsx";
+import Posters from "../components/posters.jsx";
+import NayataPatelPosters from "../components/naytaPosters.jsx";
+import ComplimentCardsSlider2 from "../components/cardSlider2.jsx";
 import "swiper/css/effect-coverflow";
 
 
@@ -44,11 +49,9 @@ useEffect(()=>{
   if(prices){
     
       if(!prices || !prices[0]?.prices?.grain){
-console.log('price nhi he' , prices[0]?.prices?.grain);
 
       } 
       else{
-        console.log('prices he');
         
       const result = []
       const categoryData = prices[0].prices.grain
@@ -256,7 +259,7 @@ const containerVariants = {
           </div>
      </section>
      <PriceSection priceData={priceData}/>
-
+{/* <ComplimentCardsSlider2 /> */}
       {/* Top Posts Carousel */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">

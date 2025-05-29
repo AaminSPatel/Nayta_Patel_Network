@@ -68,7 +68,7 @@ export default function BlogDetail() {
   if (!blog) {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4 text-center">
-        <p>Blog post not found</p>
+        <p>Loading blog post...</p>
       </div>
     )
   }
@@ -88,7 +88,7 @@ export default function BlogDetail() {
         <meta property="og:url" content={shareUrl} />
         <meta property="og:title" content={blog.title} />
         <meta property="og:description" content={blog.content.substring(0, 160) + '...'} />
-        <meta property="og:image" content={blog.image?.url || '/default-social.jpg'} />
+        <meta property="og:image" content={blog.image.url || '/hom2.jpg'} />
         
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />

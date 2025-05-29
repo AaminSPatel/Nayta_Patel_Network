@@ -99,8 +99,9 @@ export default function SignupPage() {
         email: trimmedEmail,
         password: trimmedPassword
       });
+     // console.log(data.user,'new user data');
       
-      setUser(data.user);
+      setUser(data.user[0]);
       setToken(data.token);
            // document.cookie = `token=${data.token}; path=/`;
 
@@ -108,7 +109,7 @@ export default function SignupPage() {
        setIsSignUp(true)
       // Navigate to home after 2 seconds
       setTimeout(() => {
-        router.push('/')
+        router.push('/profile-update')
       }, 2000)
 
       console.log('Signup successful:');

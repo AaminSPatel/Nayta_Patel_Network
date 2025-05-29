@@ -118,7 +118,7 @@ export default function VillageTable() {
                 </span>
               </td>
               <td className="capitalize">{village.headOfVillage}</td>
-              <td className="capitalize">{village.ambassador}</td>
+              <td className="capitalize">{village?.ambassador?.fullname}</td>
               <td>
                 <span className="flex items-center justify-center gap-2 px-2 py-1 text-xs rounded-full">
                   <FaMosque size={16} className="text-green-400" />{" "}

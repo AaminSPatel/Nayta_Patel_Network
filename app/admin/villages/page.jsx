@@ -9,7 +9,8 @@ import { redirect } from 'next/navigation';
 import { usePatel } from "../../../components/patelContext"
 export default function VillagesPage() {
   const [showForm, setShowForm] = useState(false)
-const {user} = usePatel()
+const {user} = usePatel();
+
 useEffect(() => {
     const redirectTimer = setTimeout(() => {
       if (user?.role !== 'admin') {

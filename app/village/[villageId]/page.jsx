@@ -272,7 +272,9 @@ const {villages} = usePatel();
                         It has grown significantly over the years and has become a landmark location in the region.
                       </p>
                     </div>
-
+ {village?.ambassador && <div  className='flex items-center justify-center w-full'>
+ <CompactAmbassadorCard user = { village.ambassador }/>
+</div>}
                   </div>
                 )}
 
@@ -371,6 +373,7 @@ const {villages} = usePatel();
                 )}
               </motion.div>
             </AnimatePresence>
+              
           </div>
 
           {/* Right Column - Map and Quick Info */}
@@ -432,9 +435,7 @@ const {villages} = usePatel();
                 </div>
               </div>
               
-                    {userData &&<div>
- <CompactAmbassadorCard user = { userData }/>
-</div>}
+                 
               {/* Action Buttons */}
               <div className="flex space-x-3">
                 <button 

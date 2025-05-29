@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { FiUser, FiMapPin, FiPhone, FiArrowRight, FiCheck } from "react-icons/fi"
 import { useRouter } from "next/navigation"
+import { usePatel } from "../../components/patelContext"
 
 export default function ProfileSetup() {
   const router = useRouter()
@@ -14,6 +15,16 @@ export default function ProfileSetup() {
     mobile: "",
   })
   const [previewUrl, setPreviewUrl] = useState(null)
+
+  const {path,setUser , villages} = usePatel()
+  const [allVillages,setAllVillages] = useState([])
+  const [selectedVIllage,setSelectedVillage] = useState(null)
+  useEffect(()=>{
+    if(villages){
+      let villageByName = villages.map((village,i) =>village.name)
+      setAllVillages(villageByName);
+    }
+  },[villages]) 
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]
@@ -52,17 +63,55 @@ export default function ProfileSetup() {
     if (step < 3) {
       setStep(step + 1)
     } else {
-      finishSetup()
+      handleSubmit()
     }
   }
 
-  const finishSetup = () => {
-    // Here you would typically send the data to your backend
-    console.log("Profile setup complete with data:", profileData)
-    // Redirect to the dashboard
-    router.push("/")
-  }
+  useEffect(()=>{
+    if(profileData.village){
+      let findVillage = villages.find((item)=>item.name === profileData.village)
+      console.log(findVillage);
+      
+setSelectedVillage(findVillage)
+    }
+  },[profileData.village])
 
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log('profileData',profileData);
+    
+    const token = localStorage.getItem('token');
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('village', profileData.village);
+      formDataToSend.append('mobile', profileData.mobile);
+  
+      if (profileData.profilePic) {
+        formDataToSend.append('image', profileData.profilePic);
+      }
+  
+      const response = await fetch(path + '/api/users', {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // Don't set Content-Type manually for FormData
+        },
+        body: formDataToSend,
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to create update user Details');
+      }
+  
+      const result = await response.json();
+      console.log('updated successfully:', result);
+      setUser(result)
+    } catch (error) {
+      console.error('Error submitting user details:', error);
+      // Optional: show error to user
+    }
+  };
+  
   const stepVariants = {
     initial: {
       opacity: 0,
@@ -161,6 +210,7 @@ export default function ProfileSetup() {
                     <input
                       id="profile-pic"
                       type="file"
+                      name="image"
                       accept="image/*"
                       onChange={handleFileChange}
                       className="hidden"
@@ -217,31 +267,30 @@ export default function ProfileSetup() {
                       className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
                     >
                       <option value="">Select a village</option>
-                      <option value="Green Valley">Green Valley</option>
-                      <option value="Blue Ridge">Blue Ridge</option>
-                      <option value="Sunny Hills">Sunny Hills</option>
-                      <option value="Maple Woods">Maple Woods</option>
-                    </select>
+                      {villages && allVillages.map((village,i)=>(
+                      <option value={village}>{village}</option>
+                      ))}
+                      </select>
                   </div>
                 </div>
 
-                <div className="bg-emerald-50 p-4 rounded-md">
-                  <h4 className="font-medium text-emerald-800 mb-2">About Green Valley</h4>
-                  <p className="text-sm text-emerald-700 mb-2">
-                    Green Valley is a thriving agricultural community known for its fertile lands and community spirit.
+                {selectedVIllage && <div className="bg-emerald-50 p-4 rounded-md">
+                  <h4 className="font-medium text-emerald-800 mb-2">About {selectedVIllage.name }</h4>
+                  <p className="text-sm text-emerald-700 mb-2 line-clamp-3">
+                    {selectedVIllage.info ||' Green Valley is a thriving agricultural community known for its fertile lands and community spirit.'}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">
-                      Population: 5,240
+                      Population: {selectedVIllage.population || '540'}
                     </span>
                     <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">
-                      Established: 1967
+                      Established:   {selectedVIllage.establish || '1967'}
                     </span>
-                    <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">
-                      Main Crops: Wheat, Corn
+                    <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs line-clamp-1">
+                      Main Crops:  {selectedVIllage.mainCrops || 'Wheat, Onion, Garlic, Soyabean, Potato, Gram'}
                     </span>
                   </div>
-                </div>
+                </div>}
 
                 <div className="flex justify-between">
                   <button
@@ -318,7 +367,7 @@ export default function ProfileSetup() {
                     Skip for now
                   </button>
                   <button
-                    onClick={finishSetup}
+                    onClick={handleSubmit}
                     className="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
                   >
                     Complete Setup <FiCheck className="ml-2" />

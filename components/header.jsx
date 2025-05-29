@@ -53,11 +53,11 @@ export default function Header() {
               </button>
               <Link href="/">
                 <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 rounded-full bg-emerald-500 flex items-center justify-center">
+                  <div className="h-10 w-10 flex items-center justify-center">
                     <img 
                       src={siteLogo} 
                       alt="Nayta Patel Network logo image" 
-                      className="h-10 w-10 rounded-full object-cover"
+                      className="h-10 w-10 object-fit"
                     />
                   </div>
                   <span className="font-bold text-lg hidden sm:inline-block">{siteBrand}</span>
@@ -98,11 +98,11 @@ export default function Header() {
                   <div className="flex items-center gap-2 cursor-pointer">
                     <div className="h-9 w-9 rounded-full overflow-hidden border-2 border-emerald-300">
                       <img 
-                        src={user?.profilepic?.url || '/default-avatar.png'} 
+                        src={user?.profilepic?.url || '/user.avif'} 
                         alt={user?.fullname} 
                         className="h-full w-full object-cover"
                         onError={(e) => {
-                          e.target.src = '/default-avatar.png'
+                          e.target.src = '/user.avif'
                         }}
                       />
                     </div>

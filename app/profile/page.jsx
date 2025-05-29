@@ -43,7 +43,7 @@ useEffect(()=>{
     village   : user.village    ,
     createdAt : user.createdAt    ,
     visibilityStatus : user.visibilityStatus    ,
-    role      : user.role    ,
+    role      : user.role,
     profilePic: user.profilepic?.url ,
     posts     : user.posts.length      ,
     comments  : user.comments.length   ,

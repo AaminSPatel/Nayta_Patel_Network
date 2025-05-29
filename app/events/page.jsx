@@ -307,7 +307,7 @@ console.log(events);
                     <div className="flex items-center text-gray-600 mb-2">
                       <FaCalendarAlt className="mr-2" />
                       <span>
-                        {formatDate(event.datetime)} 
+                        {formatDate(event.time.date)} 
                       </span>
                     </div>
                     <div className="flex items-center text-gray-600 mb-2">
