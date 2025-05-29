@@ -70,7 +70,7 @@ export default function ProfileSetup() {
   useEffect(()=>{
     if(profileData.village){
       let findVillage = villages.find((item)=>item.name === profileData.village)
-      console.log(findVillage);
+     // console.log(findVillage);
       
 setSelectedVillage(findVillage)
     }
@@ -78,7 +78,7 @@ setSelectedVillage(findVillage)
 
     const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('profileData',profileData);
+   // console.log('profileData',profileData);
     
     const token = localStorage.getItem('token');
     try {
@@ -105,7 +105,8 @@ setSelectedVillage(findVillage)
   
       const result = await response.json();
       console.log('updated successfully:', result);
-      setUser(result)
+      setUser(result);
+      router.push('/')
     } catch (error) {
       console.error('Error submitting user details:', error);
       // Optional: show error to user
