@@ -22,7 +22,7 @@ import EventCubeSlider from "../components/eventSection.jsx";
 import ComplimentCardsSlider from "../components/cardSlider.jsx";
 import Poster from "../components/poster.jsx";
 import Posters from "../components/posters.jsx";
-import NayataPatelPosters from "../components/naytaPosters.jsx";
+import VillageAmbassadorSignup from "../components/ambessadorSection.jsx";
 import ComplimentCardsSlider2 from "../components/cardSlider2.jsx";
 import "swiper/css/effect-coverflow";
 
@@ -259,7 +259,6 @@ const containerVariants = {
           </div>
      </section>
      <PriceSection priceData={priceData}/>
-{/* <ComplimentCardsSlider2 /> */}
       {/* Top Posts Carousel */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -506,7 +505,7 @@ const containerVariants = {
 हमारे नायता पटेल समाज के सदस्यों के जीवन में आए वास्तविक बदलाव और प्रगति की गाथाएँ। ये कहानियाँ न सिर्फ प्रेरणा देती हैं, बल्कि सामूहिक प्रयासों से गाँवों में आए ऐतिहासिक परिवर्तन की मिसाल भी पेश करती हैं।          </motion.p>
         </motion.div>
           <div className="flex flex-wrap gap-8 justify-center">
-            {stories.slice(0, 3).map((story, index) => (
+            {stories.filter((item)=> item.status ==='Published').slice(0, 3).map((story, index) => (
               <motion.div
                 key={story._id}
                 initial={{ opacity: 0, y: 20 }}

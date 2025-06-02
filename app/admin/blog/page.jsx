@@ -15,7 +15,7 @@ export default function BlogPage() {
     const redirectTimer = setTimeout(() => {
       if (user?.role !== 'admin') {
 redirect('/')      }
-    }, 3000); // Wait 1 second before checking (adjust time as needed)
+    }, 5000); // Wait 1 second before checking (adjust time as needed)
 
     return () => clearTimeout(redirectTimer); // Cleanup on unmount
   }, [user])

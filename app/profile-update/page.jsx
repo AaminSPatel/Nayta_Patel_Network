@@ -13,8 +13,10 @@ export default function ProfileSetup() {
     profilePic: null,
     village: "",
     mobile: "",
+    ambassadorWill:false
   })
   const [previewUrl, setPreviewUrl] = useState(null)
+const [manualVillage, setManualVillage] = useState(false);
 
   const {path,setUser , villages} = usePatel()
   const [allVillages,setAllVillages] = useState([])
@@ -25,6 +27,13 @@ export default function ProfileSetup() {
       setAllVillages(villageByName);
     }
   },[villages]) 
+  
+useEffect(() => {
+  if (manualVillage && allVillages.includes(profileData.village)) {
+    setManualVillage(false);
+    // Optionally auto-select from list
+  }
+}, [profileData.village]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]
@@ -52,15 +61,24 @@ export default function ProfileSetup() {
   }
 
   const nextStep = () => {
+ 
     setStep(step + 1)
   }
 
   const prevStep = () => {
+     if(step === 4 && profileData.village.length ===0){
+      setStep(step - 2)
+    }
     setStep(step - 1)
   }
 
   const skipStep = () => {
-    if (step < 3) {
+    if (step < 4) {
+         if(step === 2 && (!profileData.village)){
+      setStep(step + 2)
+    }
+    console.log( (!profileData.village), step === 2);
+    
       setStep(step + 1)
     } else {
       handleSubmit()
@@ -85,6 +103,7 @@ setSelectedVillage(findVillage)
       const formDataToSend = new FormData();
       formDataToSend.append('village', profileData.village);
       formDataToSend.append('mobile', profileData.mobile);
+      formDataToSend.append('ambassadorWill', profileData.ambassadorWill);
   
       if (profileData.profilePic) {
         formDataToSend.append('image', profileData.profilePic);
@@ -135,7 +154,7 @@ setSelectedVillage(findVillage)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex flex-col  p-2 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Complete Your Profile</h2>
         <p className="mt-2 text-center text-sm text-gray-600">
@@ -146,8 +165,8 @@ setSelectedVillage(findVillage)
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <div className="mb-6">
-            <div className="flex justify-between items-center">
-              {[1, 2, 3].map((i) => (
+            <div className="flex justify-between items-center px-2">
+              {[1, 2, 3,4].map((i) => (
                 <div
                   key={i}
                   className={`flex items-center justify-center w-8 h-8 rounded-full ${
@@ -168,7 +187,8 @@ setSelectedVillage(findVillage)
               </div>
               <div className="relative flex justify-between">
                 <span className="bg-white px-2 text-xs text-gray-500">Profile Picture</span>
-                <span className="bg-white px-2 text-xs text-gray-500">Village</span>
+                <span className="bg-white px-2 mr-12 text-xs text-gray-500">Village</span>
+                <span className="bg-white px-2 text-xs -ml-8 text-gray-500">Ambassador</span>
                 <span className="bg-white px-2 text-xs text-gray-500">Contact</span>
               </div>
             </div>
@@ -182,7 +202,7 @@ setSelectedVillage(findVillage)
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="space-y-6"
+                className="space-y-6 min-h-96 relative"
               >
                 <div className="text-center">
                   <h3 className="text-lg font-medium text-gray-900 mb-2">Add a Profile Picture</h3>
@@ -221,7 +241,7 @@ setSelectedVillage(findVillage)
                   <p className="text-sm text-gray-500 mb-4">Click the button to upload a photo</p>
                 </div>
 
-                <div className="flex justify-between">
+                <div className="flex justify-between  absolute bottom-0 w-full">
                   <button
                     onClick={skipStep}
                     className="px-4 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700"
@@ -238,61 +258,177 @@ setSelectedVillage(findVillage)
               </motion.div>
             )}
 
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                variants={stepVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                className="space-y-6"
-              >
-                <div className="text-center">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Select Your Village</h3>
-                  <p className="text-sm text-gray-500">Choose the village you belong to</p>
-                </div>
+           {step === 2 && (
+  <motion.div
+    key="step2"
+    variants={stepVariants}
+    initial="initial"
+    animate="animate"
+    exit="exit"
+    className="space-y-6 min-h-96 relative"
+  >
+    <div className="text-center">
+      <h3 className="text-lg font-medium text-gray-900 mb-2">Select Your Village</h3>
+      <p className="text-sm text-gray-500">Choose from the list or add your village manually</p>
+    </div>
 
-                <div>
-                  <label htmlFor="village" className="block text-sm font-medium text-gray-700 mb-1">
-                    Village
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiMapPin className="text-gray-400" />
-                    </div>
-                    <select
-                      id="village"
-                      name="village"
-                      value={profileData.village}
-                      onChange={handleInputChange}
-                      className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
-                    >
-                      <option value="">Select a village</option>
-                      {villages && allVillages.map((village,i)=>(
-                      <option value={village}>{village}</option>
-                      ))}
-                      </select>
-                  </div>
-                </div>
+    {/* Village Selection or Input */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">Village</label>
 
-                {selectedVIllage && <div className="bg-emerald-50 p-4 rounded-md">
-                  <h4 className="font-medium text-emerald-800 mb-2">About {selectedVIllage.name }</h4>
-                  <p className="text-sm text-emerald-700 mb-2 line-clamp-3">
-                    {selectedVIllage.info ||' Green Valley is a thriving agricultural community known for its fertile lands and community spirit.'}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">
-                      Population: {selectedVIllage.population || '540'}
-                    </span>
-                    <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">
-                      Established:   {selectedVIllage.establish || '1967'}
-                    </span>
-                    <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs line-clamp-1">
-                      Main Crops:  {selectedVIllage.mainCrops || 'Wheat, Onion, Garlic, Soyabean, Potato, Gram'}
-                    </span>
-                  </div>
-                </div>}
+      {!manualVillage ? (
+        <>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FiMapPin className="text-gray-400" />
+            </div>
+            <select
+              id="village"
+              name="village"
+              value={profileData.village}
+              onChange={handleInputChange}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option value="">Select a village</option>
+              {villages && allVillages.map((village, i) => (
+                <option key={i} value={village}>{village}</option>
+              ))}
+            </select>
+          </div>
 
+          <p className="text-sm mt-2 text-gray-500">
+            Can’t find your village?{" "}
+            <button
+              type="button"
+              onClick={() => {
+                setManualVillage(true);
+                setProfileData(prev => ({ ...prev, village: "" }));
+              }}
+              className="text-emerald-600 hover:underline"
+            >
+              Add it manually
+            </button>
+          </p>
+        </>
+      ) : (
+        <>
+          <input
+            type="text"
+            name="village"
+            value={profileData.village}
+            onChange={handleInputChange}
+            placeholder="Enter your village name"
+            className="block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+          />
+
+          <p className="text-sm mt-2 text-gray-500">
+            Want to go back to the list?{" "}
+            <button
+              type="button"
+              onClick={() => {
+                setManualVillage(false);
+                setProfileData(prev => ({ ...prev, village: "" }));
+              }}
+              className="text-emerald-600 hover:underline"
+            >
+              Select from list
+            </button>
+          </p>
+        </>
+      )}
+    </div>
+
+    {/* Show village info only if selected from list */}
+    {!manualVillage && selectedVIllage && (
+      <div className="bg-emerald-50 p-4 rounded-md">
+        <h4 className="font-medium text-emerald-800 mb-2">About {selectedVIllage.name}</h4>
+        <p className="text-sm text-emerald-700 mb-2 line-clamp-3">
+          {selectedVIllage.info || 'Green Valley is a thriving agricultural community known for its fertile lands and community spirit.'}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">
+            Population: {selectedVIllage.population || '540'}
+          </span>
+          <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">
+            Established: {selectedVIllage.establish || '1967'}
+          </span>
+          <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">
+            Main Crops: {selectedVIllage.mainCrops || 'Wheat, Onion, Garlic, Soyabean, Potato, Gram'}
+          </span>
+        </div>
+      </div>
+    )}
+
+    {/* Navigation Buttons */}
+    <div className="flex justify-between absolute bottom-0 w-full">
+      <button
+        onClick={prevStep}
+        className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-700"
+      >
+        Back
+      </button>
+      <button
+        onClick={skipStep}
+        className="px-4 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700"
+      >
+        Skip for now
+      </button>
+      <button
+        onClick={nextStep}
+        className="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
+        disabled={!profileData.village}
+      >
+        Next <FiArrowRight className="ml-2" />
+      </button>
+    </div>
+  </motion.div>
+)}
+
+{step === 3 && (
+  <motion.div
+    key="step3"
+    variants={stepVariants}
+    initial="initial"
+    animate="animate"
+    exit="exit"
+    className="space-y-6 min-h-96 relative"
+  >
+    <div className="text-center">
+      <h3 className="text-lg font-medium text-gray-900 mb-2">अपने गाँव {profileData?.village} के अम्बेसडर बनें</h3>
+      <p className="text-sm text-gray-500">
+        हमारे नायता पटेल समाज को मजबूत करने में मदद करने वाले उत्साही व्यक्तियों में शामिल हों।
+      </p>
+    </div>
+
+    <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+      <h3 className="font-semibold text-emerald-800 mb-2">गाँव अम्बेसडर नियम और शर्तें</h3>
+      <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
+        <li>मैं ईमानदारी से अपने गाँव की बात लोगों तक पहुँचाने का काम करूँगा।</li>
+        <li>मैं सुधार के लिए अपनी सच्ची राय और सुझाव दूँगा।</li>
+        <li>मैं अपने समाज की अच्छी बातों को लोगों तक पहुँचाने में मदद करूँगा।</li>
+        <li>मैं गाँव से जुड़ी जानकारियों को सही और अपडेटेड रखूँगा।</li>
+        <li>मैं अपने गाँव से जुड़ी खबरें पोस्ट करूँगा, और मुझे ही यह विशेष अधिकार मिलेगा।</li>
+        <li>यह एक सेवा का पद है — इसमें कोई पैसे या इनाम नहीं मिलेगा, लेकिन सम्मान ज़रूर मिलेगा।</li>
+      </ol>
+    </div>
+
+    <div className="flex items-start">
+      <input
+        id="ambassador-agree"
+        type="checkbox"
+        checked={profileData.ambassadorWill}
+        onChange={(e) => setProfileData({
+          ...profileData,
+          ambassadorWill: e.target.checked
+        })}
+        className="mt-1 h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+      />
+      <label htmlFor="ambassador-agree" className="ml-2 block text-sm text-gray-700">
+        मैं इन सभी नियमों और शर्तों से पूरी तरह सहमत हूँ और गाँव अम्बेसडर बनने के लिए तैयार हूँ।
+      </label>
+    </div>
+
+    
                 <div className="flex justify-between">
                   <button
                     onClick={prevStep}
@@ -309,22 +445,20 @@ setSelectedVillage(findVillage)
                   <button
                     onClick={nextStep}
                     className="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
-                    disabled={!profileData.village}
                   >
                     Next <FiArrowRight className="ml-2" />
                   </button>
                 </div>
-              </motion.div>
-            )}
-
-            {step === 3 && (
+  </motion.div>
+)}
+            {step === 4 && (
               <motion.div
                 key="step3"
                 variants={stepVariants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="space-y-6"
+                className="space-y-6 relative min-h-96" 
               >
                 <div className="text-center">
                   <h3 className="text-lg font-medium text-gray-900 mb-2">Add Contact Information</h3>
@@ -354,19 +488,19 @@ setSelectedVillage(findVillage)
                   </p>
                 </div>
 
-                <div className="flex justify-between">
+                <div className="flex justify-between  absolute bottom-0 w-full">
                   <button
                     onClick={prevStep}
                     className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-700"
                   >
                     Back
                   </button>
-                  <button
+               {/*    <button
                     onClick={skipStep}
                     className="px-4 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700"
                   >
                     Skip for now
-                  </button>
+                  </button> */}
                   <button
                     onClick={handleSubmit}
                     className="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
@@ -376,6 +510,8 @@ setSelectedVillage(findVillage)
                 </div>
               </motion.div>
             )}
+
+            
           </AnimatePresence>
         </div>
       </div>

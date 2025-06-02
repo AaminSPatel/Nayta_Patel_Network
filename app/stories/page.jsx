@@ -6,24 +6,7 @@ import { usePatel } from "../../components/patelContext";
 import Head from "next/head"
 import {motion } from 'framer-motion'
 //import { useSession, signIn } from 'next-auth/react'
-import { FiBook, FiSend, FiUser, FiLogIn } from 'react-icons/fi'
-
-// Sample data
-const successStories = [
-  {
-    id: 1,
-    name: "Imran Ali",
-    age: 45,
-    village: "Chandpur",
-    category: "Farming",
-    image: "/p5.avif",
-    story:
-      "I used to struggle with traditional farming methods, barely making enough to feed my family. After joining the Apna Gaon Network, I learned about organic farming techniques and government subsidies for solar irrigation. Today, I'm the district's top organic producer, supplying vegetables to three nearby cities. My income has tripled, and I've been able to send my children to college. The training from Apna Gaon changed my life.",
-    quote:
-      "From struggling farmer to district's top organic producer - all thanks to the knowledge shared in our community.",
-  },
-  // Add other stories similarly
-];
+import { FiBook, FiSend, FiUser, FiLogIn, FiMapPin } from 'react-icons/fi'
 
 
 export default function StoriesPage() {
@@ -31,7 +14,7 @@ export default function StoriesPage() {
   const [selectedVillage, setSelectedVillage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedStory, setExpandedStory] = useState(null);
- const {stories,siteUrl}  = usePatel()
+ const {stories,siteUrl,user}  = usePatel()
    const categories = [...new Set(stories.map((story) => story.category))];
 const villages = [...new Set(stories.map((story) => story.location))];
 
@@ -41,7 +24,7 @@ const villages = [...new Set(stories.map((story) => story.location))];
       (selectedVillage === "" || story.location === selectedVillage) &&
       (searchTerm === "" ||
         story.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        story.content.toLowerCase().includes(searchTerm.toLowerCase()))
+        story.content.toLowerCase().includes(searchTerm.toLowerCase())) && story.status ==='Published'
     );
   });
 
@@ -243,23 +226,24 @@ const [formData, setFormData] = useState({
     story: '',
     village: ''
   })
+  const {user,path} = usePatel();
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-let session ; 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+  
     try {
-      const response = await fetch('/api/success-stories', {
+      const token = localStorage.getItem('token')
+      const response = await fetch(path +'/api/stories/apply', {
         method: 'POST',
         headers: {
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          email: session.user.email
-        }),
+        body: JSON.stringify(
+          formData
+        ),
       })
 
       if (response.ok) {
@@ -278,7 +262,7 @@ let session ;
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-emerald-50 to-white">
       <div className="max-w-4xl mx-auto">
         
-        {!session ? (
+        {!user ? (
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}

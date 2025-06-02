@@ -16,7 +16,7 @@ import Link from "next/link"
 const ProfileDashboard = () => {
   const [activeTab, setActiveTab] = useState("profile")
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-const {user,siteUrl,villages} = usePatel()
+const {user,siteUrl,villages, likes, posts, comments} = usePatel()
   const [loading, setLoading] = useState(true)
 const [villageData,setVillageData] = useState({});
 
@@ -45,16 +45,26 @@ useEffect(()=>{
     visibilityStatus : user.visibilityStatus    ,
     role      : user.role,
     profilePic: user.profilepic?.url ,
-    posts     : user.posts.length      ,
-    comments  : user.comments.length   ,
-    likes     : user.likes.length      ,
+    posts     : 0,
+    comments  : 0,
+    likes     : 0,
   })
+if (likes && posts && comments) {
+  setUserData((prev) => ({
+    ...prev,
+    posts: posts.filter((item) => item.user._id === user._id).length,
+    comments: comments.filter((item) => item.user._id === user._id).length,
+    likes: posts
+      .filter((post) => post.user._id === user._id) // Get only the user's posts
+      .reduce((totalLikes, post) => totalLikes + (post.likes?.length || 0), 0), // Safely sum likes
+  }));
+}
     setLoading(false)
     }
     else{
       setLoading(false)
     }
-},[user])
+},[user,likes,comments,posts])
 
 useEffect(()=>{
   if(villages && user){

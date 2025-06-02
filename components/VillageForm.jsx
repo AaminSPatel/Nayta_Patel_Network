@@ -47,7 +47,7 @@ export default function VillageForm({ onCancel }) {
     data.append("population", formData.population)
     data.append("headOfVillage", formData.headOfVillage)
     formData.mosque.forEach((m) => data.append("mosque", m))
-    formData.schools.forEach((s) => data.append("schools[]", s))
+    formData.schools.forEach((s) => data.append("schools", s))
     const token = localStorage.getItem('token');
 
     try {

@@ -375,7 +375,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     try {
       const response = await axios.get(path + "/api/posts");
       setPosts(response.data);
-      //console.log(response.data);
+      console.log(response.data);
     } catch (err) {
       setError(err.message);
     }

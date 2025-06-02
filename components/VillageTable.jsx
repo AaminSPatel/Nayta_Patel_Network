@@ -20,10 +20,11 @@ export default function VillageTable() {
   };
 
   const { villages, setVillages, path } = usePatel();
-  const [selectedVillage, setSelectedVillage] = useState(null);
+  const [selectedVillage, setSelectedVillage] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleEditClick = (village) => {
+    console.log('selected village data',village);
     setSelectedVillage(village);
     setModalOpen(true);
   };
@@ -86,10 +87,10 @@ export default function VillageTable() {
           <tr>
             <th scope="col">Image</th>
             <th scope="col">Name</th>
-            <th scope="col">Location</th>
             <th scope="col">Population</th>
             <th scope="col">Sarpanch</th>
             <th scope="col">Ambassador</th>
+            <th scope="col">Location</th>
             <th scope="col">Amenities</th>
             <th scope="col">Actions</th>
           </tr>
@@ -105,12 +106,7 @@ export default function VillageTable() {
                 />
               </td>
               <td className="font-medium text-gray-900">{village.name}</td>
-              <td>
-                <span className="flex items-center gap-1">
-                  <MapPin size={14} className="text-gray-400" />
-                  { village.name}
-                </span>
-              </td>
+             
               <td className="">
                 <span className="flex items-center gap-1">
                   <Users size={14} className="text-gray-400" />
@@ -119,6 +115,12 @@ export default function VillageTable() {
               </td>
               <td className="capitalize">{village.headOfVillage}</td>
               <td className="capitalize">{village?.ambassador?.fullname}</td>
+               <td>
+                <span className="flex items-center gap-1">
+                  <MapPin size={14} className="text-gray-400" />
+                  { village.name}
+                </span>
+              </td>
               <td>
                 <span className="flex items-center justify-center gap-2 px-2 py-1 text-xs rounded-full">
                   <FaMosque size={16} className="text-green-400" />{" "}
@@ -162,6 +164,9 @@ export default function VillageTable() {
   );
 }
 
+
+
+
 function VillageFormModal({ isOpen, onClose, onSubmit, initialData }) {
   const { path } = usePatel();
   const [formData, setFormData] = useState({
@@ -179,32 +184,50 @@ function VillageFormModal({ isOpen, onClose, onSubmit, initialData }) {
   const [existingImages, setExistingImages] = useState([]);
   const [imagesToDelete, setImagesToDelete] = useState([]);
 
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        _id: initialData._id || '',
-        name: initialData.name || "",
-        info: initialData.info || "",
-        location: initialData.location || "",
-        population: initialData.population || "",
-        headOfVillage: initialData.headOfVillage || "",
-        mosque: initialData.mosque || [],
-        schools: initialData.schools || []
-      });
-      setExistingImages(initialData.images || []);
-    }
-  }, [initialData]);
+// In your useEffect when setting initial data
+useEffect(() => {
+  if (initialData) {
+    // Fix array fields if they contain stringified arrays
+    const fixArrayField = (field) => {
+      if (!Array.isArray(field)) return [];
+      if (field.length === 0) return [];
+      
+      // Handle case where array contains stringified arrays
+      if (typeof field[0] === 'string' && field[0].startsWith('[')) {
+        try {
+          return JSON.parse(field[0]).filter(item => item !== '');
+        } catch {
+          return field.filter(item => item !== '');
+        }
+      }
+      return field.filter(item => item !== '');
+    };
+
+    setFormData({
+      _id: initialData._id || '',
+      name: initialData.name || "",
+      info: initialData.info || "",
+      location: initialData.location || "",
+      population: initialData.population || "",
+      headOfVillage: initialData.headOfVillage || "",
+      mosque: fixArrayField(initialData.mosque || []),
+      schools: fixArrayField(initialData.schools || [])
+    });
+    setExistingImages(initialData.images || []);
+  }
+}, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
-  const handleArrayChange = (e, field) => {
-    const { value } = e.target;
-    const items = value.split(',').map(item => item.trim());
-    setFormData(prev => ({ ...prev, [field]: items }));
-  };
+const handleArrayChange = (e, field) => {
+  const { value } = e.target;
+  const items = value.split(',')
+    .map(item => item.trim())
+    .filter(item => item !== ''); // Filter out empty strings
+  setFormData(prev => ({ ...prev, [field]: items }));
+};
 
   const handleFileChange = (e) => {
     setImages(Array.from(e.target.files));
@@ -221,51 +244,54 @@ function VillageFormModal({ isOpen, onClose, onSubmit, initialData }) {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const token = localStorage.getItem('token');
+  
+  try {
+    const formDataToSend = new FormData();
     
-    try {
-      const formDataToSend = new FormData();
-      
-      // Append all form data
-      Object.keys(formData).forEach(key => {
-        if (key === 'mosque' || key === 'schools') {
-          // Handle array fields
-          formDataToSend.append(key, JSON.stringify(formData[key]));
-        } else if (key !== '_id' && key !== 'images') {
-          formDataToSend.append(key, formData[key]);
-        }
-      });
-      
-      // Append new images
-      images.forEach(image => {
-        formDataToSend.append('images', image);
-      });
-      
-      // Append images to delete
-      if (imagesToDelete.length > 0) {
-        formDataToSend.append('imagesToDelete', JSON.stringify(imagesToDelete));
+    // Append all form data
+    Object.keys(formData).forEach(key => {
+      if (key === 'mosque' || key === 'schools') {
+        // Append each item in the array individually with the same key
+        formData[key].forEach(item => {
+          formDataToSend.append(key, item);
+        });
+      } else if (key !== '_id' && key !== 'images') {
+        formDataToSend.append(key, formData[key]);
       }
-      
-      const response = await fetch(`${path}/api/villages/${formData._id}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formDataToSend
+    });
+    
+    // Append new images
+    images.forEach(image => {
+      formDataToSend.append('images', image);
+    });
+    
+    // Append images to delete
+    if (imagesToDelete.length > 0) {
+      imagesToDelete.forEach(id => {
+        formDataToSend.append('imagesToDelete', id);
       });
-      
-      if (!response.ok) throw new Error('Update failed');
-      
-      const updatedVillage = await response.json();
-      onSubmit(updatedVillage);
-      onClose();
-    } catch (error) {
-      console.error('Error updating village:', error);
     }
-  };
-
+    
+    const response = await fetch(`${path}/api/villages/${formData._id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formDataToSend
+    });
+    
+    if (!response.ok) throw new Error('Update failed');
+    
+    const updatedVillage = await response.json();
+    onSubmit(updatedVillage);
+    onClose();
+  } catch (error) {
+    console.error('Error updating village:', error);
+  }
+};
   if (!isOpen) return null;
 
   return (
@@ -293,7 +319,7 @@ function VillageFormModal({ isOpen, onClose, onSubmit, initialData }) {
               Mosque (comma separated)
             </label>
             <input
-              value={formData.mosque.join(', ')}
+              value={formData.mosque}
               onChange={(e) => handleArrayChange(e, 'mosque')}
               className="w-full border px-3 py-2 rounded"
             />
@@ -304,7 +330,7 @@ function VillageFormModal({ isOpen, onClose, onSubmit, initialData }) {
               Schools (comma separated)
             </label>
             <input
-              value={formData.schools.join(', ')}
+              value={formData.schools}
               onChange={(e) => handleArrayChange(e, 'schools')}
               className="w-full border px-3 py-2 rounded"
             />

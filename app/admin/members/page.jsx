@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Plus, Search, Filter } from "lucide-react"
+import { Plus, Search, Filter, List, LayoutGrid, LayoutGridIcon } from "lucide-react"
 import MemberTable from "../../../components/MemberTable"
 import MemberForm from "../../../components/MemberForm"
 import { usePatel } from "../../../components/patelContext"
@@ -9,15 +9,42 @@ import { useEffect } from "react"
 import { redirect } from 'next/navigation';
 export default function MembersPage() {
   const [showForm, setShowForm] = useState(false)
-const {user} = usePatel()
+const {user , users, villages} = usePatel()
+
+  const [search, setSearch] = useState("")
+  const [filterVillage, setFilterVillage] = useState("")
+  const [filterRole, setFilterRole] = useState("")
+  const [view, setView] = useState("grid") // or "grid"
+  const [showControls, setShowControls] = useState(false)
+  const [allUsers, setAllUsers] = useState([])
  useEffect(() => {
     const redirectTimer = setTimeout(() => {
       if (user?.role !== 'admin') {
 redirect('/')      }
-    }, 3000); // Wait 1 second before checking (adjust time as needed)
+    }, 6000); // Wait 1 second before checking (adjust time as needed)
 
     return () => clearTimeout(redirectTimer); // Cleanup on unmount
   }, [user])
+
+  useEffect(()=>{
+    if(users){
+      setAllUsers(users)
+    }
+  },[users])
+  
+  const filteredUsers = allUsers?.filter(user => {
+    const matchesSearch = user.fullname.toLowerCase().includes(search.toLowerCase())
+    const matchesVillage = filterVillage ? user.village === filterVillage : true
+    const matchesRole = filterRole ? user.role === filterRole : true
+
+    //console.log('matchesSearch',matchesSearch,'matchesVillage',matchesVillage,'matchesRole',matchesRole);
+    
+    return matchesSearch && matchesVillage && matchesRole
+  }) || []
+
+  console.log('filteredUsers',filteredUsers);
+  
+
   return (
     <div className=" p-2 space-y-6">
       <div className="flex items-center justify-between">
@@ -38,36 +65,45 @@ redirect('/')      }
           <MemberForm onCancel={() => setShowForm(false)} />
         </motion.div>
       ) : (
-        <>
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="relative w-full md:w-64">
-              <input
-                type="text"
-                placeholder="Search members..."
-                className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
-              <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-            </div>
-
-            <div className="flex items-center gap-2 w-full md:w-auto">
-              <select className="form-input">
-                <option>All Roles</option>
-                <option>Admin</option>
-                <option>Moderator</option>
-                <option>Member</option>
-              </select>
-
-              <button className="btn btn-outline flex items-center gap-2">
-                <Filter size={18} />
-                Filter
-              </button>
+        <div className="relative">
+          <div className="fixed top-30 right-4 z-50 space-y-2">
+        <button onClick={() => setShowControls(!showControls)} className="bg-emerald-600 p-2 rounded-full text-white shadow hover:bg-emerald-700">
+          <Filter size={20} />
+        </button>
+        {showControls && (
+          <div className="p-4 bg-white rounded-xl shadow space-y-2 w-64">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full border px-3 py-1 rounded"
+            />
+            <select value={filterVillage} onChange={(e) => setFilterVillage(e.target.value)} className="w-full border px-3 py-1 rounded">
+              <option value="">All Villages</option>
+              {[...new Set(villages.map(u => u.name))].map(v => (
+                <option key={v} value={v}>{v}</option>
+              ))}
+            </select>
+            <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)} className="w-full border px-3 py-1 rounded">
+              <option value="">All Roles</option>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+              <option value="ambassador">Ambassador</option>
+            </select>
+            <div className="flex justify-between">
+              <button onClick={() => setView("table")} className={`p-2 rounded ${view === "table" ? 'bg-emerald-600 text-white' : 'bg-gray-100'}`}><List size={18} /></button>
+              <button onClick={() => setView("grid")} className={`p-2 rounded ${view === "grid" ? 'bg-emerald-600 text-white' : 'bg-gray-100'}`}><LayoutGridIcon size={18} /></button>
             </div>
           </div>
+        )}
+      </div>
+
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-            <MemberTable />
+            <MemberTable users={filteredUsers} view = {view}/>
           </motion.div>
-        </>
+        </div>
       )}
     </div>
   )

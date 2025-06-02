@@ -136,7 +136,7 @@ const ProfileHeader = ({ userData, onEditProfile }) => {
           >
             <div className="bg-emerald-50 rounded-lg p-3">
               <FiUser className="mx-auto text-emerald-600 mb-1" size={20} />
-              <p className="text-xl font-bold text-gray-800">{userData?.posts?.length || 0}</p>
+              <p className="text-xl font-bold text-gray-800">{userData?.posts || 0}</p>
               <p className="text-xs text-gray-500">Posts</p>
             </div>
           </motion.div>
@@ -147,7 +147,7 @@ const ProfileHeader = ({ userData, onEditProfile }) => {
           >
             <div className="bg-emerald-50 rounded-lg p-3">
               <FiMessageSquare className="mx-auto text-emerald-600 mb-1" size={20} />
-              <p className="text-xl font-bold text-gray-800">{userData?.comments?.length || 0}</p>
+              <p className="text-xl font-bold text-gray-800">{userData?.comments || 0}</p>
               <p className="text-xs text-gray-500">Comments</p>
             </div>
           </motion.div>
