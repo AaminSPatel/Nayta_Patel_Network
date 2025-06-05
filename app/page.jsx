@@ -21,10 +21,13 @@ import { usePatel } from "../components/patelContext.js";
 import EventCubeSlider from "../components/eventSection.jsx";
 import ComplimentCardsSlider from "../components/cardSlider.jsx";
 import Poster from "../components/poster.jsx";
+import AdvertisementVideo from "../components/PromotionalVideo.jsx";
 import Posters from "../components/posters.jsx";
-import VillageAmbassadorSignup from "../components/ambessadorSection.jsx";
+import VillageSection from "../components/villageSection.jsx";
 import ComplimentCardsSlider2 from "../components/cardSlider2.jsx";
 import "swiper/css/effect-coverflow";
+import NayataPatelCard from "../components/poster.jsx";
+import PromotionalPosters from "../components/posters.jsx";
 
 
 
@@ -258,7 +261,15 @@ const containerVariants = {
             </Link>
           </div>
      </section>
+ {/*     <AdvertisementVideo /> 
+     <NayataPatelCard /> */} 
      <PriceSection priceData={priceData}/>
+     <section className="container mx-auto px-4">
+
+     <VillageSection priceData={priceData}/>
+     </section>
+
+
       {/* Top Posts Carousel */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -656,7 +667,7 @@ const PriceSection = ({ priceData }) => {
               whileTap={{ scale: 0.95 }}
               className="inline-block px-8 py-3 bg-emerald-600 text-white font-medium rounded-lg shadow-md hover:bg-emerald-700 transition-colors"
             >
-              View Detailed Price Charts
+              View Price Charts
             </motion.a>
           </Link>
         </motion.div>

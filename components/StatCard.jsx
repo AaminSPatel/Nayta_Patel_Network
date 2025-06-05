@@ -1,6 +1,7 @@
 "use client"
 import { motion } from "framer-motion"
 import { ArrowUp, ArrowDown } from "lucide-react"
+import Link from "next/link"
 
 export default function StatCard({ stat, index }) {
   const item = {
@@ -31,7 +32,7 @@ export default function StatCard({ stat, index }) {
           <h3 className="text-2xl font-bold mt-1">{stat.value}</h3>
         </div>
         <div className={`h-10 w-10 rounded-lg ${getColorClass(stat.color)} flex items-center justify-center`}>
-          <stat.icon size={20} />
+         <Link href={stat.link} > <stat.icon size={20} /></Link>
         </div>
       </div>
       <div className="mt-4 flex items-center">

@@ -297,7 +297,7 @@ setSelectedVillage(findVillage)
           </div>
 
           <p className="text-sm mt-2 text-gray-500">
-            Can’t find your village?{" "}
+            अपना गाँव नहीं मिल रहा है?{" "}
             <button
               type="button"
               onClick={() => {
@@ -306,7 +306,7 @@ setSelectedVillage(findVillage)
               }}
               className="text-emerald-600 hover:underline"
             >
-              Add it manually
+              खुद जोड़ें!
             </button>
           </p>
         </>

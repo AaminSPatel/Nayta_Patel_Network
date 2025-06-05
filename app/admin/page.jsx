@@ -13,11 +13,11 @@ import RecentTable from "../../components/RecentTable"
 import Chart from "../../components/Chart"
 import "../globals.css"
 import { usePatel } from "../../components/patelContext"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { redirect } from 'next/navigation';
 export default function Dashboard() {
     const {users, villages, posts, blogs,user} = usePatel()
-
+    const [selectedType, setSelectedType] = useState('users')
   const stats = [
     {
       title: "Total Villages",
@@ -26,6 +26,7 @@ export default function Dashboard() {
       change: "+12",
       trend: null,
       color: "green",
+      link:'/admin/villages'
     },
     {
       title: "Total Users",
@@ -34,6 +35,8 @@ export default function Dashboard() {
       change: "+8.2%",
       trend: "up",
       color: "blue",
+      link:'/admin/members'
+
     },
     {
       title: "Total Posts",
@@ -42,6 +45,8 @@ export default function Dashboard() {
       change: "-3.1%",
       trend: "down",
       color: "orange",
+      link:'/admin/posts'
+
     },
     {
       title: "Total Blogs",
@@ -50,6 +55,8 @@ export default function Dashboard() {
       change: "+2.3%",
       trend: "up",
       color: "purple",
+      link:'/admin/blog'
+
     },
   ]
 useEffect(() => {
@@ -102,9 +109,15 @@ redirect('/')      }
 
             {/* Chart and Activity */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="lg:col-span-2 dashboard-card">
+              <div className="lg:col-span-2 dashboard-card h-[480px]">
                 <h3 className="text-lg font-semibold mb-4">Revenue Overview</h3>
-                <Chart />
+                <select name="type" onChange={(e)=>{setSelectedType(e.target.value)}} className="border-emerald-500 border p-1 px-3 rounded-md bg-emerald-200" id="">
+                  <option className="bg-white" value="users">Users</option>
+                  <option className="bg-white" value="villages">Villages</option>
+                  <option className="bg-white" value="blogs">Blogs</option>
+                  <option className="bg-white" value="posts">Posts</option>
+                </select>
+                <Chart type={selectedType}/>
               </div>
 
               <div className="dashboard-card">
