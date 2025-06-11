@@ -145,12 +145,12 @@ const getTimeAgo = (timestamp) => {
   const unreadCount = notifications.filter((n) => !n.read).length
 
   return (
-    <div className="relative w-full sm:w-96">
+    <div className="relative w-full sm:w-10">
       {/* Notification Button */}
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="relative p-1 rounded-full hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         aria-label="Notifications"
       >
         <IoNotifications className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 rounded-full" />

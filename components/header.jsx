@@ -27,8 +27,8 @@ export default function Header() {
 
   const navigationItems = [
     { name: "Home", href: "/" },
-    { name: "Prices", href: "/prices" },
-    { name: "Community Wall", href: "/wall" },
+    { name: "News", href: "/news" },
+    { name: "Posts", href: "/wall" },
     { name: "Events", href: "/events" },
     { name: "Stories", href: "/stories" },
   ]

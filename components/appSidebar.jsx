@@ -34,12 +34,12 @@ const navigationItems = [
   { name: "Prices", href: "/prices", icon: FaChartLine },
   { name: "Blogs", href: "/blog", icon: FaBlog },
   { name: "News", href: "/news", icon: FaNewspaper },
-  { name: "Community Wall", href: "/wall", icon: FaUsers },
+  { name: "Posts", href: "/wall", icon: FaUsers },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
   { name: "Stories", href: "/stories", icon: FaBookOpen },
   /* { name: "Learning", href: "/learning", icon: FaGraduationCap },
   { name: "Marketplace", href: "/marketplace", icon: FaStore }, */
-  { name: "Directory", href: "/directory", icon: FaAddressBook },
+  { name: "Villages", href: "/directory", icon: FaAddressBook },
   { name: "About", href: "/about", icon: FaInfoCircle },
   { name: "Contact", href: "/contact", icon: FaEnvelope },
 ];

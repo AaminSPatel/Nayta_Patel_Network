@@ -392,14 +392,14 @@ const {villages} = usePatel();
                 </h2>
                 <div className="rounded-lg overflow-hidden border border-gray-100">
                   <iframe
-                    src={village.location}
+                    src={village.location.length < 5? village.location : 'https://naytapatelnetwork.vercel.app/'}
                     width="100%"
                     height="250"
                     style={{ border: 0 }}
                     allowFullScreen=""
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title={`Map of ${village.name}`}
+                    title={`Map of ${village.name}`} 
                   ></iframe>
                 </div>
               </div>

@@ -10,7 +10,8 @@ import {
   FaWhatsapp, 
   FaLinkedin,
   FaDownload,
-  FaShare
+  FaShare,
+  FaEnvelope
 } from 'react-icons/fa';
 //import './AmbassadorCard.css';
 
@@ -49,7 +50,7 @@ const ResponsiveAmbassadorCard = (ambassador) => {
         image: ambassador.user.profilepic.url,
         role: 'Village Ambassador',
         contact: ambassador.user.email,
-        achievements: 'Organized community events, Environmental initiatives'
+        achievements:ambassador?.user?.achievement || 'Organized community events, Environmental initiatives'
       });
     
   }, []);
@@ -137,13 +138,13 @@ const ResponsiveAmbassadorCard = (ambassador) => {
               <h3 className="text-xl font-bold text-[#1f2937] text-center mb-0.5">{data.name}</h3>
               <p className="text-xs text-[#059669] font-medium text-center">{data.role}</p>
               
-              <div id='village' className="mt-3 bg-[#fff] .village-info-card rounded-lg p-2">
-                <p className="text-sm font-semibold text-[#3741511]">{data.village}</p>
-                <p className="text-xs text-[#6b7280] mt-1">{data.contact}</p>
+              <div id='village' className="mt-3 bg-[#fff] .village-info-card rounded-lg p-2 ">
+                <p className="text-sm font-semibold text-gray-800 ">{data.village}</p>
+                <p className="text-xs text-gray-800 mt-1 flex gap-2 items-center justify-center"><span className='text-emerald-500'><FaEnvelope/> </span> {data.contact}</p>
               </div>
               
               { (
-                <p className="text-xs text-[#4b5563] h-10 mt-2 line-clamp-2">{data.achievements}</p>
+                <p className="text-xs text-gray-700 text-center laila h-10 my-2 mb-8">{data.achievements}</p>
               )}
             </div>
             
