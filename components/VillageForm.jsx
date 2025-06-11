@@ -14,6 +14,7 @@ export default function VillageForm({ onCancel }) {
     mosque: [],
     schools: [],
     headOfVillage: "",
+    district: "",
     images: [],
   })
    const {path,fetchVillages }  = usePatel()
@@ -46,6 +47,7 @@ export default function VillageForm({ onCancel }) {
     data.append("location", formData.location)
     data.append("population", formData.population)
     data.append("headOfVillage", formData.headOfVillage)
+    data.append("district", formData.district)
     formData.mosque.forEach((m) => data.append("mosque", m))
     formData.schools.forEach((s) => data.append("schools", s))
     const token = localStorage.getItem('token');
@@ -111,6 +113,19 @@ console.log('sending this data');
                 required
               />
               <MapPin className="absolute left-3 top-2.5 text-gray-400" size={18} />
+            </div>
+          </div>
+          <div>
+            <label className="form-label">District</label>
+            <div className="relative">
+              <input
+                type="text"
+                name="district"
+                value={formData.district}
+                onChange={handleChange}
+                className="form-input pl-10"
+                required
+              />
             </div>
           </div>
         </div>

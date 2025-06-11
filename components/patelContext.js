@@ -10,6 +10,7 @@ export function AppProvider({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
+  const [news, setNews] = useState([]);
   const [posts, setPosts] = useState([]);
   const [villages, setVillages] = useState([]);
   const [prices, setPrices] = useState([]);
@@ -23,7 +24,7 @@ export function AppProvider({ children }) {
   const [token, setToken] = useState(null); // Store token in state
   
 const path = process.env.NEXT_PUBLIC_API_URL;
- // const path = 'http://localhost:5000';
+//  const path = 'http://localhost:5000';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteBrand = "Nayta Patel Network";
@@ -377,7 +378,36 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     try {
       const response = await axios.get(path + "/api/posts");
       setPosts(response.data);
-      console.log(response.data);
+    //  console.log('Posts',response.data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+   // Fetch all news
+  const fetchNews = async () => {
+    try {
+      const response = await axios.get(path + "/api/news");
+      setNews(response.data);
+      //console.log('news',response.data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+  
+  const [feedbacks,setFeedbacks] = useState([])
+ // fetch feedbacks 
+ 
+  const fetchFeedbacks = async () => {
+      const token = localStorage.getItem("token"); // Or wherever you store the JWT
+
+    try {
+      const response = await axios.get(path + "/api/contacts", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setFeedbacks(response.data);
+      console.log('Contact data',response.data);
     } catch (err) {
       setError(err.message);
     }
@@ -551,6 +581,8 @@ if(user){
     const token = localStorage.getItem("token"); // Or wherever you store the JWT
 
     fetchPosts();
+    fetchNews();
+    fetchFeedbacks();
     fetchUsers(token);
     fetchBlogs();
     fetchPrices();
@@ -726,6 +758,7 @@ if(user){
         closeSidebar,
         user,
         users,
+        news,setNews,
         path,
         posts,
         setPosts,
@@ -739,7 +772,7 @@ if(user){
         token,
         fetchPosts,
         updateBlog,
-        fetchPostById,
+        fetchPostById,feedbacks,setFeedbacks,fetchFeedbacks,
         fetchComments,
         fetchUser,
         fetchEvents,
@@ -749,7 +782,7 @@ if(user){
         createPost,
         updatePost,
         deletePost,
-        deleteComment,
+        deleteComment,fetchNews,
         events,
         setEvents,
         likePost,

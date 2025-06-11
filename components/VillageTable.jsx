@@ -175,6 +175,7 @@ function VillageFormModal({ isOpen, onClose, onSubmit, initialData }) {
     info: "",
     location: "",
     population: "",
+    district: "",
     headOfVillage: "",
     mosque: [],
     schools: []
@@ -208,6 +209,7 @@ useEffect(() => {
       name: initialData.name || "",
       info: initialData.info || "",
       location: initialData.location || "",
+      district: initialData.district || "",
       population: initialData.population || "",
       headOfVillage: initialData.headOfVillage || "",
       mosque: fixArrayField(initialData.mosque || []),
@@ -299,7 +301,7 @@ const handleSubmit = async (e) => {
       <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">Update Village</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
-          {['name','info', 'location', 'population', 'headOfVillage'].map((field) => (
+          {['name','info', 'location','district', 'population', 'headOfVillage'].map((field) => (
             <div key={field} className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
                 {field.charAt(0).toUpperCase() + field.slice(1)}

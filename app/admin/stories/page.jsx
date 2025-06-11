@@ -22,8 +22,8 @@ redirect('/')      }
   return (
     <div className="p-2 space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Stories Management</h2>
-        <button className="btn btn-primary flex items-center gap-2" onClick={() => setShowForm(true)}>
+        <h2 className="sm:text-2xl text-md font-bold">Stories Management</h2>
+        <button className="btn btn-primary flex items-center gap-2 sm:text-md text-sm" onClick={() => setShowForm(true)}>
           <Plus size={18} />
           Add New Story
         </button>

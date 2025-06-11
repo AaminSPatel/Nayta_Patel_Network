@@ -13,16 +13,43 @@ const DirectoryPage = () => {
   const [filter, setFilter] = useState("");
   const [filteredVillages, setFilteredVillages] = useState([]);
   const [currentImageIndices, setCurrentImageIndices] = useState({});
+  const [selectedDistrict, setSelectedDistrict] = useState("all"); // New state for district filter
+  
+    const [districts, setDistricts] = useState([]);
 
-  useEffect(() => {
-    setFilteredVillages(villages);
-    // Initialize image indices for each village
+     useEffect(()=>{
+      if(villages){
+        let dists =  ["all", ...new Set(villages.map(village => village.district).filter(Boolean))]
+      setDistricts(dists)
+      }
+     }, [villages])
+
+
+useEffect(() => {
+    let result = villages;
+    
+    // Apply district filter if not "all"
+    if (selectedDistrict !== "all") {
+      result = result.filter(village => village.district === selectedDistrict);
+    }
+    
+    // Apply search filter
+    if (filter) {
+      setSelectedDistrict("all")
+      result = villages.filter(village => 
+        village.name.toLowerCase().includes(filter.toLowerCase())
+      );
+    }
+    
+    setFilteredVillages(result);
+    
+    // Initialize image indices
     const initialIndices = {};
-    villages.forEach(village => {
+    result.forEach(village => {
       initialIndices[village._id] = 0;
     });
     setCurrentImageIndices(initialIndices);
-  }, [villages]);
+  }, [villages,  selectedDistrict , filter]);
 
   // Set up intervals for image rotation
   useEffect(() => {
@@ -41,13 +68,21 @@ const DirectoryPage = () => {
     };
   }, [filteredVillages]);
 
-  const handleFilterChange = (e) => {
+/*   const handleFilterChange = (e) => {
     setFilter(e.target.value);
     setFilteredVillages(
       villages.filter((village) =>
         village.name.toLowerCase().includes(e.target.value.toLowerCase())
       )
     );
+  }; */
+const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const handleDistrictFilter = (district) => {
+    setSelectedDistrict(district);
+    setFilter(""); // Clear search filter when selecting district
   };
 
   const shareVillage = (village) => {
@@ -113,7 +148,24 @@ const DirectoryPage = () => {
         {/* Other meta tags remain same */}
       </Head>
 
-      {/* Filter Section */}
+     {/* District Filter Tags */}
+      <div className="flex flex-wrap justify-center gap-2 mb-6">
+        {districts.map(district => (
+          <button
+            key={district}
+            onClick={() => handleDistrictFilter(district)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              selectedDistrict === district
+                ? 'bg-emerald-600 text-white'
+                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+            }`}
+          >
+            {district === "all" ? "सभी जिले" : district}
+          </button>
+        ))}
+      </div>
+
+      {/* Search Filter */}
       <div className="mb-6 max-w-2xl mx-auto">
         <input
           type="text"
@@ -124,6 +176,7 @@ const DirectoryPage = () => {
         />
       </div>
 
+
       {/* Village List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 px-2 sm:px-0">
         {filteredVillages.map((village) => (
@@ -132,7 +185,7 @@ const DirectoryPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 relative group border border-gray-100"
+            className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl hover:-translate-y-1 relative group border border-gray-100"
           >
             {/* Village Image with Gradient Overlay */}
             <div className="relative h-64 md:h-72 overflow-hidden">

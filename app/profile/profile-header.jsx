@@ -1,8 +1,10 @@
 "use client"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { FiEdit, FiUser, FiMessageSquare, FiHeart } from "react-icons/fi"
+import { FiEdit, FiUser, FiMessageSquare, FiHeart, FiMapPin } from "react-icons/fi"
 import { GiWheat, GiCorn, GiFlowers } from "react-icons/gi"
+import { usePatel } from "../../components/patelContext"
+import { FaNewspaper } from "react-icons/fa"
 
 const ProfileHeader = ({ userData, onEditProfile }) => {
   // Decorative animated elements variants
@@ -19,7 +21,7 @@ const ProfileHeader = ({ userData, onEditProfile }) => {
       }
     })
   }
-
+const {users , villages, news, posts} = usePatel()
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -129,7 +131,58 @@ const ProfileHeader = ({ userData, onEditProfile }) => {
         </div>
 
         {/* Stats section */}
-        <div className="flex justify-center md:justify-start gap-6 border-t border-gray-100 pt-4 mt-4">
+        {userData.role === 'admin' ?<div className="flex justify-center md:justify-start sm:gap-6 gap-1 border-t border-gray-100 pt-4 mt-4">
+         <Link href={'/admin/members'} >  <motion.div 
+            whileHover={{ y: -3 }}
+            className="text-center flex-1 max-w-[100px]"
+          >
+            <div className="bg-emerald-50 rounded-lg p-3">
+              <FiUser className="mx-auto text-emerald-600 mb-1" size={20} />
+              <p className="text-xl font-bold text-gray-800">{users?.length || 0}</p>
+              <p className="text-xs text-gray-500">Users</p>
+            </div>
+          </motion.div></Link>
+          
+          <Link href={'/admin/villages'} >
+
+          <motion.div 
+            whileHover={{ y: -3 }}
+            className="text-center flex-1 max-w-[100px]"
+          >
+            <div className="bg-emerald-50 rounded-lg p-3">
+              <FiMapPin className="mx-auto text-emerald-600 mb-1" size={20} />
+              <p className="text-xl font-bold text-gray-800">{villages?.length || 0}</p>
+              <p className="text-xs text-gray-500">Villages</p>
+            </div>
+          </motion.div></Link>
+          
+          <Link href={'/admin/news'} >
+
+          <motion.div 
+            whileHover={{ y: -3 }}
+            className="text-center flex-1 max-w-[100px]"
+          >
+            <div className="bg-emerald-50 rounded-lg p-3">
+              <FaNewspaper className="mx-auto text-emerald-600 mb-1" size={20} />
+              <p className="text-xl font-bold text-gray-800">{news?.length || 0}</p>
+              <p className="text-xs text-gray-500">News</p>
+            </div>
+          </motion.div></Link>
+          
+          <Link href={'/admin/posts'} >
+          <motion.div 
+            whileHover={{ y: -3 }}
+            className="text-center flex-1 max-w-[100px]"
+          >
+            <div className="bg-emerald-50 rounded-lg p-3">
+              <FiMessageSquare className="mx-auto text-emerald-600 mb-1" size={20} />
+              <p className="text-xl font-bold text-gray-800">{posts?.length || 0}</p>
+              <p className="text-xs text-gray-500">Posts</p>
+            </div>
+          </motion.div></Link>
+        </div>
+        :
+         <div className="flex justify-center md:justify-start gap-6 border-t border-gray-100 pt-4 mt-4">
           <motion.div 
             whileHover={{ y: -3 }}
             className="text-center flex-1 max-w-[100px]"
@@ -162,7 +215,7 @@ const ProfileHeader = ({ userData, onEditProfile }) => {
               <p className="text-xs text-gray-500">Likes</p>
             </div>
           </motion.div>
-        </div>
+        </div>}
       </div>
     </motion.div>
   )

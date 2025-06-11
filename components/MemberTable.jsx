@@ -5,11 +5,12 @@ import { Edit, Trash2, Eye, Mail, Phone, MessageSquare, Heart, Bookmark, Filter,
 import { usePatel } from "./patelContext"
 import { GiCheckMark, GiCrossMark, GiPostStamp, GiSave } from "react-icons/gi"
 import { useEffect, useState } from "react"
-import { FaCross, FaTimes } from "react-icons/fa"
+import { FaBell, FaCross, FaTimes } from "react-icons/fa"
 
 export default function MemberTable(prop) {
   const {  formatDate, path, setUsers } = usePatel()
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false)
   const [currentMember, setCurrentMember] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -51,6 +52,11 @@ export default function MemberTable(prop) {
   const openEditModal = (member) => {
     setCurrentMember(member)
     setIsEditModalOpen(true)
+  }
+
+  const openNotificationModal = (member) => {
+    setCurrentMember(member)
+    setIsNotificationModalOpen(true)
   }
 
   const closeEditModal = () => {
@@ -122,7 +128,7 @@ export default function MemberTable(prop) {
               <th scope="col">Member</th>
               <th scope="col">Contact</th>
               <th scope="col">Role</th>
-              <th scope="col">Join Date</th>
+              <th scope="col">Date / Not.</th>
               <th scope="col">Village</th>
               <th scope="col">Engagements</th>
               <th scope="col">Posts</th>
@@ -153,10 +159,13 @@ export default function MemberTable(prop) {
                     </span>
                   </div>
                 </td>
-                <td>
+                <td className="flex flex-col">
                   <span className={`px-2 py-1 text-xs rounded-full ${getRoleClass(member.role)}`}>
                     {member.role}
                   </span>
+                   <button 
+                   className="cursor-pointer bg-amber-200 h-6 w-6 flex items-center justify-center rounded-full"
+                   onClick={()=>openNotificationModal(member)}><FaBell/></button>
                 </td>
                 <td>{formatDate(member.createdAt)}</td>
                 <td>{member.village}</td>
@@ -209,7 +218,7 @@ export default function MemberTable(prop) {
         </table>) : (
         <motion.div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
           {filterUsers.map(member => (
-            <div key={member._id} className="p-4 bg-white rounded shadow space-y-2">
+            <div key={member._id} className="p-4 relative bg-white rounded shadow space-y-2">
               <div className="flex items-center gap-3">
                 <img src={member?.profilepic?.url || "/placeholder.svg"} className="h-10 w-10 rounded-full" />
                 <div>
@@ -229,6 +238,11 @@ export default function MemberTable(prop) {
                     {member.status}
                   </span>
               </div>
+              <div className="absolute top-4 right-8">
+                <button 
+                   className="cursor-pointer bg-amber-200 h-8 w-8 flex items-center justify-center rounded-full"
+                   onClick={()=>openNotificationModal(member)}><FaBell/></button>
+              </div>
               <div className="text-sm">Posts: {member.posts?.length || 0}</div>
               <div className="flex gap-2 justify-end">
                 <button onClick={() => openEditModal(member)} className="text-blue-500"><Edit size={16} /></button>
@@ -240,6 +254,13 @@ export default function MemberTable(prop) {
       )}
        
  </motion.div>
+      {/* Notification Edit modal */}
+{isNotificationModalOpen && currentMember && (
+  <AdminNotificationForm 
+    id={currentMember._id} 
+    onCancel={() => setIsNotificationModalOpen(false)} 
+  />
+)}
       {/* Edit Modal */}
       {isEditModalOpen && currentMember && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -332,5 +353,144 @@ export default function MemberTable(prop) {
         </div>
       )}
     </div>
+  )
+}
+
+
+function AdminNotificationForm({ id, onCancel }) {
+  const [formData, setFormData] = useState({
+    type: 'admin',
+    message: '',
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const { path } = usePatel()
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    try {
+      const token = localStorage.getItem('token')
+      const response = await fetch(`${path}/api/users/notification/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        throw new Error(await response.text())
+      }
+
+      alert('Notification sent successfully!')
+      setFormData({
+        type: 'admin',
+        message: '',
+      })
+      onCancel() // Close the modal after successful submission
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <motion.div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white rounded-xl shadow-2xl w-full max-w-md relative"
+        initial={{ scale: 0.95, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.95, y: 20 }}
+      >
+        {/* Close Button */}
+        <button
+          onClick={onCancel}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition"
+        >
+          <FaTimes size={20} />
+        </button>
+
+        <div className="p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Send Notification</h2>
+          
+          {error && (
+            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Notification Type
+              </label>
+              <select
+                value={formData.type}
+                onChange={(e) => setFormData({...formData, type: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+              >
+                <option value="system">System</option>
+                <option value="account">Account</option>
+                <option value="order">Order</option>
+                <option value="promotion">Promotion</option>
+                <option value="social">Social</option>
+                <option value="alert">Alert</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Message
+              </label>
+              <textarea
+                value={formData.message}
+                onChange={(e) => setFormData({...formData, message: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                rows="4"
+                maxLength="500"
+                placeholder="Enter your notification message..."
+                required
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-4 py-2 bg-emerald-600 text-white rounded-md text-sm font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 transition"
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Sending...
+                  </span>
+                ) : 'Send Notification'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </motion.div>
+    </motion.div>
   )
 }

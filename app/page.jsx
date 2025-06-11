@@ -171,7 +171,7 @@ const containerVariants = {
       <section className="relative  h-[450px] flex items-center">
         <div className="absolute inset-0 z-0 sm:w-auto w-screen">
           <Image
-            src="/hom4.jpeg"
+            src="/prices.avif"
             alt="Rural farming landscape"
             fill
             className="object-cover"

@@ -10,14 +10,6 @@ export default function EventTable() {
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "Upcoming": return "bg-blue-100 text-blue-800"
-      case "Completed": return "bg-gray-100 text-gray-800"
-      case "Cancelled": return "bg-red-100 text-red-800"
-      default: return "bg-gray-100 text-gray-800"
-    }
-  }
 
   const handleUpdate = (updatedEvent) => {
     // Handle the updated event in your context

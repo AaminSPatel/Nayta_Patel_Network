@@ -1,9 +1,11 @@
 "use client"
 import { motion } from "framer-motion"
 import { Edit, Trash2, Eye, MessageCircle, Star } from "lucide-react"
+import { usePatel } from "./patelContext"
 
 export default function FeedbackTable() {
-  const feedbacks = [
+  const {feedbacks} = usePatel()
+ /*  const feedbacks = [
     {
       id: 1,
       subject: "Website Navigation Improvement",
@@ -50,7 +52,7 @@ export default function FeedbackTable() {
       status: "New",
     },
   ]
-
+ */
   const getStatusClass = (status) => {
     switch (status) {
       case "New":
@@ -110,18 +112,24 @@ export default function FeedbackTable() {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {feedbacks.map((feedback) => (
-            <tr key={feedback.id}>
-              <td className="flex items-center gap-2 font-medium text-gray-900">
-                <MessageCircle size={16} className="text-gray-400" />
-                {feedback.subject || feedback.title}
-              </td>
+            <tr key={feedback._id}>
+            <td className="px-4 py-3 max-w-xs">
+  <div className="flex items-start gap-2">
+    <MessageCircle size={16} className="text-gray-400 mt-1 flex-shrink-0" />
+    <div className="min-w-0">
+      <p className="text-gray-900 whitespace-pre-wrap break-words line-clamp-3 hover:line-clamp-none transition-all">
+        {feedback.message || feedback.title}
+      </p>
+    </div>
+  </div>
+</td>
               <td>
                 <span className={`px-2 py-1 text-xs rounded-full ${getTypeClass(feedback.type)}`}>{feedback.type}</span>
               </td>
-              <td>{feedback.user}</td>
+              <td>{feedback.name}</td>
               <td>{feedback.date}</td>
               <td>
-                <div className="flex items-center gap-1">{renderStars(feedback.rating)}</div>
+                <div className="flex items-center gap-1">{feedback.mobile}</div>
               </td>
               <td>
                 <span className={`px-2 py-1 text-xs rounded-full ${getStatusClass(feedback.status)}`}>

@@ -78,7 +78,7 @@ export default function EventForm({ onCancel, onSuccess }) {
       formData.attendees.forEach(attendee => {
         formDataToSend.append('attendees', attendee);
       }); */
-  console.log(formData.image);
+  //console.log(formData.image);
   
       // Append the image file
       formDataToSend.append('image', formData.image);
@@ -101,13 +101,14 @@ export default function EventForm({ onCancel, onSuccess }) {
       });
       
        if (response.status === 201) {
-       // onCancel();
+        onCancel();
       } 
     } catch (err) {
       console.error('Error creating event:', err);
       setError(err.response?.data?.message || err.message || 'Failed to create event');
     } finally {
       setLoading(false);
+    //   onCancel();
     }
   };
 

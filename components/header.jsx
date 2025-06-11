@@ -7,13 +7,15 @@ import { motion } from "framer-motion"
 import { usePatel } from "../components/patelContext"
 import { Menu } from "lucide-react"
 import HeaderAdmin from "./HeaderAdmin"
+import { FaBell } from "react-icons/fa"
+import NotificationModal from "./notification_model"
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
   const { toggleSidebar, isSidebarOpen, user, siteBrand, siteLogo } = usePatel()
   const isAdmin = pathname.startsWith("/admin")
-
+  const [notification,setNotification] = useState(false)
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
@@ -93,7 +95,10 @@ export default function Header() {
                     Join Now
                   </button>
                 </Link>
-              ) : (
+              ) : ( <div className="flex">
+                <div className="flex mx-2">
+                <NotificationModal/>
+                </div>
                 <Link href="/profile">
                   <div className="flex items-center gap-2 cursor-pointer">
                     <div className="h-9 w-9 rounded-full overflow-hidden border-2 border-emerald-300">
@@ -111,6 +116,7 @@ export default function Header() {
                     </span>
                   </div>
                 </Link>
+              </div>
               )}
             </div>
           </div>

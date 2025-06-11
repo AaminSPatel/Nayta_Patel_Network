@@ -9,13 +9,12 @@ import {
   FaUsers,
   FaCalendarAlt,
   FaBookOpen,
-  FaGraduationCap,
-  FaStore,
   FaAddressBook,
   FaInfoCircle,
   FaEnvelope,
   FaTimes,
   FaBlog,
+  FaNewspaper,
 } from "react-icons/fa";
 import {
   LayoutDashboard,
@@ -26,16 +25,15 @@ import {
   Users,
   Home,
   MessageCircle,
-  ChevronRight,
-  ChevronLeft,
+  
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { usePatel } from "./patelContext";
 
 const navigationItems = [
   { name: "Home", href: "/", icon: FaHome },
   { name: "Prices", href: "/prices", icon: FaChartLine },
   { name: "Blogs", href: "/blog", icon: FaBlog },
+  { name: "News", href: "/news", icon: FaNewspaper },
   { name: "Community Wall", href: "/wall", icon: FaUsers },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
   { name: "Stories", href: "/stories", icon: FaBookOpen },
@@ -54,6 +52,7 @@ export default function CustomSidebar() {
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
     { name: "Blog", icon: FileText, path: "/admin/blog" },
+    { name: "News", icon: FaNewspaper, path: "/admin/news" },
     { name: "Prices", icon: DollarSign, path: "/admin/prices" },
     { name: "Posts", icon: MessageSquare, path: "/admin/posts" },
     { name: "Stories", icon: FileText, path: "/admin/stories" },
