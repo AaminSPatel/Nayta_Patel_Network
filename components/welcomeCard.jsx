@@ -71,14 +71,15 @@ export default function WelcomeCard({ user, onClose }) {
                     <h2 className="text-xl font-bold text-emerald-800">
                       नायता पटेल नेटवर्क में आपका स्वागत है!
                     </h2>
-                    <p className="text-sm text-emerald-600">
-                      प्रिय {user?.fullname || 'सदस्य'}
-                    </p>
+                   
                   </div>
                 </div>
 
                 {/* Body */}
                 <div className="prose prose-emerald text-sm text-emerald-700 mb-6">
+                     <p className="text-md font-semibold text-emerald-600">
+                      प्रिय {user?.fullname || 'सदस्य'}
+                    </p>
                   <p>
                     आपका हमारे नायता पटेल नेटवर्क में स्वागत है! हमारा यह डिजिटल परिवार 
                     मध्य प्रदेश के नायता पटेल समाज को जोड़ने और समृद्ध करने के लिए समर्पित है।
