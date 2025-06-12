@@ -29,7 +29,7 @@ export default function SignupPage() {
   });
   const router = useRouter()
 
-  const {path, setToken, setUser, setError} = usePatel()
+  const {path, setToken, setUser, setError,setShowWelcomeCard} = usePatel()
   //const { setUser, setToken, setError } = usePatel(); // Assuming your context provides these
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -109,7 +109,8 @@ export default function SignupPage() {
        setIsSignUp(true)
       // Navigate to home after 2 seconds
       setTimeout(() => {
-        router.push('/profile-update')
+      router.push('/profile-update')
+      setShowWelcomeCard(true)
       }, 2000)
 
       console.log('Signup successful:');

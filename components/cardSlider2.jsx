@@ -69,9 +69,10 @@ if(user){
           <p className="mt-2 lg:mt-3 font-medium">आपकी सदस्यता हमारे लिए मूल्यवान है!</p>
         </div>
       ),
-      bgColor: "bg-indigo-50",
-      borderColor: "border-indigo-200",
-      textColor: "text-indigo-800"
+      bgColor: "bg-emerald-50",
+      borderColor: "border-emerald-200",
+      textColor: "text-emerald-800",
+      textColorSecondary: "text-emerald-600"
     },
     ambassador: {
       title: `${userData.village} गाँव के राजदूत`,
@@ -172,7 +173,7 @@ if(user){
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-6xl">
+    <div className="container mx-auto p-4 max-w-5xl">
       {/* Card Type Selector - Responsive */}
       <div className="flex overflow-x-auto gap-2 mb-4 pb-2 scrollbar-hide">
         {Object.keys(cardTypes).map((type) => (
@@ -209,28 +210,31 @@ if(user){
           } border-2 rounded-xl shadow-lg p-4 md:p-6 flex flex-col`}
         >
           {/* Card Header */}
-          <div className="flex justify-between items-start mb-3 md:mb-4">
+          <div className="flex justify-between gap-3 items-start mb-3 md:mb-4">
+            <div className="bg-black shadow-sm rounded-full overflow-hidden w-16 h-16 min-w-16">
+              {/* {cardTypes[currentCardType].icon} */}
+              <img src={user?.profilepic?.url} className='h-16 w-full rounded-full' alt="" />
+            </div>
             <div className={`${cardTypes[currentCardType].textColor}`}>
               <h2 className="text-lg md:text-xl lg:text-2xl font-bold">{cardTypes[currentCardType].title}</h2>
-              <p className="text-xs md:text-sm">{cardTypes[currentCardType].subtitle}</p>
+              <p className="text-xs md:text-sm hidden">{cardTypes[currentCardType].subtitle}</p>
             </div>
-            <div className="p-2 bg-white rounded-full shadow-sm">
-              {cardTypes[currentCardType].icon}
-            </div>
+           
           </div>
 
           {/* Card Content - Responsive sizing */}
-          <div className={`flex-grow ${cardTypes[currentCardType].textColor} overflow-visible`}>
+          <div className={`flex-grow ${currentCardType ==='welcome'? cardTypes[currentCardType].textColor : cardTypes[currentCardType].textColorSecondary}  overflow-visible`}>
             {cardTypes[currentCardType].content}
           </div>
 
           {/* Footer with Branding */}
           <div className="mt-3 md:mt-4 text-center">
-            <p className="text-xs md:text-sm font-medium text-gray-600">नायता पटेल नेटवर्क - मध्य प्रदेश</p>
+            <p className="text-sm md:text-sm font-semibold text-gray-600">नायता पटेल नेटवर्क - मध्य प्रदेश</p>
             <p className="text-[10px] md:text-xs text-gray-500">naytapatelnetwork.vercel.app</p>
           </div>
         </motion.div>
       </div>
+
 
       {/* Responsive Action Buttons */}
       <div className="flex flex-wrap justify-center gap-3 mt-6">

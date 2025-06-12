@@ -30,7 +30,7 @@ export default function LoginPage() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotError, setForgotError] = useState("");
   const [forgotSuccess, setForgotSuccess] = useState("");
-  const { path, setToken, setUser, setError } = usePatel();
+  const { path, setToken, setUser, setError , setShowWelcomeCard} = usePatel();
   const router = useRouter();
 
   const handleLogin = async (e) => {
@@ -78,10 +78,11 @@ console.log('Data after login');
       setToken(data.token);
       localStorage.setItem("token", data.token);
       setIsSuccess(true);
-
+      setShowWelcomeCard(true)
       // Navigate to home after 2 seconds
       setTimeout(() => {
         router.push("/");
+        
       }, 2000);
     } catch (err) {
       setErrors((prev) => ({

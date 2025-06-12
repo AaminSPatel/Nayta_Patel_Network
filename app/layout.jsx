@@ -92,9 +92,9 @@ export const metadata = {
     }
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/logo1.png",
-    apple: "/logo1.png",
+    icon: "/tractor.png",
+    shortcut: "/tractor.png",
+    apple: "/tractor.png",
   },
   manifest: "/site.webmanifest",
   themeColor: "#047857", // Emerald-700

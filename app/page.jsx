@@ -24,10 +24,11 @@ import Poster from "../components/poster.jsx";
 import AdvertisementVideo from "../components/PromotionalVideo.jsx";
 import Posters from "../components/posters.jsx";
 import VillageSection from "../components/villageSection.jsx";
-import ComplimentCardsSlider2 from "../components/cardSlider2.jsx";
+import WelcomeCard from "../components/welcomeCard.jsx";
 import "swiper/css/effect-coverflow";
 import NayataPatelCard from "../components/poster.jsx";
 import PromotionalPosters from "../components/posters.jsx";
+import ResponsiveCommunityCards from "../components/cardSlider2.jsx";
 
 
 
@@ -36,7 +37,7 @@ import PromotionalPosters from "../components/posters.jsx";
  
 export default function Home() {
   const [mounted, setMounted] = useState(false);
-  const { blogs, formatDate, user, stories, posts, siteUrl,prices} =
+  const { blogs, formatDate, user, stories, posts, siteUrl,prices,showWelcomeCard,setShowWelcomeCard} =
     usePatel();
 const [priceData,setPriceData] = useState([])
   useEffect(() => {
@@ -264,6 +265,17 @@ const containerVariants = {
  {/*     <AdvertisementVideo /> 
      <NayataPatelCard /> */} 
      <PriceSection priceData={priceData}/>
+
+      {/* Welcome Card */}
+      {showWelcomeCard && (
+        <WelcomeCard 
+          user={userData} // Pass your user object
+          onClose={() => {
+            setShowWelcomeCard(false)
+            localStorage.setItem('hasSeenWelcome', 'true')
+          }}
+        />
+      )}
      <section className="container mx-auto px-4">
 
      <VillageSection priceData={priceData}/>

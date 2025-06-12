@@ -7,13 +7,13 @@ import { motion } from "framer-motion"
 import { usePatel } from "../components/patelContext"
 import { Menu } from "lucide-react"
 import HeaderAdmin from "./HeaderAdmin"
-import { FaBell } from "react-icons/fa"
+import { FaBell, FaCamera, FaIdCard } from "react-icons/fa"
 import NotificationModal from "./notification_model"
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
-  const { toggleSidebar, isSidebarOpen, user, siteBrand, siteLogo } = usePatel()
+  const { toggleSidebar, isSidebarOpen, user, siteBrand, siteLogo ,showWelcomeCard,setShowWelcomeCard } = usePatel()
   const isAdmin = pathname.startsWith("/admin")
   const [notification,setNotification] = useState(false)
   useEffect(() => {
@@ -96,7 +96,8 @@ export default function Header() {
                   </button>
                 </Link>
               ) : ( <div className="flex">
-                <div className="flex mx-2">
+                <div className="flex mx-2 gap-2 items-center justify-center">
+                 {pathname === '/' && <button className="text-orange-500 cursor-pointer" onClick={()=> setShowWelcomeCard(true)}><FaIdCard/> </button>}
                 <NotificationModal/>
                 </div>
                 <Link href="/profile">
