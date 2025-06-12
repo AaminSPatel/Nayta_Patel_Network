@@ -11,7 +11,8 @@ import {
   FaLinkedin,
   FaDownload,
   FaShare,
-  FaEnvelope
+  FaEnvelope,
+  FaMapPin
 } from 'react-icons/fa';
 //import './AmbassadorCard.css';
 
@@ -47,10 +48,10 @@ const ResponsiveAmbassadorCard = (ambassador) => {
       setDefaultAmbassador({
         name: ambassador.user.fullname,
         village: ambassador.user.village,
-        image: ambassador.user.profilepic.url,
+        image: ambassador?.user?.profilepic?.url || '/user.avif',
         role: 'Village Ambassador',
-        contact: ambassador.user.email,
-        achievements:ambassador?.user?.achievement || 'Organized community events, Environmental initiatives'
+        contact: ambassador?.user?.email,
+        achievements:ambassador?.user?.achievement || 'गांव के लिए एम्बेसडर बनकर इन्होंने समाज में सकारात्मक बदलाव लाने की दिशा में एक कदम बढ़ाया है। हम इनसे अनुरोध करते हैं कि आगे भी हमारे नेटवर्क को मजबूत बनाने में सहयोग करें।'
       });
     
   }, []);
@@ -109,7 +110,7 @@ const ResponsiveAmbassadorCard = (ambassador) => {
   };
 
   return (
-    <div className="flex flex-col items-center  p-4">
+    <div className="flex flex-col items-center p-4">
       {/* Responsive Card Container */}
       <div 
         ref={cardRef}
@@ -133,18 +134,18 @@ const ResponsiveAmbassadorCard = (ambassador) => {
           </div>
           
           {/* Info Section */}
-          <div className={`${isLandscape ? 'w-2/3 h-full' : 'w-full h-auto'} p-4 flex flex-col justify-between`}>
+          <div className={`${isLandscape ? 'w-full h-full' : 'w-full h-auto'} p-4 flex flex-col justify-between`}>
             <div>
               <h3 className="text-xl font-bold text-[#1f2937] text-center mb-0.5">{data.name}</h3>
               <p className="text-xs text-[#059669] font-medium text-center">{data.role}</p>
               
               <div id='village' className="mt-3 bg-[#fff] .village-info-card rounded-lg p-2 ">
-                <p className="text-sm font-semibold text-gray-800 ">{data.village}</p>
-                <p className="text-xs text-gray-800 mt-1 flex gap-2 items-center justify-center"><span className='text-emerald-500'><FaEnvelope/> </span> {data.contact}</p>
+                <p className="text-xs  text-gray-800 flex gap-2 items-center "><span className='text-emerald-500'><FaMapPin/> </span>{data.village}</p>
+                <p className="text-xs text-gray-800 mt-1 flex gap-2 items-center"><span className='text-emerald-500'><FaEnvelope/> </span> {data.contact}</p>
               </div>
               
               { (
-                <p className="text-xs text-gray-700 text-center laila h-10 my-2 mb-8">{data.achievements}</p>
+                <p className="text-xs text-gray-700 text-center laila my-3 mb-6">{data.achievements}</p>
               )}
             </div>
             
@@ -178,7 +179,7 @@ const ResponsiveAmbassadorCard = (ambassador) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={captureCard}
-          className="download-button"
+          className="download-butto hidden"
         >
           <FaDownload />
           Download Card
