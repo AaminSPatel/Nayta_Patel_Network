@@ -99,6 +99,9 @@ export const metadata = {
   manifest: "/site.webmanifest",
   themeColor: "#047857", // Emerald-700
   category: "community development",
+  other: {
+    "google-site-verification": "Gw0kKrcBORBSuCsj5fpyVGYEYahY47h7CpJufGEWshY", // Add your Google Search Console verification code
+  },
 }
 export default function RootLayout({ children }) {
   return (
