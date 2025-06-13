@@ -14,13 +14,23 @@ export const metadata = {
     default: "Nayta Patel Network - Digital Voice of Rural India",
     template: "%s | Nayta Patel Samaj"
   },
-  description: "Nayta Patel Network - Empowering rural communities through education, agriculture, and social development. नायता पटेल नेटवर्क - शिक्षा, कृषि और सामाजिक विकास के माध्यम से ग्रामीण समुदायों को सशक्त बनाना।",
+  description: "नायता पटेल नेटवर्क - नायता पटेल समाज का प्रमुख प्लेटफॉर्म | Daily news, inspiring stories, agricultural tips, and community updates for Nayta Patel members. Join us to empower rural communities through education, farming innovations, and social development initiatives. नायता पटेल समाज की ताज़ा खबरें, सफलता की कहानियाँ, कृषि ज्ञान और सामुदायिक कार्यक्रमों की जानकारी।",
   keywords: [
     "Nayta Patel Samaj",
     "Patel Community",
     "Rural Development India",
     "Agricultural Empowerment",
     "Digital India Villages",
+    "Nayta Patel",
+    "Nayta News",
+    "Nayata Patel",
+    "Nyta Patel",
+    "Patel Nayta",
+    "Nayta Patel Samaj",
+    "Nayta Samaj",
+    "Nayta Patel in Indore",
+    "Nayata Patel Network",
+    "Patel Nayata",
     "Indore",
     "Ujjain",
     "Dewas",
@@ -93,9 +103,9 @@ export const metadata = {
     }
   },
   icons: {
-    icon: "/tractor.png",
-    shortcut: "/tractor.png",
-    apple: "/tractor.png",
+    icon: "/tactor.png",
+    shortcut: "/tactor.png",
+    apple: "/tactor.png",
   },
   manifest: "/site.webmanifest",
   themeColor: "#047857", // Emerald-700

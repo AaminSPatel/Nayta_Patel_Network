@@ -21,7 +21,7 @@ import {
 import { usePatel } from '../../../components/patelContext';
 import CompactAmbassadorCard from '../../../components/CompactAmbassadorCard';
 import { GiKing } from 'react-icons/gi';
-
+import Head from 'next/head';
 const VillageDetailPage = () => {
   const {villageId} = useParams();
   //const { villageId } = router.query;
@@ -31,7 +31,7 @@ const VillageDetailPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
-const {villages} = usePatel();
+const {villages , path} = usePatel();
   // Simulate fetching data from API
 
   useEffect(() => {
@@ -115,10 +115,11 @@ const {villages} = usePatel();
     ? `${village.info.substring(0, 150)}...` 
     : village.info;
   
-  const descriptionToShow = showFullDescription ? village.info : shortDescription;
+  const descriptionToShow = showFullDescription ? village?.info : shortDescription;
 
   return (
     <div className="bg-gray-50 min-h-screen">
+      {village.length > 0 && <VillageSEOHead village={village} path={path} />}
       {/* Hero Section with Image Carousel */}
       <div className="relative h-[60vh] overflow-hidden">
         <AnimatePresence initial={false} mode="wait">
@@ -131,8 +132,8 @@ const {villages} = usePatel();
             className="absolute inset-0"
           >
             <Image
-              src={village.images[currentImageIndex].url || "/placeholder.svg"}
-              alt={`${village.name} image ${currentImageIndex + 1}`}
+              src={village?.images[currentImageIndex]?.url || "/placeholder.svg"}
+              alt={`${village?.name} image ${currentImageIndex + 1}`}
               fill
               style={{ objectFit: 'cover' }}
               priority
@@ -159,7 +160,7 @@ const {villages} = usePatel();
 
         {/* Image Indicators */}
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
-          {village.images.map((_, index) => (
+          {village?.images?.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentImageIndex(index)}
@@ -178,7 +179,7 @@ const {villages} = usePatel();
           transition={{ delay: 0.2, duration: 0.6 }}
           className="absolute bottom-10 left-10 text-white z-10 max-w-3xl"
         >
-          <h1 className="text-5xl font-bold mb-2">{village.name}</h1>
+          <h1 className="text-5xl font-bold mb-2">{village?.name}</h1>
           {/* <div className="flex items-center">
             <FaMapMarkerAlt className="mr-2" />
             <p className="text-lg">{village.location}</p>
@@ -227,11 +228,11 @@ const {villages} = usePatel();
                     <div className="bg-white p-6 rounded-2xl shadow-sm">
                       <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800">
                         <FaInfoCircle className="mr-2 text-emerald-500" />
-                        About {village.name}
+                        About {village?.name}
                       </h2>
                       <p className="text-gray-700 leading-relaxed">{descriptionToShow}</p>
                       
-                      {village.info.length > 150 && (
+                      {village?.info.length > 150 && (
                         <button
                           onClick={() => setShowFullDescription(!showFullDescription)}
                           className="mt-2 text-emerald-600 font-medium flex items-center"
@@ -255,7 +256,7 @@ const {villages} = usePatel();
                             transition={{ type: "spring", stiffness: 100 }}
                             className="text-5xl font-bold text-emerald-600"
                           >
-                            {village.population.toLocaleString()}
+                            {village?.population?.toLocaleString()}
                           </motion.div>
                           <p className="text-gray-600 mt-1">Total Population</p>
                         </div>
@@ -268,12 +269,12 @@ const {villages} = usePatel();
                         History
                       </h2>
                       <p className="text-gray-700">
-                        {village.name} was established on {formatDate(village.createdAt)}. 
+                        {village?.name} was established on {formatDate(village?.createdAt)}. 
                         It has grown significantly over the years and has become a landmark location in the region.
                       </p>
                     </div>
  {village?.ambassador && <div  className='flex items-center justify-center w-full'>
- <CompactAmbassadorCard user = { village.ambassador }/>
+ <CompactAmbassadorCard user = { village?.ambassador }/>
 </div>}
                   </div>
                 )}
@@ -477,3 +478,68 @@ const TabButton = ({ active, onClick, icon, label }) => {
 };
 
 export default VillageDetailPage;
+
+
+
+const VillageSEOHead = ({ village ,path}) => {
+  const pageTitle = `${village?.name} गाँव - नायता पटेल समाज | Nayta Patel Network`;
+  const pageDescription = `${village?.name} (${village?.district}) - नायता पटेल समाज का गाँव। ${village?.info?.substring(0, 160)}...`;
+  const canonicalUrl = `${path}/village/${village?._id}`;
+
+  return (
+    <Head>
+      {/* Primary Meta Tags */}
+      <title>{pageTitle}</title>
+      <meta name="description" content={pageDescription} />
+      <link rel="canonical" href={canonicalUrl} />
+
+      {/* Open Graph / Facebook */}
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:title" content={`${village?.name} गाँव - नायता पटेल समाज | Nayta Patel Samaj Ka Gaon`} />
+      <meta property="og:description" content={pageDescription} />
+      <meta property="og:image" content={village?.image[0]?.url || `${path}/logo1.jpg`} />
+      <meta property="og:image:alt" content={`${village?.name} गाँव का दृश्य`} />
+
+      {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={pageTitle} />
+      <meta name="twitter:description" content={pageDescription} />
+      <meta name="twitter:image" content={village?.image[0]?.url} />
+
+      {/* Schema.org Structured Data */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Village",
+          "name": `${village?.name} - Nayta Patel Samaj`,
+          "description": pageDescription,
+          "image": village?.image[0]?.url,
+          "url": canonicalUrl,
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": village?.name,
+            "addressRegion": village?.district,
+            "addressCountry": "India"
+          },
+          "population": village?.population,
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": village?.location?.split(',')[0] || '',
+            "longitude": village?.location?.split(',')[1] || ''
+          }
+        })}
+      </script>
+
+      {/* Additional SEO Tags */}
+      <meta name="keywords" content={`${village?.name}, नायता पटेल समाज, ${village?.district} गाँव, Nayta Patel Network, rural development , nayta patel samaj village, nayta gaon , indore, ujjain , dewas`} />
+      <meta name="geo.region" content="IN-MP" />
+      <meta name="geo.placename" content={village?.district} />
+      
+      {/* Google Maps iframe fallback for bots */}
+      <meta name="place:location:latitude" content={village?.location?.split(',')[0] || ''} />
+      <meta name="place:location:longitude" content={village?.location?.split(',')[1] || ''} />
+    </Head>
+  );
+};
+

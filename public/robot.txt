@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://naytapatelnetwork.vercel.app/
+
+# Sitemaps
+Sitemap: https://naytapatelnetwork.vercel.app/sitemap.xml
