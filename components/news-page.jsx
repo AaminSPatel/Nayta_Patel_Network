@@ -155,7 +155,7 @@ export default function NewsPage() {
   const [selectedDate, setSelectedDate] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
-  const [selectedNews, setSelectedNews] = useState(null)
+  const [featuredNews, setFeaturedNews] = useState([])
   const [showPublishForm, setShowPublishForm] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const newsPerPage = 6
@@ -168,6 +168,11 @@ export default function NewsPage() {
             setUserData(user)
         }
      }, [user])
+     useEffect(()=>{
+      if(news){
+        setFeaturedNews(news.reverse().slice(0,3))
+      }
+     },[news])
   // Filter and search functionality
   useEffect(() => {
     let filtered = news
@@ -380,8 +385,7 @@ export default function NewsPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {news.slice(0, 3)
-                .map((item, index) => (
+              {featuredNews?.map((item, index) => (
                   <motion.div
                     key={item?._id}
                     className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer group"
@@ -463,7 +467,7 @@ export default function NewsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {currentNews.map((item, index) => (
+              {currentNews.slice(3,currentNews.length).map((item, index) => (
                 <motion.div
                   key={item._id}
                   className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer group"

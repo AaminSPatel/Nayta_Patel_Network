@@ -97,7 +97,7 @@ export default function Header() {
                 </Link>
               ) : ( <div className="flex">
                 <div className="flex mx-2 gap-2 items-center justify-center">
-                 {pathname === '/' && <button className="text-orange-500 cursor-pointer" onClick={()=> setShowWelcomeCard(true)}><FaIdCard/> </button>}
+                 {pathname === '/' && user?.status === 'verified' && <button className="text-orange-500 cursor-pointer" onClick={()=> setShowWelcomeCard(true)}><FaIdCard/> </button>}
                 <NotificationModal/>
                 </div>
                 <Link href="/profile">

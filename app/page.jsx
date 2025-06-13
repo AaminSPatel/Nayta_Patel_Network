@@ -267,7 +267,7 @@ const containerVariants = {
      <PriceSection priceData={priceData}/>
 
       {/* Welcome Card */}
-      {showWelcomeCard && (
+      {showWelcomeCard && user?.status === 'verified' && (
         <WelcomeCard 
           user={userData} // Pass your user object
           onClose={() => {

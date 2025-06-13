@@ -6,6 +6,7 @@ import Header from "../components/header"
 import Footer from "../components/footer"
 import { AppProvider } from "../components/patelContext"
 import { Analytics } from "@vercel/analytics/next"
+import WhatsAppGroupButton from "../components/whatsappButton"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
@@ -121,6 +122,7 @@ export default function RootLayout({ children }) {
                 <main className="flex-1">
                   <Analytics/>
                   {children}</main>
+                  <WhatsAppGroupButton />
                 <Footer />
               </div>
             </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaWhatsapp, FaFacebook, FaYoutube } from "react-icons/fa";
+import { FaWhatsapp, FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -9,20 +9,23 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-lg mb-4">Nayta Patel Network</h3>
             <p className="text-gray-600 mb-4">
-<span className="font-semibold">नायता पटेल नेटवर्क </span> - जहाँ शिक्षा की रोशनी, किसानों की ताकत और समाज की प्रगति एक साथ मिलती है!
+          <span className="font-semibold">नायता पटेल नेटवर्क </span> - जहाँ शिक्षा की रोशनी, किसानों की ताकत और समाज की प्रगति एक साथ मिलती है!
             </p>
             <div className="flex space-x-4">
               <a
-                href="https://wa.me/917747074841"
-                className="text-gray-600 hover:text-emerald-500"
+                href={`https://chat.whatsapp.com/IABp5obYWKEIMcHLVTDkNs?text=${encodeURIComponent("Hello from Nayta Patel Network!")}`}   
+                className=" text-emerald-500"
               >
                 <FaWhatsapp size={20} />
               </a>
-              <a href="#" className="text-gray-600 hover:text-emerald-500">
+              <a href="#" className="text-blue-500">
                 <FaFacebook size={20} />
               </a>
-              <a href="#" className="text-gray-600 hover:text-emerald-500">
+              <a href="#" className="text-red-600">
                 <FaYoutube size={20} />
+              </a>
+              <a href="https://www.instagram.com/nayta_patel_network/" className="text-pink-500">
+                <FaInstagram size={20} />
               </a>
             </div>
           </div>
@@ -68,22 +71,6 @@ export default function Footer() {
           <div>
             <h3 className="font-bold mb-4">Resources</h3>
             <ul className="space-y-2">
-           {/*    <li>
-                <Link
-                  href="/learning"
-                  className="text-gray-600 hover:text-emerald-500"
-                >
-                  Learning
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/marketplace"
-                  className="text-gray-600 hover:text-emerald-500"
-                >
-                  Marketplace
-                </Link>
-              </li> */}
               <li>
                 <Link
                   href="/directory"
@@ -118,7 +105,7 @@ export default function Footer() {
               <p>
                 Phone:
                 <a
-                  href="https://wa.me/917747074841"
+                  href={`https://wa.me/917747074810?text=${encodeURIComponent("Hello from Nayta Patel Network!")}`}
                   className="text-gray-600 hover:text-emerald-500"
                 >
                   +91 7747 074 810
@@ -136,7 +123,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t mt-8 pt-8 text-center text-gray-600">
+        <div className="border-t mt-8 mb-8 pt-8 text-center text-gray-600">
           <p>
             &copy; {new Date().getFullYear()} Nayta Patel Network. All rights
             reserved.

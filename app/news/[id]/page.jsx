@@ -5,53 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { usePatel } from '../../../components/patelContext';
 
-// Demo News Data
-const demoNews = [
-  {
-    id: 1,
-    title: "How AI is Transforming Agriculture in Rural India",
-    category: "Technology",
-    location: "Mumbai, India",
-    date: "2024-05-15",
-    publisher: "John Doe",
-    views: 1245,
-    image: "/ai-farming.jpg",
-    fullContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-  },
-  {
-    id: 2,
-    title: "New Education Policy: What Students Need to Know",
-    category: "Education",
-    location: "Delhi, India",
-    date: "2024-05-10",
-    publisher: "Jane Smith",
-    views: 892,
-    image: "/education-policy.jpg",
-    fullContent: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-  },
-  {
-    id: 3,
-    title: "Sustainable Farming Practices for Small Farmers",
-    category: "Agriculture",
-    location: "Pune, India",
-    date: "2024-04-28",
-    publisher: "Ramesh Patel",
-    views: 1567,
-    image: "/sustainable-farming.jpg",
-    fullContent: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
-  },
-  {
-    id: 4,
-    title: "Rural Healthcare: Challenges and Solutions",
-    category: "Health",
-    location: "Bangalore, India",
-    date: "2024-04-20",
-    publisher: "Dr. Anjali Rao",
-    views: 2043,
-    image: "/rural-healthcare.jpg",
-    fullContent: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
-  }
-];
 
 export default function NewsDetail() {
   const params = useParams();
@@ -153,14 +106,14 @@ const {news, path} = usePatel()
 
         {/* Category Badge */}
         <div className="absolute top-4 left-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-          {selectedNews.category}
+          {selectedNews?.category}
         </div>
 
         {/* Content */}
         <div className="p-3 sm:p-8">
           <img
-            src={selectedNews.image}
-            alt={selectedNews.title}
+            src={selectedNews?.image?.url}
+            alt={selectedNews?.title}
             className="w-full h-64 object-cover rounded-xl mb-6"
           />
 
@@ -168,11 +121,11 @@ const {news, path} = usePatel()
             <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
               <FaMapMarkerAlt />
-              <span>{selectedNews.location}</span>
+              <span>{selectedNews?.location}</span>
             </div>
             <div className="flex items-center gap-2">
               <FaCalendarAlt />
-              <span>{new Date(selectedNews.publish_date).toLocaleDateString('en-IN')}</span>
+              <span>{new Date(selectedNews?.publish_date).toLocaleDateString('en-IN')}</span>
             </div>
             </div>
             <div className="flex items-center gap-2  bg-orange-300 px-3 py-1 rounded-full">
@@ -182,17 +135,17 @@ const {news, path} = usePatel()
           </div>
 
           <h1 className="text-xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-6">
-            {selectedNews.title}
+            {selectedNews?.title}
           </h1>
 
           <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed mb-3 sm:mb-8">
-            {selectedNews.content}
+            {selectedNews?.content}
           </div>
 
           <div className="flex justify-between items-center pt-6 border-t border-gray-200 ">
             <div className="flex items-center gap-2 text-gray-500 ">
               <FaEye />
-              <span>{selectedNews.views} views</span>
+              <span>{selectedNews?.views} views</span>
             </div>
 
             <div className="relative">
