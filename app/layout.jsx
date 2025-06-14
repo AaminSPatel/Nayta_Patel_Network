@@ -7,6 +7,8 @@ import Footer from "../components/footer"
 import { AppProvider } from "../components/patelContext"
 import { Analytics } from "@vercel/analytics/next"
 import WhatsAppGroupButton from "../components/whatsappButton"
+import GoogleAnalytics from "../components/GoogleAnalytics"
+import InstallPWA from "../components/InstallPWA"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
@@ -103,11 +105,11 @@ export const metadata = {
     }
   },
   icons: {
-    icon: "/tactor.png",
-    shortcut: "/tactor.png",
-    apple: "/tactor.png",
-  },
-  manifest: "/site.webmanifest",
+  icon: "/favicon.ico",
+  shortcut: "/favicon.ico",
+  apple: "/apple-icon.png" // Apple recommends 180x180
+},
+  manifest: "/manifest.json",
   themeColor: "#047857", // Emerald-700
   category: "community development",
   other: {
@@ -117,9 +119,23 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-         <head>
-        <link rel="icon" href="./favicon.png" sizes="any" />
-      </head>
+     <head>
+  {/* Favicons */}
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/icons/web-app-manifest-192x192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/icons/web-app-manifest-192x192.png" />
+  
+  {/* PWA Metadata */}
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#047857" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Nayta Patel Network" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  
+  {/* Windows Pinned Sites */}
+  <meta name="msapplication-TileColor" content="#047857" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
+</head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
         <AppProvider>
@@ -131,14 +147,21 @@ export default function RootLayout({ children }) {
                 <Header />
                 <main className="flex-1">
                   <Analytics/>
-                  {children}</main>
+                  <InstallPWA/>
+                  {children}
+
+                  </main>
                   <WhatsAppGroupButton />
                 <Footer />
               </div>
-            </div>
+            </div>{/* gtag('event', 'page_view', {
+  page_title: document.title,
+  page_path: window.location.pathname
+}); */}
             </AppProvider>
          {/*  </SidebarProvider> */}
         </ThemeProvider>
+        <GoogleAnalytics GA_MEASUREMENT_ID={process.env.NEXT_PUBLIC_GA_ID} /> {/* Replace with your GA ID */}
       </body>
     </html>
   )
