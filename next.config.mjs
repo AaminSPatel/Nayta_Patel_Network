@@ -15,21 +15,12 @@ const nextConfig = {
         pathname: '/dglmtpj1j/**',
       },
     ],
-  },
+  }
   // Removed experimental.removeDefaultFavicon as it's no longer supported
 };
 
 const pwaConfig = withPWA({
   dest: 'public',
-  runtimeCaching: [
-      {
-        urlPattern: /\.(?:png|jpg|jpeg|svg)$/,
-        handler: 'CacheFirst'
-      }
-    ],
-    dynamicStartUrl: true,
-    sw: 'sw.js',
-    publicExcludes: ['!nopwa/**/*'],
   disable: process.env.NODE_ENV === 'development',
   register: true,
   skipWaiting: true,

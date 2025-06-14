@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react'; // Or any close icon library you prefer
 
-export default function InstallPWA() {
+export default function InstallPWA() { 
+  
   const [prompt, setPrompt] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
 

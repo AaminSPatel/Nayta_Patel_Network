@@ -7,7 +7,20 @@ import MemberForm from "../../../components/MemberForm"
 import { usePatel } from "../../../components/patelContext"
 import { useEffect } from "react"
 import { redirect } from 'next/navigation';
+
+import { Suspense } from 'react';
+
 export default function MembersPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MembersContent />
+    </Suspense>
+  );
+}
+
+ function MembersContent() {
+
+
   const [showForm, setShowForm] = useState(false)
 const {user , users, villages} = usePatel()
 

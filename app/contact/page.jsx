@@ -47,48 +47,26 @@ console.log(formDataToSend); */
         body: JSON.stringify(formData),
       });
        if (response.status === 201) {
-        console.log(response);
+       // console.log(response);
         
       } 
     } catch (err) {
-      console.error('Error creating event:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to create event');
+      console.error('Error creating feedback:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to create Feedback');
     } finally {
       setLoading(false);
       setFormStatus("success")
     }
   };
-/* 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // In a real app, this would send the form data to an API
-    console.log("Form submitted:", formData)
-    setFormStatus("success")
 
-    // Reset form after successful submission
-    setTimeout(() => {
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
-      })
-      setFormStatus(null)
-    }, 3000)
-  } */
 
   return (
     <div className="container mx-auto px-4 py-12">
     <Head>
   <title>Contact Us | Connect for Farming Support & Village Development</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
   <meta name="robots" content="index, follow" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#4CAF50" />
   <meta name="description" content="Reach out to the Nayta Patel Samaj team for any queries about farming help, mandi price updates, or community programs in your village." />
   <meta name="keywords" content="contact, reach Nayta Patel, farming support, mandi prices, community help, Indore, Ujjain, Dewas, Dhar, Ratlam, agriculture assistance" />
   <meta name="author" content="Nayta Patel Community" />

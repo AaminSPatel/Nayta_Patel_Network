@@ -30,6 +30,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteBrand = "Nayta Patel Network";
   const siteLogo = "/tactor.png";
 
+
   const tags = [
     // Farming & Agriculture
     "farming",
@@ -578,21 +579,23 @@ if(user){
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Or wherever you store the JWT
+    const token1 = localStorage.getItem("token"); // Or wherever you store the JWT
 
     fetchPosts();
     fetchNews();
     fetchFeedbacks();
-    fetchUsers(token);
+    fetchUsers(token1);
     fetchBlogs();
     fetchPrices();
     fetchStories();
     fetchVillages();
     fetchEvents();
     fetchUserFromToken();
-    setToken(localStorage.getItem("token"));
+    setToken(token1);
     //fetchUserFromToken()
-  }, []);
+  }, [fetchBlogs, fetchEvents, fetchFeedbacks, 
+  fetchNews, fetchPrices, fetchStories,
+  fetchUserFromToken, fetchVillages]);
   // Sign in function (generate token)
   const signIn = async (email, password) => {
     try {
