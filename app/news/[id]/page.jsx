@@ -4,6 +4,7 @@ import { FaTimes, FaChevronLeft, FaChevronRight, FaShare, FaEye, FaCalendarAlt, 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { usePatel } from '../../../components/patelContext';
+import Head from 'next/head';
 
 
 export default function NewsDetail() {
@@ -15,14 +16,11 @@ const {news, path} = usePatel()
   const selectedNews = news.find(news => news._id === newsId);
 
  useEffect(() => {
-    if (!newsId) return;
-
+    if (!newsId && path === 'http://localhost:5000') return;
     // Create a unique identifier for this view attempt
     //const viewKey = `news-view-${newsId}`;
-
     // Check if we've already tried to count this view
    // if (sessionStorage.getItem(viewKey)) return;
-
     const timer = setTimeout(async () => {
       try {
         // Mark this view attempt as started
@@ -55,6 +53,7 @@ const {news, path} = usePatel()
     // Cleanup function to cancel the timer if component unmounts
     return () => clearTimeout(timer);
   }, [newsId]);
+
   const handleShare = (platform) => {
     const shareUrl = `${window.location.origin}/news/${newsId}`;
     const message = `Check out this news: ${selectedNews?.title}`;
@@ -86,9 +85,73 @@ const {news, path} = usePatel()
       </div>
     );
   }
+  const pageTitle = `${selectedNews?.title} - नायता पटेल नेटवर्क | Nayta Patel Network`;
+  const metaDescription = `${selectedNews?.content?.substring(0, 160)}...`; // First 160 chars of content
+  const canonicalUrl = `${path}/news/${selectedNews._id}`;
+  const imageUrl = selectedNews?.image?.url || `${path}/home.png`;
 
   return (
     <div className=" mb-12 bg-white bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-2 ">
+       <Head>
+      {/* Primary Meta Tags */}
+      <title>{pageTitle}</title>
+      <meta name="description" content={metaDescription} />
+      <link rel="canonical" href={canonicalUrl} />
+
+      {/* Open Graph / Facebook */}
+      <meta property="og:type" content="article" />
+      <meta property="og:title" content={`${selectedNews.title} | नायता पटेल समाज`} />
+      <meta property="og:description" content={metaDescription} />
+      <meta property="og:image" content={imageUrl} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:site_name" content="Nayta Patel Network" />
+      <meta property="article:published_time" content={new Date(selectedNews?.publish_date).toISOString()} />
+      <meta property="article:author" content={selectedNews?.publisher?.fullname || "Nayta Patel Samaj"} />
+
+      {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={pageTitle} />
+      <meta name="twitter:description" content={metaDescription} />
+      <meta name="twitter:image" content={imageUrl} />
+      <meta name="twitter:label1" content="Written by" />
+      <meta name="twitter:data1" content={selectedNews?.publisher?.fullname || "Nayta Patel Samaj"} />
+      <meta name="twitter:label2" content="Views" />
+      <meta name="twitter:data2" content={selectedNews?.views?.toString() || "100+"} />
+
+      {/* Schema.org Structured Data */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          "headline": selectedNews.title,
+          "description": metaDescription,
+          "image": imageUrl,
+          "datePublished": new Date(selectedNews?.publish_date).toISOString(),
+          "dateModified": new Date(selectedNews?.publish_date).toISOString(),
+          "author": {
+            "@type": "Person",
+            "name": selectedNews?.publisher?.fullname || "Nayta Patel Samaj"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Nayta Patel Network",
+            "logo": {
+              "@type": "ImageObject",
+              "url": `${path}/logo1.png`
+            }
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": canonicalUrl
+          }
+        })}
+      </script>
+
+      {/* Additional SEO Tags */}
+      <meta name="keywords" content={`${selectedNews.title}, नायता पटेल समाज, Nayta Patel news, ${selectedNews?.publisher?.fullname}, Patel community updates`} />
+      <meta name="news_keywords" content={`Nayta Patel, ${selectedNews.title}, Patel Samaj news`} />
+      <meta name="robots" content="index, follow" />
+    </Head>
       <motion.div
         className="bg-white  rounded-xl shadow-2xl max-w-4xl w-full overflow-y-auto relative"
         initial={{ scale: 0.95, y: 20 }}

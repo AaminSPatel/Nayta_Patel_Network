@@ -27,6 +27,7 @@ const VillageDetailPage = () => {
   //const { villageId } = router.query;
   const [village, setVillage] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [notFound, setNotFound] = useState(true);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -35,17 +36,23 @@ const {villages , path} = usePatel();
   // Simulate fetching data from API
 
   useEffect(() => {
-    console.log(villageId);
-    
-    if (villageId) {
-      
+    //console.log(villageId);
+    setNotFound(false)
+    if (villageId && villages) {
       // In a real app, you would fetch this data from an API
       const foundVillage = villages.find(v => v._id === villageId);
       if(foundVillage?.ambassador){
         setUserData(foundVillage?.ambassador)
+         setNotFound(false);
+      
       }
-      setVillage(foundVillage);
-      setLoading(false);
+      else{
+     setTimeout(() => {
+       setNotFound(true);
+    }, 4000);  
+    //return () => clearInterval(interval);
+      }
+       setVillage(foundVillage);
     }
   }, [villageId,villages]);
   // Carousel navigation
@@ -64,7 +71,6 @@ const {villages , path} = usePatel();
   // AutoPlay for carousel
   useEffect(() => {
     if (!village) return;
-    
     const interval = setInterval(() => {
       goToNextSlide();
     }, 5000);
@@ -72,7 +78,7 @@ const {villages , path} = usePatel();
     return () => clearInterval(interval);
   }, [village, currentImageIndex]);
 
-  if (loading) {
+  if (!notFound && !village) {
     return (
       <div className="h-screen flex items-center justify-center">
         <motion.div

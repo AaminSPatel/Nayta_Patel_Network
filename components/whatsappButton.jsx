@@ -23,7 +23,7 @@ const WhatsAppGroupButton = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, type: 'spring', stiffness: 100 }}
-        className="fixed bottom-6 right-6 z-50 sm:h-12 sm:w-12 h-10 w-10"
+        className="fixed bottom-6 sm:bottom-8 right-6 z-50  sm:hover:w-32 sm:w-12 h-10 w-10 group"
       >
         <a
           href={'https://chat.whatsapp.com/IABp5obYWKEIMcHLVTDkNs'}
@@ -38,7 +38,7 @@ const WhatsAppGroupButton = () => {
           >
             <FaWhatsapp className="text-2xl" />
           </motion.div>
-          <span className="hidden sm:inline-block">Join Group</span>
+          <span className="hidden  sm:group-hover:inline-block">Join Group</span>
         </a>
       </motion.div>
     </>

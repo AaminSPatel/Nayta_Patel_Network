@@ -7,6 +7,7 @@ import Head from "next/head"
 import {motion } from 'framer-motion'
 //import { useSession, signIn } from 'next-auth/react'
 import { FiBook, FiSend, FiUser, FiLogIn, FiMapPin } from 'react-icons/fi'
+import Link from "next/link";
 
 
 export default function StoriesPage() {
@@ -185,21 +186,16 @@ const villages = [...new Set(stories.map((story) => story.location))];
                 
                   <p className="text-gray-500 text-sm hidden">Age: {story.age}</p>
                 </div>
-                {expandedStory === story._id ? (
-                  <div className="mt-4 p-4 border-t border-gray-200">
-                    <p>{story.content}</p>
-                  </div>
-                ): (
-                  <div classname='flex items-center justify-center h-full'><p className="text-gray-700 line-clamp-6">{story.content}</p></div>
-                )}  
+               
+                  <div className='flex items-center justify-center h-full'><p className="text-gray-700 line-clamp-6">{story.content}</p></div>
+               
+                <Link href={`/stories/${story._id}`} className="flex items-center justify-center cursor-pointer">
                 <button
-                    onClick={() =>
-                      setExpandedStory(expandedStory === story._id ? null : story._id)
-                    }
-                    className="text-emerald-500 hover:underline"
+                   
+                    className="text-emerald-500 hover:underline cursor-pointer"
                   >
-                    {expandedStory === story._id ? "Collapse" : "Read more"}
-                  </button>
+                    Read more
+                  </button></Link> 
               </div>
               
             </div>

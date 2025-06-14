@@ -467,7 +467,7 @@ export default function NewsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {currentNews.slice(3,currentNews.length).map((item, index) => (
+              {(currentNews.length > 3 ? currentNews.slice(3,currentNews.length) :currentNews) .map((item, index) => (
                 <motion.div
                   key={item._id}
                   className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer group"
