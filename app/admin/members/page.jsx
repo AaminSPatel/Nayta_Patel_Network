@@ -12,11 +12,13 @@ import { Suspense } from 'react';
 
 export default function MembersPage() {
   return (
-    <Suspense fallback={<Laoder/>}>
+    <Suspense fallback={<Loader/>}>
       <MembersContent />
     </Suspense>
   );
-}function Loader() {
+}
+
+function Loader() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white">
       <div className="relative w-24 h-24 mb-6">
