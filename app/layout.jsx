@@ -10,7 +10,7 @@ import WhatsAppGroupButton from "../components/whatsappButton"
 import GoogleAnalytics from "../components/GoogleAnalytics"
 import InstallPWA from "../components/InstallPWA"
 const inter = Inter({ subsets: ["latin"] })
-
+import { Suspense } from 'react';
 export const metadata = {
   title: {
     default: "Nayta Patel Network - Digital Voice of Rural India",
@@ -110,7 +110,6 @@ export const metadata = {
   apple: "/apple-icon.png" // Apple recommends 180x180
 },
   manifest: "/manifest.json",
-  themeColor: "#047857", // Emerald-700
   category: "community development",
   other: {
     "google-site-verification": "Gw0kKrcBORBSuCsj5fpyVGYEYahY47h7CpJufGEWshY", // Add your Google Search Console verification code
@@ -136,6 +135,7 @@ export default function RootLayout({ children }) {
   <meta name="msapplication-config" content="/browserconfig.xml" />
 </head>
       <body className={inter.className}>
+            <Suspense fallback={<div>Loading...</div>}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
         <AppProvider>
         
@@ -161,6 +161,7 @@ export default function RootLayout({ children }) {
          {/*  </SidebarProvider> */}
         </ThemeProvider>
         <GoogleAnalytics GA_MEASUREMENT_ID={process.env.NEXT_PUBLIC_GA_ID} /> {/* Replace with your GA ID */}
+        </Suspense>
       </body>
     </html>
   )
