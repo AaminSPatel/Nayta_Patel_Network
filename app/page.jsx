@@ -216,6 +216,12 @@ const containerVariants = {
         
       </section>
       
+ <section className="container mx-auto px-4">
+
+     <VillageSection priceData={priceData}/>
+     </section>
+
+{/* Event section */}
      <section className="w-full h-full sm:hidden flex items-center justify-center py-12 p-12 flex-col">
     
     <motion.div
@@ -250,7 +256,7 @@ const containerVariants = {
             </Link>
           </div>
      </section>
- 
+
      <PriceSection priceData={priceData}/>
 
       {/* Welcome Card */}
@@ -263,10 +269,7 @@ const containerVariants = {
           }}
         />
       )}
-     <section className="container mx-auto px-4">
-
-     <VillageSection priceData={priceData}/>
-     </section>
+     
 
 
       {/* Top Posts Carousel */}
