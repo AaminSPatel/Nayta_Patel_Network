@@ -16,6 +16,7 @@ import {
   FaEdit,
   FaNewspaper,
   FaAward,
+  FaMapPin,
 } from "react-icons/fa"
 import { FiEdit, FiSave, FiDownload } from "react-icons/fi"
 import { usePatel } from "./patelContext"
@@ -23,14 +24,6 @@ import { usePatel } from "./patelContext"
 const AmbassadorPortal = ({ ambassador }) => {
   const cardRef = useRef(null)
  const {user, villages,fetchVillages , path} = usePatel();
-  // Mock user data for demo
- /*  const user = {
-    fullname: "राजेश पटेल",
-    village: "नायता",
-    profilepic: { url: "/placeholder.svg?height=120&width=120" },
-    role: "ambassador",
-    _id: "123",
-  } */
 
   // Village details state
   const [villageDetails, setVillageDetails] = useState({})
@@ -159,7 +152,7 @@ const handleSubmit = async (e) => {
             <div className="absolute bottom-10 left-10 w-24 h-24 border-2 border-white rounded-full opacity-15"></div>
           </div>
 
-          <div className="relative z-10 p-4 sm:p-8">
+          <div className="relative z-10 p-3 sm:p-8">
             {/* Header Section */}
             <div className="text-center mb-8">
               <div className="flex justify-center mb-6">
@@ -189,7 +182,7 @@ const handleSubmit = async (e) => {
             </div>
 
             {/* Ambassador Privileges */}
-            <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-6 mb-6 border border-white/20">
+            <div className="bg-black/20 backdrop-blur-sm rounded-2xl sm:p-6 p-4 mb-6 border border-white/20">
               <div className="text-center mb-4">
                 <h3 className="text-2xl font-bold text-yellow-300 mb-2">🎖️ एंबेसडर के विशेष अधिकार</h3>
               </div>
@@ -236,7 +229,7 @@ const handleSubmit = async (e) => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className=" hidden flex-wrap justify-center gap-4">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -419,7 +412,7 @@ const handleSubmit = async (e) => {
 
                   <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-2xl border border-orange-200">
                     <div className="flex items-center gap-3 mb-2">
-                      <FaPhone className="text-orange-600 text-xl" />
+                      <FaMapPin className="text-orange-600 text-xl" />
                       <p className="text-sm font-semibold text-orange-700">जिला</p>
                     </div>
                     <p className="text-lg font-bold text-orange-800">{villageDetails?.district}</p>

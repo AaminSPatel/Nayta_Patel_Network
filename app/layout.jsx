@@ -146,17 +146,15 @@ export default function RootLayout({ children }) {
                 <Header />
                 <main className="flex-1">
                   <Analytics/>
-                  {<InstallPWA/> || <WhatsAppGroupButton />}
+                  {<InstallPWA/> }
+                  { <WhatsAppGroupButton />}
                   {children}
 
                   </main>
                   
                 <Footer />
               </div>
-            </div>{/* gtag('event', 'page_view', {
-  page_title: document.title,
-  page_path: window.location.pathname
-}); */}
+            </div>
             </AppProvider>
          {/*  </SidebarProvider> */}
         </ThemeProvider>

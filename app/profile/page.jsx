@@ -1,27 +1,37 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import { FiSettings, FiEdit2, FiUser, FiMapPin, FiMail, FiPhone, FiMessageSquare, FiFileText, FiStar } from "react-icons/fi"
-import { FaRegThumbsUp } from "react-icons/fa"
-import ProfileHeader from "./profile-header"
-import SettingsSection from "./settings-section"
-import VillageDetails from "./village-details"
-import { usePatel } from "../../components/patelContext"
-import AmbassadorPortal from "../../components/AmbassadorPortal"
-import EditProfileModal from "./edit-profile-modal"
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  FiSettings,
+  FiEdit2,
+  FiUser,
+  FiMapPin,
+  FiMail,
+  FiPhone,
+  FiMessageSquare,
+  FiFileText,
+  FiStar,
+} from "react-icons/fi";
+import { FaRegThumbsUp } from "react-icons/fa";
+import ProfileHeader from "./profile-header";
+import SettingsSection from "./settings-section";
+import VillageDetails from "./village-details";
+import { usePatel } from "../../components/patelContext";
+import AmbassadorPortal from "../../components/AmbassadorPortal";
+import EditProfileModal from "./edit-profile-modal";
 import Head from "next/head";
-import Link from "next/link"
+import Link from "next/link";
 
 const ProfileDashboard = () => {
-  const [activeTab, setActiveTab] = useState("profile")
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-const {user,siteUrl,villages, likes, posts, comments} = usePatel()
-  const [loading, setLoading] = useState(true)
-const [villageData,setVillageData] = useState({});
+  const [activeTab, setActiveTab] = useState("profile");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { user, siteUrl, villages, likes, posts, comments } = usePatel();
+  const [loading, setLoading] = useState(true);
+  const [villageData, setVillageData] = useState({});
 
-const [userData,setUserData] = useState({
-    _id:'',
+  const [userData, setUserData] = useState({
+    _id: "",
     fullName: "John Doe",
     email: "",
     visibilityStatus: null,
@@ -31,161 +41,161 @@ const [userData,setUserData] = useState({
     profilePic: "",
     posts: 0,
     comments: 0,
-    likes: 0,})
+    likes: 0,
+  });
 
-useEffect(()=>{
-    if(user){
-        setUserData({
-    _id  : user._id   ,
-    fullName  : user.fullname   ,
-    email     : user.email      ,
-    mobile    : user.mobile     ,
-    village   : user.village    ,
-    createdAt : user.createdAt    ,
-    visibilityStatus : user.visibilityStatus    ,
-    role      : user.role,
-    profilePic: user.profilepic?.url ,
-    posts     : 0,
-    comments  : 0,
-    likes     : 0,
-  })
-if (likes && posts && comments) {
-  setUserData((prev) => ({
-    ...prev,
-    posts: posts.filter((item) => item.user._id === user._id).length,
-    comments: comments.filter((item) => item.user._id === user._id).length,
-    likes: posts
-      .filter((post) => post.user._id === user._id) // Get only the user's posts
-      .reduce((totalLikes, post) => totalLikes + (post.likes?.length || 0), 0), // Safely sum likes
-  }));
-}
-    setLoading(false)
+  useEffect(() => {
+    if (user) {
+      setUserData({
+        _id: user._id,
+        fullName: user.fullname,
+        email: user.email,
+        mobile: user.mobile,
+        village: user.village,
+        createdAt: user.createdAt,
+        visibilityStatus: user.visibilityStatus,
+        role: user.role,
+        profilePic: user.profilepic?.url,
+        posts: 0,
+        comments: 0,
+        likes: 0,
+      });
+      if (likes && posts && comments) {
+        setUserData((prev) => ({
+          ...prev,
+          posts: posts.filter((item) => item.user._id === user._id).length,
+          comments: comments.filter((item) => item.user._id === user._id)
+            .length,
+          likes: posts
+            .filter((post) => post.user._id === user._id) // Get only the user's posts
+            .reduce(
+              (totalLikes, post) => totalLikes + (post.likes?.length || 0),
+              0
+            ), // Safely sum likes
+        }));
+      }
+      setLoading(false);
+    } else {
+      setLoading(false);
     }
-    else{
-      setLoading(false)
+  }, [user, likes, comments, posts]);
+
+  useEffect(() => {
+    if (villages && user) {
+      const filterVillage = villages.filter(
+        (item) => item.name === user.village
+      );
+      setVillageData(filterVillage[0]);
     }
-},[user,likes,comments,posts])
+  }, [villages, user]);
 
-useEffect(()=>{
-  if(villages && user){
-    const filterVillage = villages.filter((item)=> item.name === user.village)
-    setVillageData(filterVillage[0])
-  }
+  const handleEditProfile = () => {
+    setIsEditModalOpen(true);
+  };
 
-},[villages, user])
-  // Mock village data
-  /* const villageData = {
-    name: "Green Valley",
-    population: 5240,
-    established: 1967,
-    location: "Northern Region",
-    mainCrops: ["Wheat", "Corn", "Barley"],
-    climate: "Temperate",
-  } */
- const handleEditProfile = () => {
-    setIsEditModalOpen(true)
-  }
-
-  function handleUserUpdate(newuser){
+  function handleUserUpdate(newuser) {
     //console.log(newuser,'new user');
-    
-    setUserData({
-      _id     : newuser._id   ,
-    fullName  : newuser.fullname   ,
-    createdAt  : newuser.createdAt   ,
-    email     : newuser.email      ,
-    mobile    : newuser.mobile     ,
-    village   : newuser.village    ,
-    role      : newuser.role    ,
-    profilePic: newuser.profilepic?.url ,
-    posts     : newuser.posts.length      ,
-    comments  : newuser.comments.length   ,
-    likes     : newuser.likes.length      ,
-    })
 
+    setUserData({
+      _id: newuser._id,
+      fullName: newuser.fullname,
+      createdAt: newuser.createdAt,
+      email: newuser.email,
+      mobile: newuser.mobile,
+      village: newuser.village,
+      role: newuser.role,
+      profilePic: newuser.profilepic?.url,
+      posts: newuser.posts.length,
+      comments: newuser.comments.length,
+      likes: newuser.likes.length,
+    });
   }
-    if (loading) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
       </div>
-    )
+    );
   }
-  if(!user){
-    return(<div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-emerald-50 to-white p-6 text-center">
-      <div className="max-w-md mx-auto">
-        {/* Animated Icon */}
-        <div className="mb-8 flex justify-center">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="animate-ping h-24 w-24 rounded-full bg-emerald-100 opacity-75"></div>
-            </div>
-            <div className="relative flex items-center justify-center h-20 w-20 rounded-full bg-white border-2 border-emerald-500 shadow-lg">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-10 w-10 text-emerald-600" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
-                />
-              </svg>
+  if (!user) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-emerald-50 to-white p-6 text-center">
+        <div className="max-w-md mx-auto">
+          {/* Animated Icon */}
+          <div className="mb-8 flex justify-center">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="animate-ping h-24 w-24 rounded-full bg-emerald-100 opacity-75"></div>
+              </div>
+              <div className="relative flex items-center justify-center h-20 w-20 rounded-full bg-white border-2 border-emerald-500 shadow-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-10 w-10 text-emerald-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
+
+          {/* Hindi Content */}
+          <h1 className="text-2xl md:text-3xl font-bold text-emerald-800 mb-4">
+            कृपया अपनी जानकारी देखने के लिए लॉग इन करें
+          </h1>
+
+          <p className="text-gray-600 mb-6 leading-relaxed">
+            इस पेज तक पहुँचने के लिए आपको अपना खाता बनाना होगा। हमारे समुदाय का
+            हिस्सा बनें और विशेष सुविधाओं का लाभ उठाएं।
+          </p>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link href="/login">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg shadow-md hover:bg-emerald-700 transition-colors font-medium"
+              >
+                लॉग इन करें
+              </motion.button>
+            </Link>
+
+            <Link href="/signup">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-full sm:w-auto px-6 py-3 border border-emerald-600 text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors font-medium"
+              >
+                नया खाता बनाएं
+              </motion.button>
+            </Link>
+          </div>
+
+          {/* Additional Help */}
+          <p className="mt-8 text-sm text-gray-500">
+            क्या आपको मदद चाहिए?{" "}
+            <Link href="/contact" className="text-emerald-600 hover:underline">
+              हमसे संपर्क करें
+            </Link>
+          </p>
         </div>
-
-        {/* Hindi Content */}
-        <h1 className="text-2xl md:text-3xl font-bold text-emerald-800 mb-4">
-          कृपया अपनी जानकारी देखने के लिए लॉग इन करें
-        </h1>
-        
-        <p className="text-gray-600 mb-6 leading-relaxed">
-          इस पेज तक पहुँचने के लिए आपको अपना खाता बनाना होगा। हमारे समुदाय का हिस्सा बनें और विशेष सुविधाओं का लाभ उठाएं।
-        </p>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link href="/login">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg shadow-md hover:bg-emerald-700 transition-colors font-medium"
-            >
-              लॉग इन करें
-            </motion.button>
-          </Link>
-          
-          <Link href="/signup">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full sm:w-auto px-6 py-3 border border-emerald-600 text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors font-medium"
-            >
-              नया खाता बनाएं
-            </motion.button>
-          </Link>
-        </div>
-
-        {/* Additional Help */}
-        <p className="mt-8 text-sm text-gray-500">
-          क्या आपको मदद चाहिए?{' '}
-          <Link href="/contact" className="text-emerald-600 hover:underline">
-            हमसे संपर्क करें
-          </Link>
-        </p>
       </div>
-    </div>)
+    );
   }
   return (
-   <div className="container mx-auto px-4 py-8">
-    <Head>
+    <div className="container mx-auto px-4 py-8">
+      <Head>
         <title>
-          Nayta Patel Samaj | Empowering Farmers & Rural Communities in MP. User Profile Page.
+          Nayta Patel Samaj | Empowering Farmers & Rural Communities in MP. User
+          Profile Page.
         </title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -243,18 +253,7 @@ useEffect(()=>{
             <FiUser className="mr-2" />
             Profile
           </button>
-          
-        {/*   <button
-            onClick={() => setActiveTab("activity")}
-            className={`flex items-center px-6 py-4 text-sm font-medium ${
-              activeTab === "activity"
-                ? "text-emerald-600 border-b-2 border-emerald-600"
-                : "text-gray-500 hover:text-emerald-500"
-            }`}
-          >
-            <FiMessageSquare className="mr-2" />
-            Activity
-          </button> */}
+
           <button
             onClick={() => setActiveTab("village")}
             className={`flex items-center px-6 py-4 text-sm font-medium ${
@@ -277,22 +276,22 @@ useEffect(()=>{
             <FiSettings className="mr-2" />
             Settings
           </button>
-           {(userData.role ==='ambassador' || userData.role ==='admin') && <button
-            onClick={() => setActiveTab("ambassador")}
-            className={`flex items-center px-6 py-4 text-sm font-medium ${
-              activeTab === "ambassador"
-                ? "text-emerald-600 border-b-2 border-emerald-600"
-                : "text-gray-500 hover:text-emerald-500"
-            }`}
-          >
-            <FiStar className="mr-2"/>
-            Ambassador
-          </button>}
-          
+          {(userData.role === "ambassador" || userData.role === "admin") && (
+            <button
+              onClick={() => setActiveTab("ambassador")}
+              className={`flex items-center px-6 py-4 text-sm font-medium ${
+                activeTab === "ambassador"
+                  ? "text-emerald-600 border-b-2 border-emerald-600"
+                  : "text-gray-500 hover:text-emerald-500"
+              }`}
+            >
+              <FiStar className="mr-2" />
+              Ambassador
+            </button>
+          )}
         </div>
-{/*  */}
 
-        <div className="p-6">
+        <div className="sm:p-6 p-3">
           {activeTab === "profile" && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -302,7 +301,9 @@ useEffect(()=>{
             >
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Personal Information</h3>
+                  <h3 className="text-lg font-semibold">
+                    Personal Information
+                  </h3>
                   <div className="space-y-3">
                     <div className="flex items-center">
                       <FiUser className="text-emerald-500 mr-3" />
@@ -333,7 +334,7 @@ useEffect(()=>{
                       </div>
                     </div>
                   </div>
-                  <button 
+                  <button
                     className="flex items-center text-sm text-emerald-600 hover:text-emerald-700 mt-4"
                     onClick={handleEditProfile}
                   >
@@ -371,23 +372,28 @@ useEffect(()=>{
             </motion.div>
           )}
 
-       {/*    {activeTab === "activity" && <ActivitySection userData={userData} />} */}
-          {activeTab === "village" && <VillageDetails villageData={villageData} />}
-          {activeTab === "settings" && <SettingsSection privacyStatus={userData?.visibilityStatus}/>}
-  {activeTab === "ambassador" && (userData?.role ==='ambassador' ||userData ?.role ==='admin')  && (
-    <AmbassadorPortal user={userData}/>
-  )}
+          {/*    {activeTab === "activity" && <ActivitySection userData={userData} />} */}
+          {activeTab === "village" && (
+            <VillageDetails villageData={villageData} />
+          )}
+          {activeTab === "settings" && (
+            <SettingsSection privacyStatus={userData?.visibilityStatus} />
+          )}
+          {activeTab === "ambassador" &&
+            (userData?.role === "ambassador" || userData?.role === "admin") && (
+              <AmbassadorPortal user={userData} />
+            )}
         </div>
       </div>
 
-      <EditProfileModal 
-        isOpen={isEditModalOpen} 
-        onClose={() => setIsEditModalOpen(false)} 
-        userData={userData} 
-        onUpdate= {(NewUser)=>handleUserUpdate(NewUser)}
+      <EditProfileModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        userData={userData}
+        onUpdate={(NewUser) => handleUserUpdate(NewUser)}
       />
     </div>
-  )
-}
+  );
+};
 
-export default ProfileDashboard
+export default ProfileDashboard;

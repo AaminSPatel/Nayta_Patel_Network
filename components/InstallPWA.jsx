@@ -36,7 +36,7 @@ export default function InstallPWA() {
   if (!prompt || !isVisible) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 animate-fade-in">
+    <div className="fixed bottom-6 right-4 z-50 animate-fade-in">
       <div className="bg-white p-4 rounded-lg shadow-xl border border-gray-200 max-w-xs">
         <div className="flex justify-between items-start mb-3">
           <h3 className="font-semibold text-gray-900">Install Our App</h3>
@@ -48,8 +48,8 @@ export default function InstallPWA() {
             <X size={18} />
           </button>
         </div>
-        <p className="text-sm text-gray-600 mb-4">
-          Get faster access and work offline by installing our app.
+        <p className="text-sm font-semibold text-gray-600 mb-4">
+         जानिए अपने गाँव की ताकत, पढ़िए समाज के हीरो की कहानी – इंस्टॉल करें और जुड़ें!
         </p>
         <div className="flex gap-2">
           <button

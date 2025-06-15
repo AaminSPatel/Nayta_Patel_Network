@@ -209,7 +209,7 @@ console.log(formDataToSend); */
                     <p className="text-gray-600">
                       Nayta Patel Network
                       <br />
-                      No Any Office
+                      No Physical Address
                     </p>
                   </div>
                 </div>
@@ -222,10 +222,10 @@ console.log(formDataToSend); */
                     <h3 className="font-medium mb-1">Phone</h3>
                     <p className="text-gray-600">
                       <a
-                        href="tel:+917747074841"
+                        href="tel:+917747074810"
                         className="hover:text-emerald-500"
                       >
-                        +91 7747 074 841
+                        +91 7747 074 810
                       </a>
                       <br />
                       <span className="text-sm">
@@ -260,12 +260,12 @@ console.log(formDataToSend); */
                     <h3 className="font-medium mb-1">WhatsApp</h3>
                     <p className="text-gray-600">
                       <a
-                        href="https://wa.me/917747074841"
+                        href="https://wa.me/917747074810"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-emerald-500"
                       >
-                        +91 7747 074 841
+                        +91 7747 074 810
                       </a>
                       <br />
                       <span className="text-sm">
@@ -280,7 +280,7 @@ console.log(formDataToSend); */
                 <h3 className="font-medium mb-3">Follow Us</h3>
                 <div className="flex space-x-4">
                   <a
-                    href="https://wa.me/917747074841"
+                    href={`https://chat.whatsapp.com/IABp5obYWKEIMcHLVTDkNs?text=${encodeURIComponent("Hello from Nayta Patel Network!")}`}
                     className="bg-emerald-100 p-3 rounded-full text-emerald-500 hover:bg-emerald-500 hover:text-white transition-colors"
                   >
                     <FaWhatsapp />
