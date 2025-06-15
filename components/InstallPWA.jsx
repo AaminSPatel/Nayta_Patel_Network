@@ -33,7 +33,7 @@ export default function InstallPWA() {
     localStorage.setItem('pwaPromptClosed', 'true');
   };
 
-  if (!prompt || !isVisible) return null;
+  if (prompt || !isVisible) return null;
 
   return (
     <div className="fixed bottom-6 right-4 z-50 animate-fade-in">

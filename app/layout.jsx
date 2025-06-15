@@ -146,10 +146,10 @@ export default function RootLayout({ children }) {
                 <Header />
                 <main className="flex-1">
                   <Analytics/>
-                  {<InstallPWA/> }
+               
                   { <WhatsAppGroupButton />}
                   {children}
-
+   <InstallPWA/> 
                   </main>
                   
                 <Footer />

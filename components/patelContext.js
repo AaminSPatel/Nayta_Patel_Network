@@ -1,7 +1,13 @@
 // app/context/SidebarContext.js
 "use client";
 
-import React, { createContext, useState, useEffect, useContext, useCallback } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import axios from "axios";
 
 const AppContext = createContext();
@@ -22,15 +28,17 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null); // Store token in state
-  const [showWelcomeCard,setShowWelcomeCard] = useState(false)
-  let path = process.env.NEXT_PUBLIC_API_URL
- if(process.env.NODE_ENV !== 'development'){  path = process.env.NEXT_PUBLIC_API_URL;
- }else{ path = 'http://localhost:5000';
-  }const whatsappLink = 'https://chat.whatsapp.com/ECjLqsnPeWm3mU4UNC362s'
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const [showWelcomeCard, setShowWelcomeCard] = useState(false);
+  let path = process.env.NEXT_PUBLIC_API_URL;
+  if (process.env.NODE_ENV !== "development") {
+    path = process.env.NEXT_PUBLIC_API_URL;
+  } else {
+    path = "http://localhost:5000";
+  }
+  const whatsappLink = "https://chat.whatsapp.com/ECjLqsnPeWm3mU4UNC362s";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteBrand = "Nayta Patel Network";
   const siteLogo = "/tactor.png";
-
 
   const tags = [
     // Farming & Agriculture
@@ -349,7 +357,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     "swayam sahayata samuh",
   ];
   // Auto-login if token exists
-  const fetchUserFromToken =  useCallback(async () => {
+  const fetchUserFromToken = useCallback(async () => {
     try {
       const token = localStorage.getItem("token"); // Or wherever you store the JWT
       axios.defaults.headers["Authorization"] = `Bearer ${token}`;
@@ -359,13 +367,12 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
         return;
       }
 
-
       const response = await axios.get(path + "/api/auth/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-//console.log('User data',response.data);
+      //console.log('User data',response.data);
       // document.cookie = `token=${token}; path=/`;
       setUser(response.data);
       //console.log(response.data, 'data of user');
@@ -373,20 +380,20 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
       setError("Failed to fetch user");
       console.error(err);
     }
-  },[path, setUser, setError]);
+  }, [path, setUser, setError]);
 
   // Fetch all posts
-  const fetchPosts =  useCallback(async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/posts");
       setPosts(response.data);
-    //  console.log('Posts',response.data);
+      //  console.log('Posts',response.data);
     } catch (err) {
       setError(err.message);
     }
-  },[path, setPosts, setError]);
-   // Fetch all news
-  const fetchNews =  useCallback(async () => {
+  }, [path, setPosts, setError]);
+  // Fetch all news
+  const fetchNews = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/news");
       setNews(response.data);
@@ -394,13 +401,13 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  },[path, setNews]);
-  
-  const [feedbacks,setFeedbacks] = useState([])
- // fetch feedbacks 
- 
+  }, [path, setNews]);
+
+  const [feedbacks, setFeedbacks] = useState([]);
+  // fetch feedbacks
+
   const fetchFeedbacks = useCallback(async () => {
-      const token = localStorage.getItem("token"); // Or wherever you store the JWT
+    const token = localStorage.getItem("token"); // Or wherever you store the JWT
 
     try {
       const response = await axios.get(path + "/api/contacts", {
@@ -409,11 +416,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
         },
       });
       setFeedbacks(response.data);
-     // console.log('Contact data',response.data);
+      // console.log('Contact data',response.data);
     } catch (err) {
       setError(err.message);
     }
-  },[path, setFeedbacks, setError]);
+  }, [path, setFeedbacks, setError]);
   // Fetch all posts
   const fetchStories = useCallback(async () => {
     try {
@@ -423,7 +430,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  },[path, setStories, setError]);
+  }, [path, setStories, setError]);
   // Fetch all prices
   const fetchPrices = useCallback(async () => {
     try {
@@ -433,7 +440,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  },[path, setPrices, setError]);
+  }, [path, setPrices, setError]);
 
   // Fetch all blogs
   const fetchBlogs = useCallback(async () => {
@@ -444,7 +451,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  },[path, setBlogs, setError]);
+  }, [path, setBlogs, setError]);
 
   // Fetch all posts
   const fetchEvents = useCallback(async () => {
@@ -454,27 +461,33 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  },[path,setEvents, setError]);
+  }, [path, setEvents, setError]);
 
   // Fetch specific post
-  const fetchPostById = useCallback(async (id) => {
-    try {
-      const response = await axios.get(path + `/api/posts/${id}`);
-      return response.data;
-    } catch (err) {
-      setError(err.message);
-    }
-  },[path,  setError]);
+  const fetchPostById = useCallback(
+    async (id) => {
+      try {
+        const response = await axios.get(path + `/api/posts/${id}`);
+        return response.data;
+      } catch (err) {
+        setError(err.message);
+      }
+    },
+    [path, setError]
+  );
 
   // Fetch all comments for a post
-  const fetchComments = useCallback( async (postId) => {
-    try {
-      const response = await axios.get(path + `/api/comments/post/${postId}`);
-      setComments(response.data);
-    } catch (err) {
-      setError(err.message);
-    }
-  },[path, setComments, setError]);
+  const fetchComments = useCallback(
+    async (postId) => {
+      try {
+        const response = await axios.get(path + `/api/comments/post/${postId}`);
+        setComments(response.data);
+      } catch (err) {
+        setError(err.message);
+      }
+    },
+    [path, setComments, setError]
+  );
 
   // Fetch user data
   const fetchUser = async (id) => {
@@ -491,91 +504,102 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     }
   };
   // Fetch user data
-  const fetchUsers = useCallback(async (token) => {
-  try {
-    const response = await axios.get(`${path}/api/users`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    setUsers(response.data);
-  } catch (err) {
-    setError(err.message);
-  }
-}, [path,setUsers,setError]); // Add all used dependencies (path, setUsers, setError)
-  // Fetch user Villages
-  const fetchVillages = useCallback(async (id) => {
-    try {
-      const response = await axios.get(path + `/api/villages`);
-      setVillages(response.data);
-    } catch (err) {
-      setError(err.message);
-    }
-  },[path, setVillages, setError]);
-
-  const updateBlog = useCallback(async (id, updatedData) => {
-    const token = localStorage.getItem("token");
-    //console.log('blog update function called', updatedData);
-
-    try {
-      const response = await fetch(`${path}/api/blogs/${id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: updatedData, // updatedData must be an instance of FormData
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update blog");
+  const fetchUsers = useCallback(
+    async (token) => {
+      try {
+        const response = await axios.get(`${path}/api/users`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUsers(response.data);
+      } catch (err) {
+        setError(err.message);
       }
+    },
+    [path, setUsers, setError]
+  ); // Add all used dependencies (path, setUsers, setError)
+  // Fetch user Villages
+  const fetchVillages = useCallback(
+    async (id) => {
+      try {
+        const response = await axios.get(path + `/api/villages`);
+        setVillages(response.data);
+      } catch (err) {
+        setError(err.message);
+      }
+    },
+    [path, setVillages, setError]
+  );
 
-      const updatedBlog = await response.json();
+  const updateBlog = useCallback(
+    async (id, updatedData) => {
+      const token = localStorage.getItem("token");
+      //console.log('blog update function called', updatedData);
 
-      setBlogs((prev) =>
-        prev.map((blog) => (blog._id === id ? updatedBlog : blog))
-      );
-
-      return updatedBlog;
-    } catch (error) {
-      console.error("Error updating blog:", error);
-      throw error;
-    }
-  },[path, setBlogs]);
-
-  const updatePrice = useCallback(async (id, updatedData) => {
-    const token = localStorage.getItem("token");
-    console.log("Sending data:", updatedData);
-
-    try {
-      const response = await axios.put(
-        `${path}/api/prices/${id}`,
-        updatedData,
-        {
+      try {
+        const response = await fetch(`${path}/api/blogs/${id}`, {
+          method: "PUT",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
+          body: updatedData, // updatedData must be an instance of FormData
+        });
 
-      // Axios stores response data in response.data
-      setPrices(response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Update error:", {
-        message: error.message,
-        response: error.response?.data,
-      });
-      throw error;
-    }
-  },[path, setPrices]);
+        if (!response.ok) {
+          throw new Error("Failed to update blog");
+        }
+
+        const updatedBlog = await response.json();
+
+        setBlogs((prev) =>
+          prev.map((blog) => (blog._id === id ? updatedBlog : blog))
+        );
+
+        return updatedBlog;
+      } catch (error) {
+        console.error("Error updating blog:", error);
+        throw error;
+      }
+    },
+    [path, setBlogs]
+  );
+
+  const updatePrice = useCallback(
+    async (id, updatedData) => {
+      const token = localStorage.getItem("token");
+      console.log("Sending data:", updatedData);
+
+      try {
+        const response = await axios.put(
+          `${path}/api/prices/${id}`,
+          updatedData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Axios stores response data in response.data
+        setPrices(response.data);
+        return response.data;
+      } catch (error) {
+        console.error("Update error:", {
+          message: error.message,
+          response: error.response?.data,
+        });
+        throw error;
+      }
+    },
+    [path, setPrices]
+  );
 
   useEffect(() => {
     const token = localStorage.getItem("token"); // Or wherever you store the JWT
-if(user){
-   fetchUsers(token);
-}
-   
-  }, [user,fetchUsers]);
+    if (user) {
+      fetchUsers(token);
+    }
+  }, [user, fetchUsers]);
 
   useEffect(() => {
     const token1 = localStorage.getItem("token"); // Or wherever you store the JWT
@@ -590,12 +614,21 @@ if(user){
     fetchVillages();
     fetchEvents();
     fetchUserFromToken();
-    
+
     setToken(token1);
     //fetchUserFromToken()
-  }, [fetchBlogs, fetchEvents, fetchFeedbacks, fetchPosts,
-  fetchNews, fetchPrices, fetchStories,
-  fetchUserFromToken, fetchVillages,fetchUsers]);
+  }, [
+    fetchBlogs,
+    fetchEvents,
+    fetchFeedbacks,
+    fetchPosts,
+    fetchNews,
+    fetchPrices,
+    fetchStories,
+    fetchUserFromToken,
+    fetchVillages,
+    fetchUsers,
+  ]);
   // Sign in function (generate token)
   const signIn = async (email, password) => {
     try {
@@ -603,8 +636,8 @@ if(user){
         email,
         password,
       });
-      console.log('login data',response.data.user);
-      
+      console.log("login data", response.data.user);
+
       setUser(response.data.user);
       setToken(response.data.token);
       localStorage.setItem("token", response.data.token);
@@ -761,7 +794,8 @@ if(user){
         closeSidebar,
         user,
         users,
-        news,setNews,
+        news,
+        setNews,
         path,
         posts,
         setPosts,
@@ -775,17 +809,24 @@ if(user){
         token,
         fetchPosts,
         updateBlog,
-        fetchPostById,feedbacks,setFeedbacks,fetchFeedbacks,
-        fetchComments,showWelcomeCard,setShowWelcomeCard,
+        fetchPostById,
+        feedbacks,
+        setFeedbacks,
+        fetchFeedbacks,
+        fetchComments,
+        showWelcomeCard,
+        setShowWelcomeCard,
         fetchUser,
         fetchEvents,
         signIn,
         fetchVillages,
-        signUp,whatsappLink,
+        signUp,
+        whatsappLink,
         createPost,
         updatePost,
         deletePost,
-        deleteComment,fetchNews,
+        deleteComment,
+        fetchNews,
         events,
         setEvents,
         likePost,
@@ -804,7 +845,8 @@ if(user){
         setVillages,
         setToken,
         setUser,
-        setError,logOut
+        setError,
+        logOut,
       }}
     >
       {children}
