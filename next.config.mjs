@@ -15,6 +15,9 @@ const nextConfig = {
         pathname: '/dglmtpj1j/**',
       },
     ],
+  },
+   experimental: {
+    missingSuspenseWithCSRBailout: false,
   }
   // Removed experimental.removeDefaultFavicon as it's no longer supported
 };

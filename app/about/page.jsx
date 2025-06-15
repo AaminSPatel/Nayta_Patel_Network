@@ -91,7 +91,6 @@ export default function AboutPage() {
         <meta name="robots" content="index, follow" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#4CAF50" />
         <meta
           name="description"
           content="Learn about the Nayta Patel Samaj initiative focused on farming, milk production, mandi price updates, and empowering over 250 villages in Indore, Ujjain, Dhar, Dewas, and Ratlam."

@@ -1,7 +1,7 @@
 // app/context/SidebarContext.js
 "use client";
 
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext, useCallback } from "react";
 import axios from "axios";
 
 const AppContext = createContext();
@@ -348,7 +348,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     "swayam sahayata samuh",
   ];
   // Auto-login if token exists
-  const fetchUserFromToken = async () => {
+  const fetchUserFromToken =  useCallback(async () => {
     try {
       const token = localStorage.getItem("token"); // Or wherever you store the JWT
       axios.defaults.headers["Authorization"] = `Bearer ${token}`;
@@ -372,10 +372,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
       setError("Failed to fetch user");
       console.error(err);
     }
-  };
+  },[path, setUser, setError]);
 
   // Fetch all posts
-  const fetchPosts = async () => {
+  const fetchPosts =  useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/posts");
       setPosts(response.data);
@@ -383,9 +383,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path, setPosts, setError]);
    // Fetch all news
-  const fetchNews = async () => {
+  const fetchNews =  useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/news");
       setNews(response.data);
@@ -393,12 +393,12 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path, setNews]);
   
   const [feedbacks,setFeedbacks] = useState([])
  // fetch feedbacks 
  
-  const fetchFeedbacks = async () => {
+  const fetchFeedbacks = useCallback(async () => {
       const token = localStorage.getItem("token"); // Or wherever you store the JWT
 
     try {
@@ -412,9 +412,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path, setFeedbacks, setError]);
   // Fetch all posts
-  const fetchStories = async () => {
+  const fetchStories = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/stories");
       setStories(response.data);
@@ -422,9 +422,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path, setStories, setError]);
   // Fetch all prices
-  const fetchPrices = async () => {
+  const fetchPrices = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/prices");
       setPrices(response.data);
@@ -432,10 +432,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path, setPrices, setError]);
 
   // Fetch all blogs
-  const fetchBlogs = async () => {
+  const fetchBlogs = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/blogs");
       setBlogs(response.data);
@@ -443,37 +443,37 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path, setBlogs, setError]);
 
   // Fetch all posts
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/events");
       setEvents(response.data);
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path,setEvents, setError]);
 
   // Fetch specific post
-  const fetchPostById = async (id) => {
+  const fetchPostById = useCallback(async (id) => {
     try {
       const response = await axios.get(path + `/api/posts/${id}`);
       return response.data;
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path,  setError]);
 
   // Fetch all comments for a post
-  const fetchComments = async (postId) => {
+  const fetchComments = useCallback( async (postId) => {
     try {
       const response = await axios.get(path + `/api/comments/post/${postId}`);
       setComments(response.data);
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path, setComments, setError]);
 
   // Fetch user data
   const fetchUser = async (id) => {
@@ -490,29 +490,27 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     }
   };
   // Fetch user data
-  const fetchUsers = async (token) => {
-    try {
-      const response = await axios.get(path + `/api/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUsers(response.data);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  const fetchUsers = useCallback(async (token) => {
+  try {
+    const response = await axios.get(`${path}/api/users`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setUsers(response.data);
+  } catch (err) {
+    setError(err.message);
+  }
+}, [path,setUsers,setError]); // Add all used dependencies (path, setUsers, setError)
   // Fetch user Villages
-  const fetchVillages = async (id) => {
+  const fetchVillages = useCallback(async (id) => {
     try {
       const response = await axios.get(path + `/api/villages`);
       setVillages(response.data);
     } catch (err) {
       setError(err.message);
     }
-  };
+  },[path, setVillages, setError]);
 
-  const updateBlog = async (id, updatedData) => {
+  const updateBlog = useCallback(async (id, updatedData) => {
     const token = localStorage.getItem("token");
     //console.log('blog update function called', updatedData);
 
@@ -540,9 +538,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
       console.error("Error updating blog:", error);
       throw error;
     }
-  };
+  },[path, setBlogs]);
 
-  const updatePrice = async (id, updatedData) => {
+  const updatePrice = useCallback(async (id, updatedData) => {
     const token = localStorage.getItem("token");
     console.log("Sending data:", updatedData);
 
@@ -568,7 +566,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
       });
       throw error;
     }
-  };
+  },[path, setPrices]);
 
   useEffect(() => {
     const token = localStorage.getItem("token"); // Or wherever you store the JWT
@@ -576,7 +574,7 @@ if(user){
    fetchUsers(token);
 }
    
-  }, []);
+  }, [user,fetchUsers]);
 
   useEffect(() => {
     const token1 = localStorage.getItem("token"); // Or wherever you store the JWT
@@ -591,11 +589,12 @@ if(user){
     fetchVillages();
     fetchEvents();
     fetchUserFromToken();
+    
     setToken(token1);
     //fetchUserFromToken()
-  }, [fetchBlogs, fetchEvents, fetchFeedbacks, 
+  }, [fetchBlogs, fetchEvents, fetchFeedbacks, fetchPosts,
   fetchNews, fetchPrices, fetchStories,
-  fetchUserFromToken, fetchVillages]);
+  fetchUserFromToken, fetchVillages,fetchUsers]);
   // Sign in function (generate token)
   const signIn = async (email, password) => {
     try {

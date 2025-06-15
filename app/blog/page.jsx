@@ -58,13 +58,8 @@ export default function BlogPage() {
           Knowledge Hub | Articles on Agriculture, Technology & Rural
           Development
         </title>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="robots" content="index, follow" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#4CAF50" />
         <meta
           name="description"
           content="Explore our collection of articles, guides, and insights on agriculture, milk production, rural awareness, and community development in Indore, Ujjain, Dhar, Dewas, and Ratlam."
@@ -75,7 +70,6 @@ export default function BlogPage() {
         />
         <meta name="author" content="Nayta Patel Network" />
 
-        {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${siteUrl}/blog`} />
         <meta

@@ -195,7 +195,6 @@ export default function LearningPage() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="index, follow" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#4CAF50" />
   <meta name="description" content="Learn modern farming, milk production techniques, mandi trading, and community development with easy guides and expert tips." />
   <meta name="keywords" content="farming guide, mandi trading, milk business, MP kisan knowledge, rural learning, kheti siksha, kisani siksha" />
   <meta name="author" content="Nayta Patel Network" />

@@ -8,7 +8,17 @@ import Head from "next/head"
 import {motion} from 'framer-motion'
 import { FiArrowRight, FiShare2 } from "react-icons/fi";
 
-const DirectoryPage = () => {
+import { Suspense } from 'react';
+
+export default function DirectoryPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DirectoryContent />
+    </Suspense>
+  );
+}
+
+const DirectoryContent = () => {
   const {villages, siteUrl} = usePatel();
   const [filter, setFilter] = useState("");
   const [filteredVillages, setFilteredVillages] = useState([]);
@@ -142,11 +152,10 @@ const handleFilterChange = (e) => {
         </motion.p>
       </motion.div>
 
-      <Head>
+    {/*   <Head>
         <title>गाँव निर्देशिका | 250+ गाँवों की जानकारी - नायता पटेल नेटवर्क</title>
         <meta name="description" content="इंदौर, उज्जैन, देवास, रतलाम और धार के 250+ गाँवों की कृषि, दुग्ध उत्पादन और सामुदायिक जानकारी" />
-        {/* Other meta tags remain same */}
-      </Head>
+      </Head> */}
 
      {/* District Filter Tags */}
       <div className="flex flex-wrap justify-center gap-2 mb-6">
@@ -292,4 +301,3 @@ const handleFilterChange = (e) => {
   );
 };
 
-export default DirectoryPage;

@@ -16,7 +16,6 @@ const SEOHead = ({
   twitterCreator,
   schemaMarkup,
   favicon = '/favicon.ico',
-  themeColor = '#ffffff',
   viewport = 'width=device-width, initial-scale=1',
   charset = 'utf-8',
   noIndex = false,
@@ -38,7 +37,6 @@ const SEOHead = ({
       <meta name="keywords" content={allKeywords} />
       <meta name="viewport" content={viewport} />
       <meta charSet={charset} />
-      <meta name="theme-color" content={themeColor} />
       <meta name="application-name" content={brandName} />
       <meta name="apple-mobile-web-app-title" content={brandName} />
       <meta name="author" content={brandName} />
@@ -108,7 +106,6 @@ SEOHead.propTypes = {
   twitterCreator: PropTypes.string,
   schemaMarkup: PropTypes.object,
   favicon: PropTypes.string,
-  themeColor: PropTypes.string,
   viewport: PropTypes.string,
   charset: PropTypes.string,
   noIndex: PropTypes.bool,

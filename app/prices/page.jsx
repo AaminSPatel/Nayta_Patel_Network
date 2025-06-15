@@ -196,7 +196,6 @@ Mandi Price Dashboard          </motion.h2>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="index, follow" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#4CAF50" />
   <meta name="description" content="Live updates of mandi prices for vegetables, grains, and milk from Indore, Ratlam, Ujjain, Dewas, and Dhar regions." />
   <meta name="keywords" content="mandi price, sabji rate, milk rate, kisan mandi, Indore mandi, MP vegetables, tomato, potato, wheat price, MP market rate" />
   <meta name="author" content="Nayta Patel Network" />

@@ -141,7 +141,6 @@ console.log(events);
   <meta name="robots" content="index, follow" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#4CAF50" />
   <meta name="description" content="Stay updated on upcoming community events, farmer training programs, and development activities in villages across Indore, Ujjain, Dhar, Dewas, and Ratlam.Nayata Patel Samaj me hone wali events aur programs, Indore , Ujjain me Nayata Patel." />
   <meta name="keywords" content="agriculture events, farmer meetings, rural training, village development, Nayta Patel events,Nayata Patel Samaj, Nayata Patel, Indore, Ujjain, Dewas, Dhar, Ratlam" />
   <meta name="author" content="Nayta Patel Network" />

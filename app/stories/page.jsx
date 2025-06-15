@@ -57,7 +57,6 @@ const villages = [...new Set(stories.map((story) => story.location))];
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="index, follow" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#4CAF50" />
   <meta name="description" content="Read real stories from farmers and villages empowered through better farming, milk production, and samaj unity in MP." />
   <meta name="keywords" content="success stories, farmer progress, village case studies, kisano ki kahani, gaon ki safalta, Nayta Patel Samaj" />
   <meta name="author" content="Nayta Patel Network" />
@@ -334,7 +333,7 @@ const [formData, setFormData] = useState({
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-2 flex items-center gap-1">
+                <label className=" text-gray-700 mb-2 flex items-center gap-1">
                   <FiMapPin className="text-emerald-600" /> आपका गाँव
                 </label>
                 <input

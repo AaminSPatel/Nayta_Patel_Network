@@ -407,7 +407,6 @@ fetchPosts()
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="index, follow" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#4CAF50" />
   <meta name="description" content="Post updates, share village news, farming experiences, and local achievements on our community wall." />
   <meta name="keywords" content="community wall, kisan samaj, gaon samachar, farmer opinions, MP rural updates, village sharing" />
   <meta name="author" content="Nayta Patel Community" />
