@@ -154,18 +154,7 @@ const containerVariants = {
         <link rel="canonical" href={`${siteUrl}`} />
         <link rel="icon" href={`${siteUrl}/favicon.ico`} />
       </Head>
-   {/*    This is Logo section */}
-{/* <section className="relative w-screen h-screen flex items-center justify-center flex-col">
-  <img src="./tactor.png" className="h-44" alt="" />
-  <h1 className="font-extrabold text-5xl pb-1 pt-2 text-emerald-900 pragati">
-    नायता पटेल नेटवर्क
-  </h1>
-  <h3  className="font-semibold text-2xl pragati flex gap-1">
 
-  शिक्षा, खेती और समाज का विकास <span className=" text-emerald-700"><GiWheat /></span>
-  </h3>
-
-</section> */}
 
       {/* Hero Section */}
       <section className="relative  h-[450px] flex items-center">
@@ -261,8 +250,7 @@ const containerVariants = {
             </Link>
           </div>
      </section>
- {/*     <AdvertisementVideo /> 
-     <NayataPatelCard /> */} 
+ 
      <PriceSection priceData={priceData}/>
 
       {/* Welcome Card */}

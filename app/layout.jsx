@@ -135,7 +135,7 @@ export default function RootLayout({ children }) {
   <meta name="msapplication-config" content="/browserconfig.xml" />
 </head>
       <body className={inter.className}>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loader />}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
         <AppProvider>
         
@@ -146,11 +146,11 @@ export default function RootLayout({ children }) {
                 <Header />
                 <main className="flex-1">
                   <Analytics/>
-                  <InstallPWA/>
+                  {<InstallPWA/> || <WhatsAppGroupButton />}
                   {children}
 
                   </main>
-                  <WhatsAppGroupButton />
+                  
                 <Footer />
               </div>
             </div>{/* gtag('event', 'page_view', {
@@ -165,4 +165,17 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   )
+}
+
+function Loader() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      <div className="relative w-24 h-24 mb-6">
+        {/* Emerald and yellow spinner */}
+        <div className="absolute inset-0 border-4 border-emerald-500 rounded-full animate-spin border-t-yellow-400 border-r-yellow-400"></div>
+        <div className="absolute inset-2 border-4 border-emerald-500 rounded-full animate-spin border-b-yellow-400 border-l-yellow-400 animation-delay-200"></div>
+      </div>
+      <h1 className="text-3xl font-semibold text-black">Nayta Patel Network</h1>
+    </div>
+  );
 }
