@@ -4,7 +4,9 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { IoNotifications, IoCheckmarkCircle, IoWarning, IoInformationCircle } from "react-icons/io5"
 import { usePatel } from "./patelContext"
-
+import { HiOutlineUser } from "react-icons/hi2";
+import { MdStar } from "react-icons/md"
+import { RiAccountPinCircleFill } from "react-icons/ri";
 export default function NotificationModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [notifications, setNotifications] = useState([
@@ -106,13 +108,17 @@ const getTimeAgo = (timestamp) => {
   // Get notification icon based on type
   const getNotificationIcon = (type) => {
     switch (type) {
-      case "success":
-        return <IoCheckmarkCircle className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
-      case "warning":
-        return <IoWarning className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" />
-      case "info":
+      case "admin":
+        return <HiOutlineUser className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+        case "promotion":
+        return <MdStar className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
+        case "account":
+        return <RiAccountPinCircleFill  className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" />
+      case "alert":
+        return <IoWarning className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
+      case "social":
       default:
-        return <IoInformationCircle className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+        return <IoInformationCircle className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500" />
     }
   }
 
@@ -121,13 +127,17 @@ const getTimeAgo = (timestamp) => {
     const baseClasses = read ? "bg-gray-50" : "bg-white"
 
     switch (type) {
-      case "success":
-        return `${baseClasses} border-l-4 border-emerald-500 hover:bg-emerald-50`
-      case "warning":
-        return `${baseClasses} border-l-4 border-yellow-500 hover:bg-yellow-50`
-      case "info":
-      default:
+      case "admin":
         return `${baseClasses} border-l-4 border-blue-500 hover:bg-blue-50`
+      case "promotion":
+        return `${baseClasses} border-l-4 border-emerald-500 hover:bg-emerald-50`
+      case "account":
+        return `${baseClasses} border-l-4 border-yellow-400 hover:bg-yellow-50`
+      case "alert":
+        return `${baseClasses} border-l-4 border-red-500 hover:bg-red-50`
+      case "social":
+      default:
+        return `${baseClasses} border-l-4 border-teal-400 hover:bg-teal-50`
     }
   }
 
@@ -150,10 +160,10 @@ const getTimeAgo = (timestamp) => {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-1 rounded-full hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="relative p-1 rounded-full hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
         aria-label="Notifications"
       >
-        <IoNotifications className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 rounded-full" />
+        <IoNotifications className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500 rounded-full" />
 
         {/* Unread Badge */}
         <AnimatePresence>
@@ -162,7 +172,7 @@ const getTimeAgo = (timestamp) => {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute -top-1 sm:-right-1 left-4 bg-gray-500 text-white text-xs rounded-full sm:w-5 sm:h-5 h-4 w-4 flex items-center justify-center font-medium"
+              className="absolute -top-1 sm:-right-1 left-4 bg-orange-500 text-white text-xs rounded-full sm:w-5 sm:h-5 h-4 w-4 flex items-center justify-center font-medium"
             >
               {unreadCount > 9 ? "9+" : unreadCount}
             </motion.div>
@@ -188,7 +198,7 @@ const getTimeAgo = (timestamp) => {
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                    className="text-xs sm:text-sm text-orange-600 hover:text-orange-800 cursor-pointer font-medium transition-colors"
                   >
                     Mark all read
                   </button>

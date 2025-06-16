@@ -12,7 +12,8 @@ import {
   FaDownload,
   FaShare,
   FaEnvelope,
-  FaMapPin
+  FaMapPin,
+  FaPhone
 } from 'react-icons/fa';
 //import './AmbassadorCard.css';
 
@@ -50,7 +51,7 @@ const ResponsiveAmbassadorCard = (ambassador) => {
         village: ambassador.user.village,
         image: ambassador?.user?.profilepic?.url || '/user.avif',
         role: 'Village Ambassador',
-        contact: ambassador?.user?.email,
+        contact: ambassador?.user?.mobile,
         achievements:ambassador?.user?.achievement || 'गांव के लिए एम्बेसडर बनकर इन्होंने समाज में सकारात्मक बदलाव लाने की दिशा में एक कदम बढ़ाया है। हम इनसे अनुरोध करते हैं कि आगे भी हमारे नेटवर्क को मजबूत बनाने में सहयोग करें।'
       });
     
@@ -136,12 +137,12 @@ const ResponsiveAmbassadorCard = (ambassador) => {
           {/* Info Section */}
           <div className={`${isLandscape ? 'w-full h-full' : 'w-full h-auto'} p-4 flex flex-col justify-between`}>
             <div>
-              <h3 className="text-xl font-bold text-[#1f2937] text-center mb-0.5">{data.name}</h3>
+              <h3 className="text-xl font-bold text-[#1f2937] text-center mb-0.5 capitalize">{data.name}</h3>
               <p className="text-xs text-[#059669] font-medium text-center">{data.role}</p>
               
               <div id='village' className="mt-3 bg-[#fff] .village-info-card rounded-lg p-2 ">
                 <p className="text-xs  text-gray-800 flex gap-2 items-center "><span className='text-emerald-500'><FaMapPin/> </span>{data.village}</p>
-                <p className="text-xs text-gray-800 mt-1 flex gap-2 items-center"><span className='text-emerald-500'><FaEnvelope/> </span> {data.contact}</p>
+                <p className="text-xs text-gray-800 mt-1 flex gap-2 items-center"><span className='text-emerald-500'><FaPhone/> </span> {data.contact}</p>
               </div>
               
               { (

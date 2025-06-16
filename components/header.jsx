@@ -13,7 +13,7 @@ import NotificationModal from "./notification_model"
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
-  const { toggleSidebar, isSidebarOpen, user, siteBrand, siteLogo ,showWelcomeCard,setShowWelcomeCard } = usePatel()
+  const { toggleSidebar, isSidebarOpen, user, siteBrand, siteLogo ,isPWA,setShowWelcomeCard } = usePatel()
   const isAdmin = pathname.startsWith("/admin")
   const [notification,setNotification] = useState(false)
   useEffect(() => {
@@ -50,9 +50,9 @@ export default function Header() {
         >
           <div className="container mx-auto px-4 flex h-16 items-center justify-between">
             <div className={`flex items-center ${isSidebarOpen ? '-z-20' : 'z-0'}`}>
-              <button className="mr-2 md:hidden" onClick={toggleSidebar}>
+              {!isPWA &&  <button className="mr-2 md:hidden" onClick={toggleSidebar}>
                 <Menu className="h-6 w-6 text-emerald-600" />
-              </button>
+              </button>}
               <Link href="/">
                 <div className="flex items-center space-x-2">
                   <div className="h-10 w-10 flex items-center justify-center">
@@ -61,8 +61,10 @@ export default function Header() {
                       alt="Nayta Patel Network logo image" 
                       className="h-10 w-10 object-fit"
                     />
+                   
                   </div>
-                  <span className="font-bold text-lg hidden sm:inline-block">{siteBrand}</span>
+                  {!isPWA ?<span className="font-bold text-lg  hidden sm:inline-block">{siteBrand}</span> :
+                  <span className="font-bold sm:text-lg  text-sm sm:inline-block">{siteBrand}</span>}
                 </div>
               </Link>
             </div>
@@ -102,7 +104,7 @@ export default function Header() {
                 </div>
                 <Link href="/profile">
                   <div className="flex items-center gap-2 cursor-pointer">
-                    <div className="h-9 w-9 rounded-full overflow-hidden border-2 border-emerald-300">
+                    <div className="h-9 w-9 rounded-full overflow-hidden border-4 border-emerald-500">
                       <img 
                         src={user?.profilepic?.url || '/user.avif'} 
                         alt={user?.fullname} 

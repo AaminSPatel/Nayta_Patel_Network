@@ -178,8 +178,8 @@ export default function BlogPage() {
                   className="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 p-3"
                 >
                   <option value="">All Categories</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
+                  {categories.map((category,index) => (
+                    <option key={index} value={category}>
                       {category}
                     </option>
                   ))}
@@ -329,7 +329,7 @@ export default function BlogPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPosts.slice(1).map((post, index) => (
                 <motion.div
-                  key={post._id}
+                  key={post._id || index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}

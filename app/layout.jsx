@@ -11,6 +11,7 @@ import GoogleAnalytics from "../components/GoogleAnalytics"
 import InstallPWA from "../components/InstallPWA"
 const inter = Inter({ subsets: ["latin"] })
 import { Suspense } from 'react';
+import PwaTabBar from "../components/PwaTabBar"
 export const metadata = {
   title: {
     default: "Nayta Patel Network - Digital Voice of Rural India",
@@ -116,6 +117,7 @@ export const metadata = {
   },
 }
 export default function RootLayout({ children }) {
+  
   return (
     <html lang="en">
      <head>
@@ -141,16 +143,17 @@ export default function RootLayout({ children }) {
         
             <div className="flex min-h-screen flex-col md:flex-row ">
                  {/* Sidebar with fixed width and z-index */}
-                 <AppSidebar/>
+              <PwaTabBar />
+              <AppSidebar/>
               <div className="flex flex-col flex-1 overflow-hidden">
                 <Header />
                 <main className="flex-1">
                   <Analytics/>
-               
                   { <WhatsAppGroupButton />}
                   {children}
    <InstallPWA/> 
                   </main>
+   
                   
                 <Footer />
               </div>

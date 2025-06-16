@@ -47,7 +47,7 @@ const navigationItems = [
 export default function CustomSidebar() {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin"); // Check if the path starts with /admin
-  const { isSidebarOpen, closeSidebar,siteBrand,siteLogo } = usePatel();
+  const { isSidebarOpen, closeSidebar,siteBrand,siteLogo,isPWA } = usePatel();
  
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
@@ -62,6 +62,7 @@ export default function CustomSidebar() {
     { name: "Feedbacks", icon: MessageCircle, path: "/admin/feedbacks" },
   ];
 
+  if(isPWA) return;
   return (
     <>
     

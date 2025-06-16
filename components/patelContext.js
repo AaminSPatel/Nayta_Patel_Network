@@ -35,6 +35,25 @@ export function AppProvider({ children }) {
   } else {
     path = "http://localhost:5000";
   }
+ const [isPWA, setIsPWA] = useState(false);
+  useEffect(() => {
+    // Check if the app is running as a PWA
+    const checkPWA = () => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isInStandaloneIOS = isIOS && window.navigator.standalone === true;
+      
+      setIsPWA((isStandalone || isInStandaloneIOS));
+    };
+
+    checkPWA();
+    window.addEventListener('appinstalled', checkPWA);
+    
+    return () => {
+      window.removeEventListener('appinstalled', checkPWA);
+    };
+  }, []);
+
   const whatsappLink = "https://chat.whatsapp.com/ECjLqsnPeWm3mU4UNC362s";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteBrand = "Nayta Patel Network";
@@ -792,7 +811,7 @@ export function AppProvider({ children }) {
         isSidebarOpen,
         toggleSidebar,
         closeSidebar,
-        user,
+        user,isPWA,
         users,
         news,
         setNews,
