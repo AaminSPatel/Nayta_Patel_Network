@@ -17,7 +17,7 @@ import { MdEmail } from 'react-icons/md'
 
 export default function BlogDetail() {
   const { blogs, formatDate } = usePatel()
-  const { id } = useParams()
+  const { id ,formatContent} = useParams()
   const [blog, setBlog] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -48,6 +48,7 @@ export default function BlogDetail() {
     navigator.clipboard.writeText(`${window.location.origin}/blog/${id}`)
     alert('Link copied to clipboard!')
   }
+
 
   if (loading) {
     return (
@@ -195,7 +196,7 @@ export default function BlogDetail() {
           </p>
         </div>
 
-<div className="prose glegoo max-w-none prose-lg whitespace-pre-line">
+<div className="prose glegoo max-w-none">
   {blog.image && (
     <div className="float-right ml-4 mb-4 w-full max-w-xs">
       <Image
@@ -213,7 +214,7 @@ export default function BlogDetail() {
       )}
     </div>
   )}
-  {blog.content}
+ {formatContent(blog.content)}
 </div>
         {/* Inline Share Options (for mobile) */}
         <div className="mt-8 lg:hidden">

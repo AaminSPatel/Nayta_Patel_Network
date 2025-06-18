@@ -2,40 +2,27 @@
 import { motion } from "framer-motion";
 import { Edit, Trash2, Eye, MapPin, Users, School } from "lucide-react";
 import { usePatel } from "./patelContext";
-import { FaMosque } from "react-icons/fa";
+import { FaMosque, FaTimes } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
 export default function VillageTable() {
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "Active":
-        return "bg-green-100 text-green-800";
-      case "Under Development":
-        return "bg-yellow-100 text-yellow-800";
-      case "Inactive":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
   const { villages, setVillages, path } = usePatel();
   const [selectedVillage, setSelectedVillage] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleEditClick = (village) => {
-    console.log('selected village data',village);
+    console.log("selected village data", village);
     setSelectedVillage(village);
     setModalOpen(true);
   };
-  
+/* 
   const handleUpdate = async (updatedData) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const res = await fetch(`${path}/api/villages/${updatedData._id}`, {
         method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: updatedData, // This should be FormData when sending files
       });
@@ -52,29 +39,29 @@ export default function VillageTable() {
       console.error("Update failed:", error);
     }
   };
-
+ */
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this village?"
     );
     if (!confirmDelete) return;
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     try {
       const res = await fetch(path + `/api/villages/${id}`, {
         method: "DELETE",
-        headers: {'Authorization': `Bearer ${token}`}
+        headers: { Authorization: `Bearer ${token}` },
       });
-  
+
       if (!res.ok) throw new Error("Failed to delete");
-  
+
       const updatedVillages = villages.filter((v) => v._id !== id);
       setVillages(updatedVillages);
     } catch (error) {
       console.error("Delete failed:", error);
     }
   };
-  
+
   return (
     <motion.div
       className="table-container"
@@ -87,11 +74,9 @@ export default function VillageTable() {
           <tr>
             <th scope="col">Image</th>
             <th scope="col">Name</th>
-            <th scope="col">Population</th>
-            <th scope="col">Sarpanch</th>
-            <th scope="col">Ambassador</th>
+            <th scope="col">Tehsil/PinCode</th>
+            <th scope="col">Leaders</th>
             <th scope="col">Location</th>
-            <th scope="col">Amenities</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
@@ -105,32 +90,47 @@ export default function VillageTable() {
                   className="h-10 w-16 object-cover rounded"
                 />
               </td>
-              <td className="font-medium text-gray-900">{village.name}</td>
-             
-              <td className="">
-                <span className="flex items-center gap-1">
-                  <Users size={14} className="text-gray-400" />
-                  {village.population}
-                </span>
+              <td className="font-medium text-gray-900  max-w-56 overflow-hidden bg-amber-50">
+                <div className="flex flex-col juctify-center">
+                  <span>{village.name}</span>
+                  <span className="flex items-center gap-1">
+                    <Users size={14} className="text-gray-400" />
+                    {village.population}
+                  </span>
+                </div>
               </td>
-              <td className="capitalize">{village.headOfVillage}</td>
-              <td className="capitalize">{village?.ambassador?.fullname}</td>
-               <td>
-                <span className="flex items-center gap-1">
-                  <MapPin size={14} className="text-gray-400" />
-                  { village.name}
-                </span>
+
+              <td className="capitalize">
+                <div className="flex flex-col juctify-center">
+                  <span>Pin-{village.pin}</span>
+                  Teh-{village.tahsil}
+                </div>
+              </td>
+              <td className="capitalize">
+                <div className="flex flex-col juctify-center">
+                  <span>Sar-{village.headOfVillage}</span>
+                  Amb- {village?.ambassador?.fullname}
+                </div>
               </td>
               <td>
-                <span className="flex items-center justify-center gap-2 px-2 py-1 text-xs rounded-full">
-                  <FaMosque size={16} className="text-green-400" />{" "}
-                  {village.mosque?.length || 0}
+                <div className="flex flex-col items-start">
+
+                <span className="flex items-center gap-1 max-w-56 overflow-hidden">
+                  <MapPin size={14} className="text-gray-400" />
+                  {village.name}
                 </span>
-                <span className="flex items-center justify-center gap-2 px-2 py-1 text-xs rounded-full">
+               <div className="flex "> <span className="flex items-center justify-center gap-2 px-2 py-1 text-xs rounded-full">
                   <School size={16} className="text-yellow-400" />{" "}
                   {village.schools?.length || 0}
                 </span>
+                
+                <span className="flex items-start justify-center gap-2 px-2 py-1 text-xs rounded-full">
+                  <FaMosque size={16} className="text-green-400" />{" "}
+                  {village.mosque?.length || 0}
+                </span></div>
+                </div>
               </td>
+             
               <td>
                 <div className="flex space-x-2">
                   <button className="p-1 text-gray-500 hover:text-gray-700">
@@ -157,143 +157,148 @@ export default function VillageTable() {
       <VillageFormModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onSubmit={handleUpdate}
+       
         initialData={selectedVillage}
       />
     </motion.div>
   );
 }
 
-
-
-
-function VillageFormModal({ isOpen, onClose, onSubmit, initialData }) {
-  const { path } = usePatel();
+ function VillageFormModal({ isOpen, onClose, onSubmit, initialData }) {
+  const { path, setVillages, villages } = usePatel();
+  
   const [formData, setFormData] = useState({
-    _id: '',
+    _id: "",
     name: "",
     info: "",
     location: "",
     population: "",
     district: "",
+    tahsil: "",
+    pin: "",
     headOfVillage: "",
     mosque: [],
-    schools: []
+    schools: [],
   });
 
   const [images, setImages] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const [imagesToDelete, setImagesToDelete] = useState([]);
 
-// In your useEffect when setting initial data
-useEffect(() => {
-  if (initialData) {
-    // Fix array fields if they contain stringified arrays
-    const fixArrayField = (field) => {
-      if (!Array.isArray(field)) return [];
-      if (field.length === 0) return [];
-      
-      // Handle case where array contains stringified arrays
-      if (typeof field[0] === 'string' && field[0].startsWith('[')) {
-        try {
-          return JSON.parse(field[0]).filter(item => item !== '');
-        } catch {
-          return field.filter(item => item !== '');
+  useEffect(() => {
+    if (initialData) {
+      const fixArrayField = (field) => {
+        if (!Array.isArray(field)) return [];
+        if (field.length === 0) return [];
+        if (typeof field[0] === "string" && field[0].startsWith("[")) {
+          try {
+            return JSON.parse(field[0]).filter((item) => item !== "");
+          } catch {
+            return field.filter((item) => item !== "");
+          }
         }
-      }
-      return field.filter(item => item !== '');
-    };
+        return field.filter((item) => item !== "");
+      };
 
-    setFormData({
-      _id: initialData._id || '',
-      name: initialData.name || "",
-      info: initialData.info || "",
-      location: initialData.location || "",
-      district: initialData.district || "",
-      population: initialData.population || "",
-      headOfVillage: initialData.headOfVillage || "",
-      mosque: fixArrayField(initialData.mosque || []),
-      schools: fixArrayField(initialData.schools || [])
-    });
-    setExistingImages(initialData.images || []);
-  }
-}, [initialData]);
+      setFormData({
+        _id: initialData._id || "",
+        name: initialData.name || "",
+        info: initialData.info || "",
+        location: initialData.location || "",
+        tahsil: initialData.tahsil || "",
+        population: initialData.population || "",
+        pin: initialData.pin || "",
+        district: initialData.district || "",
+        headOfVillage: initialData.headOfVillage || "",
+        mosque: fixArrayField(initialData.mosque || []),
+        schools: fixArrayField(initialData.schools || []),
+      });
+      setExistingImages(initialData.images || []);
+    }
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-const handleArrayChange = (e, field) => {
-  const { value } = e.target;
-  const items = value.split(',')
-    .map(item => item.trim())
-    .filter(item => item !== ''); // Filter out empty strings
-  setFormData(prev => ({ ...prev, [field]: items }));
-};
+
+  const handleArrayChange = (e, field) => {
+    const { value } = e.target;
+    const items = value.split(",").map((item) => item.trim()).filter(Boolean);
+    setFormData((prev) => ({ ...prev, [field]: items }));
+  };
 
   const handleFileChange = (e) => {
-    setImages(Array.from(e.target.files));
+    const selected = Array.from(e.target.files);
+    setImages((prev) => [...prev, ...selected]);
   };
 
   const handleImageDelete = (imageId) => {
     if (imageId) {
-      // Existing image - mark for deletion
-      setImagesToDelete(prev => [...prev, imageId]);
-      setExistingImages(prev => prev.filter(img => img._id !== imageId));
-    } else {
-      // New image - remove from selection
+      console.log(imageId);
+      console.log(existingImages);
+
+      setImagesToDelete((prev) => [...prev, imageId]);
+      setExistingImages((prev) => prev.filter((img) => img.public_id !== imageId));
+    }
+    console.log(existingImages);
+    
+  };
+
+  const removeNewImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+
+    try {
+      const formDataToSend = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "mosque" || key === "schools") {
+          value.forEach(item => formDataToSend.append(key, item));
+        } else if (key !== "_id" && key !== "images") {
+          formDataToSend.append(key, value);
+        }
+      });
+
+      images.forEach((image) => {
+        formDataToSend.append("images", image);
+      });
+
+      if (imagesToDelete.length > 0) {
+        formDataToSend.append("imagesToDelete", JSON.stringify(imagesToDelete));
+      }
+
+      const response = await fetch(`${path}/api/villages/${formData._id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formDataToSend,
+      });
+
+      console.log(formDataToSend);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Update failed");
+      }
+
+      const updatedVillage = await response.json();
+      setVillages(villages.map(v => v._id === updatedVillage._id ? updatedVillage : v));
+
       setImages([]);
+      setImagesToDelete([]);
+      onClose();
+    } catch (error) {
+      console.error("Update error:", error);
+      alert(`Update failed: ${error.message}`);
     }
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const token = localStorage.getItem('token');
-  
-  try {
-    const formDataToSend = new FormData();
-    
-    // Append all form data
-    Object.keys(formData).forEach(key => {
-      if (key === 'mosque' || key === 'schools') {
-        // Append each item in the array individually with the same key
-        formData[key].forEach(item => {
-          formDataToSend.append(key, item);
-        });
-      } else if (key !== '_id' && key !== 'images') {
-        formDataToSend.append(key, formData[key]);
-      }
-    });
-    
-    // Append new images
-    images.forEach(image => {
-      formDataToSend.append('images', image);
-    });
-    
-    // Append images to delete
-    if (imagesToDelete.length > 0) {
-      imagesToDelete.forEach(id => {
-        formDataToSend.append('imagesToDelete', id);
-      });
-    }
-    
-    const response = await fetch(`${path}/api/villages/${formData._id}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: formDataToSend
-    });
-    
-    if (!response.ok) throw new Error('Update failed');
-    
-    const updatedVillage = await response.json();
-    onSubmit(updatedVillage);
-    onClose();
-  } catch (error) {
-    console.error('Error updating village:', error);
-  }
-};
+
   if (!isOpen) return null;
 
   return (
@@ -301,8 +306,10 @@ const handleSubmit = async (e) => {
       <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">Update Village</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
-          {['name','info', 'location','district', 'population', 'headOfVillage'].map((field) => (
-            <div key={field} className="space-y-1">
+          {[
+            "name", "info", "location", "tahsil", "district", "pin", "population", "headOfVillage",
+          ].map((field) => (
+            <div key={field}>
               <label className="block text-sm font-medium text-gray-700">
                 {field.charAt(0).toUpperCase() + field.slice(1)}
               </label>
@@ -310,62 +317,50 @@ const handleSubmit = async (e) => {
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
+                required={field !== "headOfVillage"}
                 className="w-full border px-3 py-2 rounded"
-                required = { field ==='headOfVillage'?false:true}
               />
             </div>
           ))}
 
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
-              Mosque (comma separated)
-            </label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Mosque (comma separated)</label>
             <input
-              value={formData.mosque}
-              onChange={(e) => handleArrayChange(e, 'mosque')}
+              value={formData.mosque.join(", ")}
+              onChange={(e) => handleArrayChange(e, "mosque")}
               className="w-full border px-3 py-2 rounded"
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
-              Schools (comma separated)
-            </label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Schools (comma separated)</label>
             <input
-              value={formData.schools}
-              onChange={(e) => handleArrayChange(e, 'schools')}
+              value={formData.schools.join(",")}
+              onChange={(e) => handleArrayChange(e, "schools")}
               className="w-full border px-3 py-2 rounded"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Existing Images
-            </label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Existing Images</label>
             <div className="flex flex-wrap gap-2">
               {existingImages.map((image) => (
                 <div key={image._id} className="relative">
-                  <img
-                    src={image.url}
-                    alt="Village"
-                    className="h-16 w-16 object-cover rounded"
-                  />
+                  <img src={image.url} alt="Village" className="h-16 w-16 object-cover rounded" />
                   <button
                     type="button"
-                    onClick={() => handleImageDelete(image._id)}
-                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
+                    onClick={() => handleImageDelete(image.public_id)}
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs cursor-pointer"
                   >
-                    ×
+                    <FaTimes className=""/>
                   </button>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
-              Add New Images
-            </label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Add New Images</label>
             <input
               type="file"
               accept="image/*"
@@ -374,13 +369,24 @@ const handleSubmit = async (e) => {
               className="w-full border px-3 py-2 rounded"
             />
             {images.length > 0 && (
-              <button
-                type="button"
-                onClick={() => handleImageDelete()}
-                className="text-red-500 text-sm"
-              >
-                Remove selected images
-              </button>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {images.map((img, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={URL.createObjectURL(img)}
+                      alt="Preview"
+                      className="h-16 w-16 object-cover rounded"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeNewImage(index)}
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full px-1 text-xs"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 
@@ -404,3 +410,4 @@ const handleSubmit = async (e) => {
     </div>
   );
 }
+

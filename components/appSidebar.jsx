@@ -47,22 +47,22 @@ const navigationItems = [
 export default function CustomSidebar() {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin"); // Check if the path starts with /admin
-  const { isSidebarOpen, closeSidebar,siteBrand,siteLogo,isPWA } = usePatel();
+  const { isSidebarOpen, closeSidebar, siteBrand,siteLogo,isPWA , user } = usePatel();
  
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
     { name: "Blog", icon: FileText, path: "/admin/blog" },
     { name: "News", icon: FaNewspaper, path: "/admin/news" },
-    { name: "Prices", icon: DollarSign, path: "/admin/prices" },
-    { name: "Posts", icon: MessageSquare, path: "/admin/posts" },
     { name: "Stories", icon: FileText, path: "/admin/stories" },
     { name: "Events", icon: Calendar, path: "/admin/events" },
+    { name: "Posts", icon: MessageSquare, path: "/admin/posts" },
+    { name: "Prices", icon: DollarSign, path: "/admin/prices" },
     { name: "Members", icon: Users, path: "/admin/members" },
     { name: "Villages", icon: Home, path: "/admin/villages" },
     { name: "Feedbacks", icon: MessageCircle, path: "/admin/feedbacks" },
   ];
 
-  if(isPWA) return;
+  if(isPWA && user?.role !=='admin') return;
   return (
     <>
     
@@ -145,7 +145,7 @@ export default function CustomSidebar() {
                   <div className="py-4">
                     <nav>
                       <ul className="space-y-1 px-2 ">
-                        {menuItems.map((item) => (
+                        {(user?.role === 'admin'? menuItems : menuItems?.slice(0,5)).map((item) => (
                           <li key={item.name}>
                             <Link href={item.path}>
                               <div

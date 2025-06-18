@@ -35,7 +35,7 @@ export function AppProvider({ children }) {
   } else {
     path = "http://localhost:5000";
   }
- const [isPWA, setIsPWA] = useState(false);
+ const [isPWA, setIsPWA] = useState(true);
   useEffect(() => {
     // Check if the app is running as a PWA
     const checkPWA = () => {
@@ -444,7 +444,7 @@ export function AppProvider({ children }) {
   const fetchStories = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/stories");
-      setStories(response.data);
+      setStories((response.data).reverse());
       //console.log(response.data);
     } catch (err) {
       setError(err.message);
@@ -619,6 +619,101 @@ export function AppProvider({ children }) {
       fetchUsers(token);
     }
   }, [user, fetchUsers]);
+
+
+const formatContent = (content) => {
+  if (!content) return "";
+
+  const lines = content.split("\n");
+  const formattedLines = [];
+
+  lines.forEach((line, index) => {
+    if (line.trim() === "") {
+      formattedLines.push(<br key={`br-${index}`} />);
+      return;
+    }
+
+    if (line.trim().startsWith("- ")) {
+      const listItem = line.replace(/^- /, "");
+      const formattedItem = formatTextStyles(listItem);
+      formattedLines.push(
+        <div key={index} className="flex items-start mb-2 ml-4">
+          <span className="text-emerald-500 mr-2 mt-1">•</span>
+          <span className="text-sm md:text-base leading-relaxed">{formattedItem}</span>
+        </div>
+      );
+      return;
+    }
+
+    const formattedLine = formatTextStyles(line);
+    formattedLines.push(
+      <p key={index} className="mb-4 text-sm md:text-base leading-relaxed">
+        {formattedLine}
+      </p>
+    );
+  });
+
+  return formattedLines;
+};
+
+const formatTextStyles = (text) => {
+  const parts = [];
+  let currentIndex = 0;
+  const doubleAsteriskRegex = /\*\*(.*?)\*\*/g;
+  let match;
+
+  while ((match = doubleAsteriskRegex.exec(text)) !== null) {
+    if (match.index > currentIndex) {
+      const beforeText = text.slice(currentIndex, match.index);
+      parts.push(formatSingleAsterisk(beforeText));
+    }
+
+    parts.push(
+      <span
+        key={`highlight-${match.index}`}
+        className=" text-emerald-900 font-semibold"
+      >
+        {match[1]}
+      </span>
+    );
+
+    currentIndex = match.index + match[0].length;
+  }
+
+  if (currentIndex < text.length) {
+    const remainingText = text.slice(currentIndex);
+    parts.push(formatSingleAsterisk(remainingText));
+  }
+
+  return parts.length > 0 ? parts : formatSingleAsterisk(text);
+};
+
+const formatSingleAsterisk = (text) => {
+  const parts = [];
+  const singleAsteriskRegex = /\*([^*]+?)\*/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = singleAsteriskRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+
+    parts.push(
+      <strong key={`bold-${match.index}`} className="font-bold text-black">
+        {match[1]}
+      </strong>
+    );
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+};
 
   useEffect(() => {
     const token1 = localStorage.getItem("token"); // Or wherever you store the JWT
@@ -813,7 +908,7 @@ export function AppProvider({ children }) {
         closeSidebar,
         user,isPWA,
         users,
-        news,
+        news,formatContent,
         setNews,
         path,
         posts,

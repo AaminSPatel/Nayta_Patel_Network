@@ -12,7 +12,7 @@ export default function EventsPage() {
 const {user} = usePatel()
   useEffect(() => {
     const redirectTimer = setTimeout(() => {
-      if (user?.role !== 'admin') {
+      if (!(user?.role === 'admin' || user?.role === 'semi-admin')) {
 redirect('/')      }
     }, 3000); // Wait 1 second before checking (adjust time as needed)
 

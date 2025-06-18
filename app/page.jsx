@@ -257,8 +257,8 @@ const containerVariants = {
           </div>
      </section>
 
-     <PriceSection priceData={priceData}/>
-
+   {/*   <PriceSection priceData={priceData}/>
+ */}
       {/* Welcome Card */}
       {showWelcomeCard && user?.status === 'verified' && (
         <WelcomeCard 

@@ -26,7 +26,6 @@ import {
 import Head from "next/head"
 import { useRouter } from "next/navigation"
 import { usePatel } from "./patelContext"
-import { GiFarmTractor } from "react-icons/gi"
 
 // Sample news data
 const sampleNews = [
@@ -138,14 +137,6 @@ const sampleNews = [
   
 ]
 
-// Marquee news data
-const marqueeNews = [
-  "आज मंडी में गेहूं का भाव ₹2100 प्रति क्विंटल",
-  "कल रात हुई बारिश से किसानों में खुशी",
-  "नया कृषि केंद्र अगले महीने खुलेगा",
-  "सरकारी योजना का लाभ उठाने के लिए आवेदन करें",
-  "डिजिटल साक्षरता कार्यक्रम की शुरुआत",
-]
 
 export default function NewsPage() {
  // const [news, setNews] = useState(sampleNews)
@@ -161,7 +152,7 @@ export default function NewsPage() {
   const newsPerPage = 6
     const router = useRouter()
     const [userData,setUserData] = useState({})
-     const {news,user, setNews} = usePatel()
+     const {news,user, setNews,formatContent} = usePatel()
 
      useEffect(()=>{
         if(user){
@@ -513,7 +504,7 @@ export default function NewsPage() {
                       {item?.title}
                     </h3>
 
-                    <p className="text-gray-600 mb-4 sm:text-sm text-xs font-medium line-clamp-6 mask-b-from-75%">{item.content} </p>
+                    <p className="text-gray-600 mb-4 sm:text-sm text-xs font-medium line-clamp-6 mask-b-from-75%">{formatContent(item.content)} </p>
                     <div className="flex items-center justify-between text-xs">
                       {item?.publisher?.fullname && <div className="flex items-center space-x-1 text-gray-500  shadow-sm shadow-amber-200  bg-emerald-200 rounded-2xl px-2 py-1">
                           <FaUser />

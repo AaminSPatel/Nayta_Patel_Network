@@ -15,7 +15,7 @@ export default function PostsPage() {
   const {posts,setPosts,user , news, setNews} = usePatel()
    useEffect(() => {
     const redirectTimer = setTimeout(() => {
-      if (user?.role !== 'admin') {
+      if (!(user?.role === 'admin' || user?.role === 'semi-admin')) {
 redirect('/')      }
     }, 6000); // Wait 1 second before checking (adjust time as needed)
 

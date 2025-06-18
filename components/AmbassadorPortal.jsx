@@ -30,8 +30,10 @@ const AmbassadorPortal = ({ ambassador }) => {
 
   useEffect(()=>{
     if (villages && user) {
-      let Village = villages.filter((item)=> item.name === user.village)
+      let Village = villages.filter((item)=> item.ambassador?.email === user.email)
       if(Village.length > 0)
+      //  console.log(villageDetails);
+        
       setVillageDetails(Village[0])
     }
   },[villages , user])
@@ -90,10 +92,10 @@ const handleSubmit = async (e) => {
   data.append("schools", JSON.stringify(villageDetails.schools));
 
   // Debug: Log FormData contents
-  for (let [key, value] of data.entries()) {
+ /*  for (let [key, value] of data.entries()) {
     console.log(key, value);
   }
-
+ */
   const token = localStorage.getItem('token');
 
   try {
@@ -129,7 +131,7 @@ const handleSubmit = async (e) => {
   return (
     <div className="min-h-screen relative sm:py-8 sm:px-4">
       {/* Decorative Background Elements */}
-      <div className="absolute inset-0 overflow-hidden hidden pointer-events-none">
+     {villageDetails ? <> <div className="absolute inset-0 overflow-hidden hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 bg-emerald-100 rounded-full opacity-20 animate-pulse"></div>
         <div className="absolute top-40 right-20 w-24 h-24 bg-emerald-200 rounded-full opacity-30 animate-bounce"></div>
         <div className="absolute bottom-20 left-1/4 w-40 h-40 bg-emerald-50 rounded-full opacity-25"></div>
@@ -170,7 +172,7 @@ const handleSubmit = async (e) => {
               </div>
 
               <h1 className="sm:text-4xl text-2xl font-bold mb-2 text-white drop-shadow-lg">{user?.fullname}</h1>
-              <h2 className="sm:text-3xl text-xl font-bold mb-4 text-yellow-300 drop-shadow-md">{user?.village}</h2>
+              <h2 className="sm:text-3xl text-xl font-bold mb-4 text-yellow-300 drop-shadow-md">{villageDetails?.name}</h2>
 
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-emerald-900 px-6 py-3 rounded-full sm:text-lg text-md font-bold shadow-lg">
                 <FaAward className="sm:text-xl text-md" />
@@ -277,7 +279,7 @@ const handleSubmit = async (e) => {
             <div className="flex justify-between items-center">
               <h2 className="sm:text-2xl text-md font-bold text-white flex items-center gap-3">
                 <FaMapMarkerAlt className="text-yellow-400 h-6 w-10" />
-                {user?.village} गाँव की जानकारी
+                {villageDetails?.name} गाँव की जानकारी
               </h2>
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -458,6 +460,10 @@ const handleSubmit = async (e) => {
           </motion.button>
         </motion.div>
       </div>
+      </>:
+      <div className="flex justify-center items-center h-32">
+        <h2 className="text-3xl text-center text-amber-500 font-semibold capitalize">You are not appointed as ambassador now</h2>
+      </div>}
     </div>
   )
 }

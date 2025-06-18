@@ -4,6 +4,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
 @import "tailwindcss";
 
+button{
+  cursor: pointer;
+}
+ 
 .comforta {
   font-family: "Comfortaa", sans-serif;
   font-style: normal;

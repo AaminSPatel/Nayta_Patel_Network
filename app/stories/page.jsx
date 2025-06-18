@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { FaQuoteLeft, FaSearch, FaFilter } from "react-icons/fa";
+import { FaQuoteLeft, FaSearch, FaFilter, FaUser } from "react-icons/fa";
 import { usePatel } from "../../components/patelContext";
 import Head from "next/head"
 import {motion } from 'framer-motion'
@@ -15,7 +15,7 @@ export default function StoriesPage() {
   const [selectedVillage, setSelectedVillage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedStory, setExpandedStory] = useState(null);
- const {stories,siteUrl,user}  = usePatel()
+ const {formatContent,stories,siteUrl,user,formatDate}  = usePatel()
    const categories = [...new Set(stories.map((story) => story.category))];
 const villages = [...new Set(stories.map((story) => story.location))];
 
@@ -170,23 +170,23 @@ const villages = [...new Set(stories.map((story) => story.location))];
                   className="object-cover w-full h-full hover:scale-105 transition duration-500"
                 />
                 <div className="absolute top-2 right-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                  {story.category}
+                  {story.category === 'Community Stories'?'समाज':`${story.category}`}
                 </div>
               </div>
-              <div className="p-6 flex-1 flex flex-col">
+              <div className="sm:p-6 p-4 flex-1 flex flex-col">
                 <div className="flex-1">
-                  {/* <div className="flex items-start mb-4">
-                    <FaQuoteLeft className="text-emerald-500 text-2xl mr-2 mt-1" />
-                    <p className="italic text-gray-700">{story.quote}</p>
-                  </div> */}
-                  <h3 className="font-bold text-xl mb-1">{story.title}</h3>
+                  <div className="flex items-center justify-start mb-4 gap-3">
+              
+                  <Link href={`/profile/${story?.publisher?._id}`} > <p className=" text-gray-700 text-xs overflow-hidden gap-1 whitespace-nowrap max-w-40 min-w-40 flex w-full mr-1 items-center py-1 px-1 bg-gray-200 rounded"><FaUser className="text-emerald-700 sm:text-md min-w-5 text-xs" /> {story?.publisher?.fullname || 'Nayta Patel Network'}</p></Link> 
+                    <p className=" text-gray-700 text-xs min-w-24">{formatDate(story?.createdAt)}</p>
+                  </div>
+                  <h3 className="font-bold text-xl mb-1">{story?.title}</h3>
                 </div>
                 <div className="flex justify-between mt-4">
                 
-                  <p className="text-gray-500 text-sm hidden">Age: {story.age}</p>
                 </div>
                
-                  <div className='flex items-center justify-center h-full'><p className="text-gray-700 line-clamp-6">{story.content}</p></div>
+                  <div className='flex items-center justify-center h-full'><p className="text-gray-700 line-clamp-6">{formatContent(story?.content)}</p></div>
                
                 <Link href={`/stories/${story._id}`} className="flex items-center justify-center cursor-pointer">
                 <button

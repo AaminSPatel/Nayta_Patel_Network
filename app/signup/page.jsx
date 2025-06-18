@@ -72,54 +72,58 @@ export default function SignupPage() {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-    if (!formData.agreeTerms) {
+   /*  if (!formData.agreeTerms) {
       newErrors.agreeTerms = "You must agree to the terms and conditions";
-    }
+    } */
 
     return newErrors;
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    
-    const trimmedEmail = formData.email.trim();
-    const trimmedPassword = formData.password.trim();
-    
-    console.log('Registration attempt:', { trimmedEmail, trimmedPassword });
+  const [isLoading, setIsLoading] = useState(false); // Add this state
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError(null);
   
-    const formErrors = validateForm();
-    if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors);
-      return;
-    }
+  // Prevent multiple submissions
+  if (isLoading) return;
   
-    try {
-      const { data } = await axios.post(path + '/api/auth/register', {
-        ...formData,
-        email: trimmedEmail,
-        password: trimmedPassword
-      });
-     // console.log(data.user,'new user data');
-      
-      setUser(data.user[0]);
-      setToken(data.token);
-           // document.cookie = `token=${data.token}; path=/`;
+  setIsLoading(true); // Start loading
+  
+  const trimmedEmail = formData.email.trim();
+  const trimmedPassword = formData.password.trim();
 
-      localStorage.setItem('token', data.token);
-       setIsSignUp(true)
-      // Navigate to home after 2 seconds
-      setTimeout(() => {
-      router.push('/profile-update')
-      setShowWelcomeCard(true)
-      }, 2000)
+  const formErrors = validateForm();
+  if (Object.keys(formErrors).length > 0) {
+    setErrors(formErrors);
+    setIsLoading(false); // Stop loading if validation fails
+    return;
+  }
 
-      console.log('Signup successful:');
-    } catch (err) {
-      console.error('Signup error:', err.response?.data?.message || err.message);
-      setError(err.response?.data?.message || 'Signup failed');
-    }
-  };
+  try {
+    const { data } = await axios.post(path + '/api/auth/register', {
+      ...formData,
+      email: trimmedEmail,
+      password: trimmedPassword
+    });
+    
+    setUser(data.user[0]);
+    setToken(data.token);
+    localStorage.setItem('token', data.token);
+    setIsSignUp(true);
+    
+    setTimeout(() => {
+      router.push('/profile-update');
+      setShowWelcomeCard(true);
+    }, 2000);
 
+    console.log('Signup successful:');
+  } catch (err) {
+    console.error('Signup error:', err.response?.data?.message || err.message);
+    setError(err.response?.data?.message || 'Signup failed');
+  } finally {
+    setIsLoading(false); // Always stop loading
+  }
+};
   
   return (
     <div className="container mx-auto px-4 py-12">
@@ -203,27 +207,7 @@ export default function SignupPage() {
                   {errors.mobile && <p className="mt-1 text-sm text-red-600">{errors.mobile}</p>}
                 </div>
 
-              {/*   <div>
-                  <label htmlFor="village" className="block text-sm font-medium text-gray-700 mb-1">
-                    Village/Town
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FaMapMarkerAlt className="text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      id="village"
-                      name="village"
-                      value={formData.village}
-                      onChange={handleChange}
-                      className={`w-full pl-10 py-1  rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 ${errors.village ? "border-red-500" : ""}`}
-                      placeholder="Enter your village or town"
-                    />
-                  </div>
-                  {errors.village && <p className="mt-1 text-sm text-red-600">{errors.village}</p>}
-                </div>
- */}
+              
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                     Password
@@ -284,7 +268,7 @@ export default function SignupPage() {
                   {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
                 </div>
 
-                <div className="flex items-start">
+              {/*   <div className=" items-start hidden">
                   <div className="flex items-center h-5">
                     <input
                       id="agreeTerms"
@@ -295,7 +279,7 @@ export default function SignupPage() {
                       className={`h-4 w-4 rounded py-1  border-gray-300 text-emerald-600 focus:ring-emerald-500 ${errors.agreeTerms ? "border-red-500" : ""}`}
                     />
                   </div>
-                  <div className="ml-3 text-sm">
+                  <div className="ml-3 text-sm hidden">
                     <label htmlFor="agreeTerms" className="font-medium text-gray-700">
                       I agree to the{" "}
                       <Link href="/terms" className="text-emerald-600 hover:text-emerald-500">
@@ -309,29 +293,47 @@ export default function SignupPage() {
                     {errors.agreeTerms && <p className="mt-1 text-sm text-red-600">{errors.agreeTerms}</p>}
                   </div>
                 </div>
-
+ */}
                 <div>
-                  <motion.button
-      initial={{ scale: 1 }}
-      whileTap={{ scale: 0.98 }} // Shrink effect when pressed
-      whileHover={{ scale: 1.01 }} // Slight grow on hover
-      animate={{ scale: 1 }} // Default state
-      transition={{ 
-        duration: 0.3,
-        type: "spring",
-        stiffness: 500,
-        damping: 15
-      }}
-      type="submit"
-      className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-md transition-colors font-medium"
-    >
-      {isSignUp ? 'Account Created...' : 'Create Account'}
-    </motion.button>
-                </div>
+  <motion.button
+    initial={{ scale: 1 }}
+    whileTap={!isLoading ? { scale: 0.98 } : {}} // Only animate if not loading
+    whileHover={!isLoading ? { scale: 1.01 } : {}} // Only animate if not loading
+    animate={{ scale: 1 }}
+    transition={{ 
+      duration: 0.3,
+      type: "spring",
+      stiffness: 500,
+      damping: 15
+    }}
+    type="submit"
+    disabled={isLoading || isSignUp} // Disable when loading or after signup
+    className={`w-full ${
+      isLoading || isSignUp 
+        ? 'bg-emerald-400' 
+        : 'bg-emerald-500 hover:bg-emerald-600'
+    } text-white py-3 rounded-md transition-colors font-medium relative`}
+  >
+    {isLoading ? (
+      <div className="flex items-center justify-center">
+        <motion.span
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="block w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
+        />
+        Processing...
+      </div>
+    ) : isSignUp ? (
+      'Account Created...'
+    ) : (
+      'Create Account'
+    )}
+  </motion.button>
+</div>
               </div>
             </form>
-
-            <div className="mt-6">
+{/* 
+            <div className="mt-6 hidden">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-300"></div>
@@ -356,7 +358,7 @@ export default function SignupPage() {
                 </button>
               </div>
             </div>
-
+ */}
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Already have an account?{" "}

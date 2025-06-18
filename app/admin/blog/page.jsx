@@ -13,7 +13,7 @@ export default function BlogPage() {
   
    useEffect(() => {
     const redirectTimer = setTimeout(() => {
-      if (user?.role !== 'admin') {
+      if (!(user?.role === 'admin' || user?.role === 'semi-admin')) {
 redirect('/')      }
     }, 5000); // Wait 1 second before checking (adjust time as needed)
 

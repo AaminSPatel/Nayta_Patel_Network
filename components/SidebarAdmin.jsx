@@ -15,20 +15,21 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react"
+import { usePatel } from "./patelContext"
 
 export default function Sidebar() {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
-
+const {user} = usePatel()
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
     { name: "Blog", icon: FileText, path: "/admin/blog" },
-    { name: "Prices", icon: DollarSign, path: "/admin/prices" },
-    { name: "Posts", icon: MessageSquare, path: "/admin/posts" },
     { name: "Stories", icon: FileText, path: "/admin/stories" },
     { name: "Events", icon: Calendar, path: "/admin/events" },
     { name: "Members", icon: Users, path: "/admin/members" },
     { name: "Villages", icon: Home, path: "/admin/villages" },
+    { name: "Prices", icon: DollarSign, path: "/admin/prices" },
+    { name: "Posts", icon: MessageSquare, path: "/admin/posts" },
     { name: "Feedbacks", icon: MessageCircle, path: "/admin/feedbacks" },
   ]
 
@@ -49,7 +50,7 @@ export default function Sidebar() {
       <div className="py-4">
         <nav>
           <ul className="space-y-1 px-2">
-            {menuItems.map((item) => (
+            {(user.role !== 'admin'? menuItems.map : menuItems.slice(0,5)).map((item) => (
               <li key={item.name}>
                 <Link href={item.path}>
                   <div className={`sidebar-link ${pathname === item.path ? "active" : ""}`}>

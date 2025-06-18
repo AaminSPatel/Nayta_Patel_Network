@@ -15,6 +15,8 @@ export default function VillageForm({ onCancel }) {
     schools: [],
     headOfVillage: "",
     district: "",
+    tahsil: "",
+    pin: "",
     images: [],
   })
    const {path,fetchVillages }  = usePatel()
@@ -48,6 +50,8 @@ export default function VillageForm({ onCancel }) {
     data.append("population", formData.population)
     data.append("headOfVillage", formData.headOfVillage)
     data.append("district", formData.district)
+    data.append("tahsil", formData.tahsil)
+    data.append("pin", formData.pin)
     formData.mosque.forEach((m) => data.append("mosque", m))
     formData.schools.forEach((s) => data.append("schools", s))
     const token = localStorage.getItem('token');
@@ -63,7 +67,7 @@ export default function VillageForm({ onCancel }) {
       //if (!res.ok) throw new Error("Failed to save village")
 console.log('sending this data');
 
-      const result = await res.json()
+       await res.json()
       //console.log("Saved village:", result)
       onCancel()
       fetchVillages()
@@ -113,6 +117,31 @@ console.log('sending this data');
                 required
               />
               <MapPin className="absolute left-3 top-2.5 text-gray-400" size={18} />
+            </div>
+          </div>
+          <div>
+            <label className="form-label">PinCode</label>
+            <div className="relative">
+              <input
+                type="text"
+                name="pin"
+                value={formData.pin}
+                onChange={handleChange}
+                className="form-input pl-10"
+                required
+              />
+            </div>
+          </div>  <div>
+            <label className="form-label">Tahsil</label>
+            <div className="relative">
+              <input
+                type="text"
+                name="tahsil"
+                value={formData.tahsil}
+                onChange={handleChange}
+                className="form-input pl-10"
+                required
+              />
             </div>
           </div>
           <div>

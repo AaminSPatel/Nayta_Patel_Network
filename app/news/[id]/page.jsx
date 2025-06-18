@@ -12,7 +12,7 @@ export default function NewsDetail() {
   const router = useRouter();
   const newsId = params?.id ? params.id : null;
   const [showShareOptions, setShowShareOptions] = useState(false);
-const {news, path} = usePatel()
+const {news, path,formatContent} = usePatel()
   const selectedNews = news.find(news => news._id === newsId);
 
  useEffect(() => {
@@ -202,7 +202,7 @@ const {news, path} = usePatel()
           </h1>
 
           <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed mb-3 sm:mb-8">
-            {selectedNews?.content}
+            {formatContent(selectedNews?.content)}
           </div>
 
           <div className="flex justify-between items-center pt-6 border-t border-gray-200 ">

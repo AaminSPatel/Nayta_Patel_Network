@@ -2,11 +2,11 @@
 import { motion } from "framer-motion"
 import {
   Users,
-  DollarSign,
   ShoppingCart,
   TrendingUp,
   ArrowUp,
   ArrowDown,
+  MapIcon,
 } from "lucide-react"
 import StatCard from "../../components/StatCard"
 import RecentTable from "../../components/RecentTable"
@@ -22,22 +22,13 @@ export default function Dashboard() {
     {
       title: "Total Villages",
       value: villages.length,
-      icon: DollarSign,
+      icon: MapIcon,
       change: "+12",
       trend: null,
       color: "green",
       link:'/admin/villages'
     },
-    {
-      title: "Total Users",
-      value: users.length,
-      icon: Users,
-      change: "+8.2%",
-      trend: "up",
-      color: "blue",
-      link:'/admin/members'
-
-    },
+    
     {
       title: "Total Posts",
       value: posts.length,
@@ -61,7 +52,7 @@ export default function Dashboard() {
   ]
 useEffect(() => {
     const redirectTimer = setTimeout(() => {
-      if (user?.role !== 'admin') {
+      if (!(user?.role === 'admin' || user?.role === 'semi-admin')) {
 redirect('/')      }
     }, 3000); // Wait 1 second before checking (adjust time as needed)
 
@@ -91,7 +82,7 @@ redirect('/')      }
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <h2 className="text-2xl font-bold">Dashboard Overview</h2>
               <button className="btn btn-primary w-full sm:w-auto">
-                Generate Report
+                Generate Report 
               </button>
             </div>
 
@@ -102,13 +93,20 @@ redirect('/')      }
               initial="hidden"
               animate="show"
             >
+             {user?.role ==='admin' && user?._id==='680e1fd766da4ab67d85cb05' && <StatCard stat={{title: "Total Users",
+      value: users.length,
+      icon: Users,
+      change: "+8.2%",
+      trend: "up",
+      color: "blue",
+      link:'/admin/members'}} />}
               {stats.map((stat, index) => (
                 <StatCard key={index} stat={stat} index={index} />
               ))}
             </motion.div>
 
             {/* Chart and Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {user?.role ==='admin' && user?._id==='680e1fd766da4ab67d85cb05' && <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <div className="lg:col-span-2 dashboard-card h-[480px]">
                 <h3 className="text-lg font-semibold mb-4">Revenue Overview</h3>
                 <select name="type" onChange={(e)=>{setSelectedType(e.target.value)}} className="border-emerald-500 border p-1 px-3 rounded-md bg-emerald-200" id="">
@@ -148,14 +146,15 @@ redirect('/')      }
               </div>
             </div>
 
-            {/* Recent Table */}
-            <div className="dashboard-card">
+             }
+            <div className="dashboard-card hidden">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                 <h3 className="text-lg font-semibold">Recent Entries</h3>
                 <button className="btn btn-outline w-full sm:w-auto">View All</button>
               </div>
               <RecentTable />
             </div>
+           
           </div>
         </motion.div>
       </main>

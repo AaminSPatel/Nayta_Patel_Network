@@ -97,7 +97,7 @@ const {users , villages, news, posts} = usePatel()
             <p className="text-gray-600 mt-1">{userData.village}</p>
             
             {/* Admin panel button - only shown for admins */}
-            {userData?.role === 'admin' && (
+            {(userData?.role === 'admin' || userData.role === 'semi-admin') && (
               <motion.div
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}

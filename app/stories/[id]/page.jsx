@@ -16,100 +16,8 @@ import {
 } from "react-icons/fa"
 import Image from "next/image"
 import { usePatel } from "../../../components/patelContext"
+import Link from "next/link"
 
-// Mock data - replace with your actual data source
-const storiesData = [
-  {
-    id: "1",
-    title: "From Zero to Hero: The Journey of Elon Musk",
-    content: `*Elon Musk* started his journey with nothing but a dream and determination.
-
-**Early Life**
-Born in South Africa, Elon showed signs of brilliance from an early age. He taught himself computer programming and sold his first software at age 12.
-
-*The PayPal Days*
-- Co-founded Zip2 in 1995
-- Sold it for $307 million
-- Founded X.com which became PayPal
-- Sold PayPal to eBay for $1.5 billion
-
-**The Tesla Revolution**
-Elon didn't just want to make cars; he wanted to *revolutionize transportation*. Tesla started as a small startup with a big vision.
-
-*Key Milestones:*
-- 2008: Tesla Roadster launched
-- 2012: Model S changed everything
-- 2020: Tesla became most valuable automaker
-- 2023: Over 4 million cars delivered
-
-**SpaceX: Reaching for the Stars**
-While others said it was impossible, Elon believed in making life *multiplanetary*.
-
-*SpaceX Achievements:*
-- First private company to reach orbit
-- First to dock with International Space Station
-- First to land and reuse rockets
-- Planning Mars missions
-
-*"When something is important enough, you do it even if the odds are not in your favor."* - Elon Musk
-
-**The Lesson**
-Elon's story teaches us that with *persistence*, *innovation*, and *courage* to take risks, we can achieve the impossible.`,
-    image: "/placeholder.svg?height=400&width=600",
-    category: "Entrepreneur",
-    location: "Austin, Texas",
-    views: 15420,
-    date: "2024-01-15",
-  },
-  {
-    id: "2",
-    title: "Oprah Winfrey: From Poverty to Media Empire",
-    content: `*Oprah Winfrey* is living proof that your circumstances don't define your destiny.
-
-**Humble Beginnings**
-Born into poverty in rural Mississippi, Oprah faced numerous challenges in her early life. But she had something that money couldn't buy - *determination*.
-
-*Early Career:*
-- Started in radio at age 17
-- Became youngest news anchor in Nashville
-- Moved to Chicago for AM Chicago show
-- Transformed it into The Oprah Winfrey Show
-
-**Building an Empire**
-Oprah didn't just host a show; she built a *media empire*.
-
-*Business Ventures:*
-- Harpo Productions
-- O, The Oprah Magazine
-- OWN Network
-- Weight Watchers investment
-
-**Philanthropy and Impact**
-Oprah has donated over *$400 million* to educational causes.
-
-*Major Contributions:*
-- Oprah Winfrey Leadership Academy for Girls
-- Scholarships for thousands of students
-- Disaster relief efforts
-- Supporting various charities
-
-**The Oprah Effect**
-Her book recommendations could make bestsellers overnight. Her influence extended far beyond television.
-
-*"The biggest adventure you can take is to live the life of your dreams."* - Oprah Winfrey
-
-**Key Lessons**
-- *Education* is the key to breaking cycles
-- *Authenticity* resonates with people
-- *Giving back* multiplies success
-- *Believing in yourself* is the first step`,
-    image: "/placeholder.svg?height=400&width=600",
-    category: "Media Mogul",
-    location: "Chicago, Illinois",
-    views: 12890,
-    date: "2024-01-10",
-  },
-]
 
 export default function StoryPage() {
   const params = useParams()
@@ -117,7 +25,7 @@ export default function StoryPage() {
   const [loading, setLoading] = useState(true)
   const [showShareMenu, setShowShareMenu] = useState(false)
   const [viewsUpdated, setViewsUpdated] = useState(false)
-  const {stories , path} = usePatel();
+  const {stories , path,formatContent} = usePatel();
 
   useEffect(() => {
     const fetchStory = async () => {
@@ -158,111 +66,6 @@ if(stories){
     }
   }
 
-  const formatContent = (content) => {
-    if (!content) return ""
-
-    // Split content into lines
-    const lines = content.split("\n")
-    const formattedLines = []
-
-    lines.forEach((line, index) => {
-      if (line.trim() === "") {
-        formattedLines.push(<br key={`br-${index}`} />)
-        return
-      }
-
-      // Handle list items
-      if (line.trim().startsWith("- ")) {
-        const listItem = line.replace(/^- /, "")
-        const formattedItem = formatTextStyles(listItem)
-        formattedLines.push(
-          <div key={index} className="flex items-start mb-2 ml-4">
-            <span className="text-emerald-500 mr-2 mt-1">•</span>
-            <span className="text-sm md:text-base leading-relaxed">{formattedItem}</span>
-          </div>,
-        )
-        return
-      }
-
-      // Handle regular lines
-      const formattedLine = formatTextStyles(line)
-      formattedLines.push(
-        <p key={index} className="mb-4 text-sm md:text-base leading-relaxed">
-          {formattedLine}
-        </p>,
-      )
-    })
-
-    return formattedLines
-  }
-
-  const formatTextStyles = (text) => {
-    const parts = []
-    let currentIndex = 0
-
-    // Handle **text** (highlighted)
-    const doubleAsteriskRegex = /\*\*(.*?)\*\*/g
-    let match
-
-    while ((match = doubleAsteriskRegex.exec(text)) !== null) {
-      // Add text before match
-      if (match.index > currentIndex) {
-        const beforeText = text.slice(currentIndex, match.index)
-        parts.push(formatSingleAsterisk(beforeText))
-      }
-
-      // Add highlighted text
-      parts.push(
-        <span
-          key={`highlight-${match.index}`}
-          className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded font-semibold"
-          id={`highlight-${match.index}`}
-        >
-          {match[1]}
-        </span>,
-      )
-
-      currentIndex = match.index + match[0].length
-    }
-
-    // Add remaining text
-    if (currentIndex < text.length) {
-      const remainingText = text.slice(currentIndex)
-      parts.push(formatSingleAsterisk(remainingText))
-    }
-
-    return parts.length > 0 ? parts : formatSingleAsterisk(text)
-  }
-
-  const formatSingleAsterisk = (text) => {
-    const parts = []
-    const singleAsteriskRegex = /\*([^*]+?)\*/g
-    let lastIndex = 0
-    let match
-
-    while ((match = singleAsteriskRegex.exec(text)) !== null) {
-      // Add text before match
-      if (match.index > lastIndex) {
-        parts.push(text.slice(lastIndex, match.index))
-      }
-
-      // Add bold text
-      parts.push(
-        <strong key={`bold-${match.index}`} className="font-bold text-black">
-          {match[1]}
-        </strong>,
-      )
-
-      lastIndex = match.index + match[0].length
-    }
-
-    // Add remaining text
-    if (lastIndex < text.length) {
-      parts.push(text.slice(lastIndex))
-    }
-
-    return parts.length > 0 ? parts : text
-  }
 
   const formatDate = (dateString) => {
     const date = new Date(dateString)
@@ -390,13 +193,14 @@ if(stories){
               alt={story.title}
               width={800}
               height={400}
-              className="w-full h-48 md:h-64 lg:h-80 object-cover"
+              className="w-full h-56 md:h-64 lg:h-80 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           </div>
 
           {/* Story Content */}
           <div className="text-gray-800 leading-relaxed">{formatContent(story.content)}</div>
+          <p className=" py-1">लेखक: <Link href={`/profile/${story.publisher._id}`} className=" text-white bg-emerald-500 px-3 py-2 text-sm rounded-2xl whitespace-nowrap  max-w-20 overflow-hidden"> {story?.publisher?.fullname}</Link></p>
         </motion.article>
 
         {/* Call to Action */}
