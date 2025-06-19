@@ -6,106 +6,7 @@ import { motion } from "framer-motion"
 import { FaCalendarAlt, FaMapMarkerAlt, FaFilter, FaSearch, FaUsers } from "react-icons/fa"
 import { usePatel } from "../../components/patelContext"
 import Head from "next/head"
-
-// Sample data
-const eventsData = [
-  {
-    id: 1,
-    name: "Organic Farming Workshop",
-    date: "May 15, 2023",
-    time: "10:00 AM - 2:00 PM",
-    location: "Chandpur Community Center",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Farming",
-    description:
-      "Learn advanced organic farming techniques from expert farmers. Topics include soil health, natural pest control, and crop rotation strategies.",
-    attendees: 45,
-  },
-  {
-    id: 2,
-    name: "Youth Digital Skills Training",
-    date: "May 22, 2023",
-    time: "9:00 AM - 4:00 PM",
-    location: "Mirzapur High School",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Education",
-    description:
-      "A comprehensive training program for rural youth to learn basic computer skills, internet usage, and mobile applications for agriculture.",
-    attendees: 30,
-  },
-  {
-    id: 3,
-    name: "Women's Dairy Management",
-    date: "June 5, 2023",
-    time: "11:00 AM - 3:00 PM",
-    location: "Sultanpur Panchayat Hall",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Dairy",
-    description:
-      "Workshop focused on dairy farm management, milk quality improvement, and forming women's cooperatives for better market access.",
-    attendees: 38,
-  },
-  {
-    id: 4,
-    name: "Cattle Health Camp",
-    date: "June 12, 2023",
-    time: "8:00 AM - 5:00 PM",
-    location: "Ahmadnagar Veterinary Center",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Livestock",
-    description:
-      "Free veterinary check-ups for cattle. Vaccination and basic treatments will be provided. Experts will share tips on cattle nutrition and care.",
-    attendees: 120,
-  },
-  {
-    id: 5,
-    name: "Government Schemes Awareness",
-    date: "June 18, 2023",
-    time: "10:00 AM - 1:00 PM",
-    location: "Jalalpur Community Hall",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Government",
-    description:
-      "Information session about various government schemes for farmers, including subsidies, loans, and insurance programs.",
-    attendees: 75,
-  },
-  {
-    id: 6,
-    name: "Water Conservation Workshop",
-    date: "June 25, 2023",
-    time: "9:00 AM - 12:00 PM",
-    location: "Rampur Agricultural College",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Environment",
-    description:
-      "Learn effective water conservation techniques for agriculture, including drip irrigation, rainwater harvesting, and watershed management.",
-    attendees: 55,
-  },
-  {
-    id: 7,
-    name: "Agricultural Marketing Strategies",
-    date: "July 3, 2023",
-    time: "10:00 AM - 2:00 PM",
-    location: "Faridpur Farmer's Club",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Marketing",
-    description:
-      "Workshop on effective marketing strategies for agricultural products, direct selling techniques, and using digital platforms.",
-    attendees: 40,
-  },
-  {
-    id: 8,
-    name: "Children's Education Fair",
-    date: "July 10, 2023",
-    time: "10:00 AM - 4:00 PM",
-    location: "Islampur Central School",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Education",
-    description:
-      "Educational fair for rural children with interactive learning activities, scholarship information, and career guidance.",
-    attendees: 150,
-  },
-]
+import AdUnit from '../../components/AdUnit';
 
 export default function EventsPage() {
   const [selectedCategory, setSelectedCategory] = useState("")
@@ -162,7 +63,11 @@ console.log(events);
 </Head>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        
+        <AdUnit 
+        slotId="1234567890" 
+        layout="in-article"
+        className="my-4"
+      />
 <motion.div
           initial="hidden"
           animate="visible"
@@ -360,6 +265,11 @@ console.log(events);
                      {/*  <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-md transition-colors">
                         Register Now
                       </button> */}
+                       <AdUnit 
+        slotId="0987654321" 
+        layout="display" 
+        className="my-8"
+      />
                     </div>
                   </div>
                 </motion.div>

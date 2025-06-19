@@ -29,7 +29,7 @@ import "swiper/css/effect-coverflow";
 import NayataPatelCard from "../components/poster.jsx";
 import PromotionalPosters from "../components/posters.jsx";
 import ResponsiveCommunityCards from "../components/cardSlider2.jsx";
-
+import AdUnit from '../components/AdUnit';
 
 
 
@@ -37,7 +37,7 @@ import ResponsiveCommunityCards from "../components/cardSlider2.jsx";
  
 export default function Home() {
   const [mounted, setMounted] = useState(false);
-  const { blogs, formatDate, user, stories, posts, siteUrl,prices,showWelcomeCard,setShowWelcomeCard} =
+  const { blogs, formatDate, user, stories, posts, siteUrl,prices,showWelcomeCard,setShowWelcomeCard , formatContent} =
     usePatel();
 const [priceData,setPriceData] = useState([])
   useEffect(() => {
@@ -414,7 +414,7 @@ const containerVariants = {
                       {blog.title}
                     </h3>
                     <p className="text-gray-600 laila mb-4 line-clamp-4 mask-b-from-75%">
-                      {blog.content}
+                      {formatContent(blog.content)}
                     </p>
 
                     <div className="flex items-center text-emerald-600 font-medium">
@@ -543,7 +543,7 @@ const containerVariants = {
                   </div>
                 </div>
                 <p className="text-sm text-gray-700 line-clamp-6">
-                  {story?.content}
+                  {formatContent(story?.content)}
                 </p>
               </motion.div>
             ))}

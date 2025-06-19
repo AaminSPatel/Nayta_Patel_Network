@@ -22,6 +22,7 @@ const [manualVillage, setManualVillage] = useState(false);
   const [selectedVIllage,setSelectedVillage] = useState(null)
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [showVillageWarning, setShowVillageWarning] = useState(false);
+  const [showImageWarning, setShowImageWarning] = useState(false);
 
  
   useEffect(()=>{
@@ -247,20 +248,39 @@ const handleSubmit = async (e) => {
       <p className="text-sm text-gray-500 mb-4">फोटो अपलोड करने के लिए बटन पर क्लिक करें</p>
     </div>
 
-    <div className="flex justify-between absolute bottom-0 w-full">
+    <div className="flex justify-end absolute bottom-0 w-full">
       <button
         onClick={skipStep}
-        className="px-4 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 "
+        className="px-4 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 hidden"
       >
         अभी छोड़ें
       </button>
       <button
-        onClick={nextStep}
-        className="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
+        onClick={() => {
+    if (!profileData.profilePic) {
+      setShowImageWarning(true);
+      setTimeout(() => setShowImageWarning(false), 2500); // Auto-hide after 2.5s
+    } else {
+      nextStep();
+    }
+  }}
+        className={`flex items-center px-4 py-2  rounded-md  transition-colors
+          ${!profileData.profilePic ?'cursor-not-allowed bg-emerald-800 text-gray-300 hover:bg-emerald-900':'bg-emerald-600 text-white hover:bg-emerald-700'}
+          `}
       >
         आगे <FiArrowRight className="ml-2" />
       </button>
     </div>
+    {showImageWarning && (
+  <motion.div
+    initial={{ y: 100, opacity: 0 }}
+    animate={{ y: -20, opacity: 1 }}
+    exit={{ y: 100, opacity: 0 }}
+    className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-red-100 text-red-700 px-4 py-2 rounded shadow-lg z-50 text-sm"
+  >
+    कृपया पहले अपना प्रोफाइल फोटो जोड़ें!
+  </motion.div>
+)}
   </motion.div>
 )}
 

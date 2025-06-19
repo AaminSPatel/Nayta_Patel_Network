@@ -22,7 +22,7 @@ export default function BlogPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedPost, setExpandedPost] = useState(null);
   const [showShareOptions, setShowShareOptions] = useState(null);
-  const { blogs,siteUrl } = usePatel();
+  const { blogs,siteUrl,formatContent } = usePatel();
 
   const categories = [...new Set(blogs.map((post) => post.category))];
 
@@ -246,7 +246,7 @@ export default function BlogPage() {
                       {featuredPost.title}
                     </h3>
                     <div className="text-gray-600 mb-6 mask-b-from-70%">
-                      <p className="line-clamp-4">{featuredPost.content}</p>
+                      <p className="line-clamp-4">{formatContent(featuredPost.content)}</p>
                     </div>
                     <div className="flex justify-between items-center">
                       <Link
@@ -367,7 +367,7 @@ export default function BlogPage() {
                       {post.title}
                     </h3>
                     <div className="text-gray-600 mb-4 flex-grow mask-b-from-60%">
-                      <p className="line-clamp-4">{post.content}</p>
+                      <p className="line-clamp-4">{formatContent(post.content)}</p>
                     </div>
                     <div className="flex justify-between items-center">
                       <Link

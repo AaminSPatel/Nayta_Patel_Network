@@ -245,7 +245,7 @@ export default function NewsPage() {
           initial={{ y: -100 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.8 }}
-        >
+        > 
           <div className="container mx-auto px-4">
             <div className="flex items-start flex-col gap-1 justify-between">
               <motion.div

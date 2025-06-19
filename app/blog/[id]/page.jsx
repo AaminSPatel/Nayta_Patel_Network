@@ -16,8 +16,8 @@ import {
 import { MdEmail } from 'react-icons/md'
 
 export default function BlogDetail() {
-  const { blogs, formatDate } = usePatel()
-  const { id ,formatContent} = useParams()
+  const { blogs, formatDate, formatContent} = usePatel()
+  const { id } = useParams()
   const [blog, setBlog] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -209,12 +209,12 @@ export default function BlogDetail() {
       />
       {blog.image.caption && (
         <p className="text-sm text-gray-500 mt-2 text-center">
-          {blog.image.caption}
+          {blog?.blog.title}
         </p>
       )}
     </div>
   )}
- {formatContent(blog.content)}
+ {formatContent(blog?.content)}
 </div>
         {/* Inline Share Options (for mobile) */}
         <div className="mt-8 lg:hidden">

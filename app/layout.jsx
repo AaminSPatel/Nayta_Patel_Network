@@ -12,6 +12,8 @@ import InstallPWA from "../components/InstallPWA"
 const inter = Inter({ subsets: ["latin"] })
 import { Suspense } from 'react';
 import PwaTabBar from "../components/PwaTabBar"
+import AdSenseProvider from '../components/AdSenseProvider';
+
 export const metadata = {
   title: {
     default: "Nayta Patel Network - Digital Voice of Rural India",
@@ -125,7 +127,7 @@ export default function RootLayout({ children }) {
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" href="/icons/web-app-manifest-192x192.png" type="image/png" />
   <link rel="apple-touch-icon" href="/icons/web-app-manifest-192x192.png" />
-  
+  <AdSenseProvider />
   {/* PWA Metadata */}
   <link rel="manifest" href="/manifest.json" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
