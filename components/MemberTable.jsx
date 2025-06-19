@@ -38,7 +38,7 @@ export default function MemberTable(prop) {
 
   const getRoleClass = (role) => {
     switch (role) {
-      case "admin":
+      case "semi-admin":
         return "bg-purple-100 text-purple-800"
       case "ambassador":
         return "bg-blue-100 text-blue-800"
@@ -294,7 +294,7 @@ export default function MemberTable(prop) {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
                     >
                       <option value="user">User</option>
-                      <option value="admin">Admin</option>
+                      <option value="semi-admin">Sub Admin</option>
                       <option value="ambassador">Ambassador</option>
                     </select>
                   </div>
@@ -359,7 +359,7 @@ export default function MemberTable(prop) {
 
 function AdminNotificationForm({ id, onCancel }) {
   const [formData, setFormData] = useState({
-    type: 'admin',
+    type: 'account',
     message: '',
   })
   const [loading, setLoading] = useState(false)
@@ -388,7 +388,7 @@ function AdminNotificationForm({ id, onCancel }) {
 
       alert('Notification sent successfully!')
       setFormData({
-        type: 'admin',
+        type: 'account',
         message: '',
       })
       onCancel() // Close the modal after successful submission

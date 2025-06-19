@@ -32,15 +32,15 @@ import { usePatel } from "./patelContext";
 
 const navigationItems = [
   { name: "Home", href: "/", icon: FaHome },
+  { name: "News", href: "/news", icon: FaNewspaper },
+  { name: "Villages", href: "/directory", icon: FaAddressBook },
   { name: "Prices", href: "/prices", icon: FaChartLine },
   { name: "Blogs", href: "/blog", icon: FaBlog },
-  { name: "News", href: "/news", icon: FaNewspaper },
   { name: "Posts", href: "/wall", icon: FaUsers },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
   { name: "Stories", href: "/stories", icon: FaBookOpen },
   /* { name: "Learning", href: "/learning", icon: FaGraduationCap },
   { name: "Marketplace", href: "/marketplace", icon: FaStore }, */
-  { name: "Villages", href: "/directory", icon: FaAddressBook },
   { name: "About", href: "/about", icon: FaInfoCircle },
   { name: "Contact", href: "/contact", icon: FaEnvelope },
 ];
