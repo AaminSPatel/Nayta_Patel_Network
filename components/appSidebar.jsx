@@ -56,10 +56,10 @@ export default function CustomSidebar() {
     { name: "News", icon: FaNewspaper, path: "/admin/news" },
     { name: "Stories", icon: FileText, path: "/admin/stories" },
     { name: "Events", icon: Calendar, path: "/admin/events" },
+    { name: "Villages", icon: Home, path: "/admin/villages" },
     { name: "Posts", icon: MessageSquare, path: "/admin/posts" },
     { name: "Prices", icon: DollarSign, path: "/admin/prices" },
     { name: "Members", icon: Users, path: "/admin/members" },
-    { name: "Villages", icon: Home, path: "/admin/villages" },
     { name: "Feedbacks", icon: MessageCircle, path: "/admin/feedbacks" },
   ];
 
@@ -146,7 +146,7 @@ export default function CustomSidebar() {
                   <div className="py-4">
                     <nav>
                       <ul className="space-y-1 px-2 ">
-                        {(user?.role === 'admin'? menuItems : menuItems?.slice(0,5)).map((item) => (
+                        {(user?.role === 'admin'? menuItems : menuItems?.slice(0,6)).map((item) => (
                           <li key={item.name}>
                             <Link href={item.path}>
                               <div
