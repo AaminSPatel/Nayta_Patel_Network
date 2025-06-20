@@ -322,8 +322,8 @@ export default function NewsPage() {
                     className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="">सभी स्थान</option>
-                    {locations.map((location) => (
-                      <option key={location} value={location}>
+                    {locations.map((location,index) => (
+                      <option key={index} value={location}>
                         {location}
                       </option>
                     ))}
@@ -335,8 +335,8 @@ export default function NewsPage() {
                     className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="">सभी श्रेणियां</option>
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
+                    {categories.map((category,index) => (
+                      <option key={index} value={category}>
                         {category}
                       </option>
                     ))}
@@ -378,7 +378,7 @@ export default function NewsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {featuredNews?.map((item, index) => (
                   <motion.div
-                    key={item?._id}
+                    key={index}
                     className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer group"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -460,7 +460,7 @@ export default function NewsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {(currentNews.length > 3 ? currentNews.slice(3,currentNews.length) :currentNews) .map((item, index) => (
                 <motion.div
-                  key={item._id}
+                  key={index}
                   className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer group"
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -504,7 +504,7 @@ export default function NewsPage() {
                       {item?.title}
                     </h3>
 
-                    <p className="text-gray-600 mb-4 sm:text-sm text-xs font-medium line-clamp-6 mask-b-from-75%">{formatContent(item.content)} </p>
+                    <div className="text-gray-600 mb-4 sm:text-sm text-xs font-medium line-clamp-6 mask-b-from-75%">{formatContent(item.content)} </div>
                     <div className="flex items-center justify-between text-xs">
                       {item?.publisher?.fullname && <div className="flex items-center space-x-1 text-gray-500  shadow-sm shadow-amber-200  bg-emerald-200 rounded-2xl px-2 py-1">
                           <FaUser />
@@ -838,8 +838,8 @@ console.log(submitFormData);
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
         >
           <option value="">श्रेणी चुनें</option>
-          {categories.map((cat) => (
-            <option key={cat.value} value={cat.value}>
+          {categories.map((cat,index) => (
+            <option key={index} value={cat.value}>
               {cat.label}
             </option>
           ))}

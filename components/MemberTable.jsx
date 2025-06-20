@@ -22,6 +22,17 @@ export default function MemberTable(prop) {
    setFilterUsers(prop.users)
    setView(prop.view)
   },[prop])
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async (userId) => {
+    try {
+      await navigator.clipboard.writeText(userId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
   const getStatusClass = (status) => {
     switch (status) {
       case "verified":
@@ -145,7 +156,12 @@ export default function MemberTable(prop) {
                     alt={member?.fullname}
                     className="h-10 w-10 rounded-full object-cover"
                   />
+                  <div className="flex flex-col items-center gap-1">
+
                   <span className="font-medium text-gray-900">{member.fullname}</span>
+                  <div><CopyableUserId id={member._id} />
+</div>
+                  </div>
                 </td>
                 <td>
                   <div className="flex flex-col">
@@ -159,14 +175,11 @@ export default function MemberTable(prop) {
                     </span>
                   </div>
                 </td>
-                <td className="flex flex-col">
+                <td className="flex  items-center justify-center">
                   <span className={`px-2 py-1 text-xs rounded-full ${getRoleClass(member.role)}`}>
                     {member.role}
                   </span>
-                   <button 
-                   className="cursor-pointer bg-amber-200 h-6 w-6 flex items-center justify-center rounded-full"
-                   onClick={()=>openNotificationModal(member)}><FaBell/></button>
-                </td>
+                   </td>
                 <td>{formatDate(member.createdAt)}</td>
                 <td>{member.village}</td>
                 <td>
@@ -198,8 +211,10 @@ export default function MemberTable(prop) {
                 </td>
                 <td>
                   <div className="flex space-x-2">
-                    <button className="p-1 text-gray-500 hover:text-gray-700">
-                      <Eye size={16} />
+                    <button
+                    onClick={()=>openNotificationModal(member)}
+                    className="p-1 text-gray-500 hover:text-gray-700">
+                      <FaBell size={16} />
                     </button>
                     <button 
                       className="p-1 text-blue-500 hover:text-blue-700"
@@ -226,6 +241,9 @@ export default function MemberTable(prop) {
                   <div className="text-sm text-gray-500">{member.email}</div>
                 </div>
               </div>
+              <div className="flex gap-1 items-center">UserId:<CopyableUserId id={member._id} />
+</div>
+               
               <div className="text-sm">Village: {member.village}</div>
               <div className="text-sm">Role: {member.role}</div>
               <div className="text-sm flex gap-3">Ambassador Will:
@@ -238,13 +256,14 @@ export default function MemberTable(prop) {
                     {member.status}
                   </span>
               </div>
-              <div className="absolute top-4 right-8">
-                <button 
-                   className="cursor-pointer bg-amber-200 h-8 w-8 flex items-center justify-center rounded-full"
-                   onClick={()=>openNotificationModal(member)}><FaBell/></button>
-              </div>
-              <div className="text-sm">Posts: {member.posts?.length || 0}</div>
+              
+              <div className="text-sm">Mobile: {member.mobile}</div>
               <div className="flex gap-2 justify-end">
+                 <button
+                    onClick={()=>openNotificationModal(member)}
+                    className=" text-gray-500 hover:text-gray-700">
+                      <FaBell size={16} />
+                    </button>
                 <button onClick={() => openEditModal(member)} className="text-blue-500"><Edit size={16} /></button>
                 <button className="text-red-500"><Trash2 size={16} /></button>
               </div>
@@ -354,6 +373,30 @@ export default function MemberTable(prop) {
       )}
     </div>
   )
+}
+function CopyableUserId({ id }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(id);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  };
+
+  return (
+    <div
+      className="text-sm cursor-pointer text-blue-900 hover:underline"
+      onClick={handleCopy}
+      title="Click to copy"
+    >
+      {id}
+      {copied && <span className="text-green-500 ml-2">Copied!</span>}
+    </div>
+  );
 }
 
 

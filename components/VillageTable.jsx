@@ -6,14 +6,21 @@ import { FaMosque, FaTimes } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
 export default function VillageTable() {
-  const { villages, setVillages, path } = usePatel();
+  const { villages, setVillages, path , user } = usePatel();
   const [selectedVillage, setSelectedVillage] = useState({});
+  const [selectedVillageId, setSelectedVillageId] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [ambassadormodalOpen, setAmbassadorModalOpen] = useState(false);
 
   const handleEditClick = (village) => {
     console.log("selected village data", village);
     setSelectedVillage(village);
     setModalOpen(true);
+  };
+  const handleAmbassadorEditClick = (id) => {
+    //console.log("selected village data", village);
+    setSelectedVillageId(id);
+    setAmbassadorModalOpen(true);
   };
 /* 
   const handleUpdate = async (updatedData) => {
@@ -133,7 +140,9 @@ export default function VillageTable() {
              
               <td>
                 <div className="flex space-x-2">
-                  <button className="p-1 text-gray-500 hover:text-gray-700">
+                  <button
+                  onClick={() => handleAmbassadorEditClick(village._id)}
+                  className="p-1 text-gray-500 hover:text-gray-700">
                     <Eye size={16} />
                   </button>
                   <button
@@ -160,6 +169,10 @@ export default function VillageTable() {
        
         initialData={selectedVillage}
       />
+      {user?.role === 'admin' && <AmbassadorFormModal 
+      isOpen={ambassadormodalOpen}
+      onClose={() => setAmbassadorModalOpen(false)} 
+      id={selectedVillageId}/>}
     </motion.div>
   );
 }
@@ -406,6 +419,107 @@ export default function VillageTable() {
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  );
+}
+
+function AmbassadorFormModal({ isOpen, onClose, onSubmit, id }) {
+  const { path } = usePatel();
+  
+  const [ambassador, setAmbassador] = useState('');
+
+  
+  const handleChange = (e) => {
+    const {  value } = e.target;
+    setAmbassador(value)
+  };
+
+ 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await fetch(`${path}/api/villages/appointAmbessador/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ ambassador }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Update Ambassador failed");
+    }
+
+    await response.json();
+    setAmbassador('');
+    onClose();
+  } catch (error) {
+    console.error("Update error:", error);
+    alert(`Update ambassador failed: ${error.message}`);
+  }
+};
+const handlePaste = async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    setAmbassador(text);
+  } catch (err) {
+    console.error("Failed to paste:", err);
+    alert("Clipboard access failed");
+  }
+};
+
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <h2 className="text-lg font-semibold mb-4">Update Village Ambassador</h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
+  <div>
+    <label className="block text-sm font-medium text-gray-700">
+      Ambassador Id
+    </label>
+    <div className="flex gap-2">
+      <input
+        name="ambassador"
+        value={ambassador}
+        onChange={handleChange}
+        required
+        className="w-full border px-3 py-2 rounded"
+      />
+      <button
+        type="button"
+        onClick={handlePaste}
+        className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300"
+      >
+        Paste
+      </button>
+    </div>
+  </div>
+
+  <div className="flex justify-end gap-2 pt-4">
+    <button
+      type="button"
+      onClick={() =>{setAmbassador(''); onClose();}}
+      className="px-3 py-1 rounded border"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      className="px-3 py-1 bg-blue-500 text-white rounded"
+    >
+      Update
+    </button>
+  </div>
+</form>
+
       </div>
     </div>
   );
