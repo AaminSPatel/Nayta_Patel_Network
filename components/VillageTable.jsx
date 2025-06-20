@@ -2,8 +2,9 @@
 import { motion } from "framer-motion";
 import { Edit, Trash2, Eye, MapPin, Users, School } from "lucide-react";
 import { usePatel } from "./patelContext";
-import { FaMosque, FaTimes } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { FaMapMarked, FaMapSigns, FaMosque, FaTimes } from "react-icons/fa";
+import { useState, useEffect ,useRef} from "react";
+import { ArrowDown, ArrowUp } from "lucide-react"; // use any icon library you like
 
 export default function VillageTable() {
   const { villages, setVillages, path , user } = usePatel();
@@ -11,6 +12,11 @@ export default function VillageTable() {
   const [selectedVillageId, setSelectedVillageId] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [ambassadormodalOpen, setAmbassadorModalOpen] = useState(false);
+const [searchDistrict, setSearchDistrict] = useState("");
+const [searchTahsil, setSearchTahsil] = useState("");
+
+const topRef = useRef(null);
+const bottomRef = useRef(null);
 
   const handleEditClick = (village) => {
     console.log("selected village data", village);
@@ -22,31 +28,7 @@ export default function VillageTable() {
     setSelectedVillageId(id);
     setAmbassadorModalOpen(true);
   };
-/* 
-  const handleUpdate = async (updatedData) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${path}/api/villages/${updatedData._id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: updatedData, // This should be FormData when sending files
-      });
 
-      if (!res.ok) throw new Error("Failed to update");
-
-      const updatedVillage = await res.json();
-      const updatedVillages = villages.map((v) =>
-        v._id === updatedVillage._id ? updatedVillage : v
-      );
-      setVillages(updatedVillages);
-      setModalOpen(false);
-    } catch (error) {
-      console.error("Update failed:", error);
-    }
-  };
- */
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this village?"
@@ -69,13 +51,62 @@ export default function VillageTable() {
     }
   };
 
+  const filteredVillages = villages.filter((v) =>
+  (!searchDistrict || v.district === searchDistrict) &&
+  (!searchTahsil || v.tahsil === searchTahsil)
+);
+
+// then map filteredVillages in your existing table:
+
+
+
   return (
     <motion.div
       className="table-container"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-    >
+    > <div className="flex flex-wrap gap-3 items-center mb-4" ref={topRef}>
+  <select
+    value={searchDistrict}
+    onChange={(e) => setSearchDistrict(e.target.value)}
+    className="border px-3 py-1 rounded"
+  >
+    <option value="">All Districts</option>
+    {[...new Set(villages.map(v => v.district).filter(Boolean))].map((d, i) => (
+      <option key={i} value={d}>{d}</option>
+    ))}
+  </select>
+
+  <select
+    value={searchTahsil}
+    onChange={(e) => setSearchTahsil(e.target.value)}
+    className="border px-3 py-1 rounded"
+  >
+    <option value="">All Tahsils</option>
+    {[...new Set(villages.map(v => v.tahsil).filter(Boolean))].map((t, i) => (
+      <option key={i} value={t}>{t}</option>
+    ))}
+  </select>
+</div>
+{/* Scroll buttons */}
+<div className="fixed left-3 bottom-10 flex flex-col gap-3 z-50">
+  <button
+    onClick={() => topRef.current?.scrollIntoView({ behavior: "smooth" })}
+    className="bg-white border rounded-full p-2 shadow hover:bg-gray-100"
+    title="Go to Top"
+  >
+    <ArrowUp className="w-5 h-5 text-gray-700" />
+  </button>
+  <button
+    onClick={() => bottomRef.current?.scrollIntoView({ behavior: "smooth" })}
+    className="bg-white border rounded-full p-2 shadow hover:bg-gray-100"
+    title="Go to Bottom"
+  >
+    <ArrowDown className="w-5 h-5 text-gray-700" />
+  </button>
+</div>
+
       <table className="admin-table">
         <thead className="bg-gray-50">
           <tr>
@@ -88,7 +119,7 @@ export default function VillageTable() {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {villages.map((village) => (
+          {filteredVillages.map((village) => (
             <tr key={village._id}>
               <td>
                 <img
@@ -126,7 +157,8 @@ export default function VillageTable() {
                   <MapPin size={14} className="text-gray-400" />
                   {village.name}
                 </span>
-               <div className="flex "> <span className="flex items-center justify-center gap-2 px-2 py-1 text-xs rounded-full">
+               <div className="flex "> 
+                <span className="flex items-center justify-center gap-2 px-2 py-1 text-xs rounded-full">
                   <School size={16} className="text-yellow-400" />{" "}
                   {village.schools?.length || 0}
                 </span>
@@ -134,7 +166,14 @@ export default function VillageTable() {
                 <span className="flex items-start justify-center gap-2 px-2 py-1 text-xs rounded-full">
                   <FaMosque size={16} className="text-green-400" />{" "}
                   {village.mosque?.length || 0}
-                </span></div>
+                </span>
+                 <span className="flex items-start justify-center gap-2 px-2 py-1 text-xs rounded-full">
+               {village.location.length > 4 ?   <FaMapMarked size={16} className="text-green-400" /> :
+                  <FaMapSigns size={16} className="text-red-400" />
+                   }
+                </span>
+                
+                </div>
                 </div>
               </td>
              
@@ -173,6 +212,8 @@ export default function VillageTable() {
       isOpen={ambassadormodalOpen}
       onClose={() => setAmbassadorModalOpen(false)} 
       id={selectedVillageId}/>}
+      <div ref={bottomRef}></div>
+
     </motion.div>
   );
 }
@@ -237,8 +278,8 @@ export default function VillageTable() {
 
   const handleArrayChange = (e, field) => {
     const { value } = e.target;
-    const items = value.split(",").map((item) => item.trim()).filter(Boolean);
-    setFormData((prev) => ({ ...prev, [field]: items }));
+  //  const items = value.split(",").map((item) => item).filter(Boolean);
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleFileChange = (e) => {
@@ -261,7 +302,7 @@ export default function VillageTable() {
   const removeNewImage = (index) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
-
+/* 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -310,6 +351,70 @@ export default function VillageTable() {
       alert(`Update failed: ${error.message}`);
     }
   };
+ */
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const token = localStorage.getItem("token");
+
+  try {
+    const formDataToSend = new FormData();
+
+    // Copy all string-based fields except _id, images
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== "_id" && key !== "images" && key !== "mosque" && key !== "schools") {
+        formDataToSend.append(key, value);
+      }
+    });
+
+    // Handle mosque and schools separately: convert string to array, trim, filter empty
+   const mosqueArray = (typeof formData.mosque === "string"
+  ? formData.mosque
+  : formData.mosque.join(",")
+).split(",").map((item) => item.trim()).filter(Boolean);
+
+mosqueArray.forEach((item) => formDataToSend.append("mosque", item));
+
+const schoolsArray = (typeof formData.schools === "string"
+  ? formData.schools
+  : formData.schools.join(",")
+).split(",").map((item) => item.trim()).filter(Boolean);
+
+schoolsArray.forEach((item) => formDataToSend.append("schools", item));
+    // Handle images
+    images.forEach((image) => {
+      formDataToSend.append("images", image);
+    });
+
+    if (imagesToDelete.length > 0) {
+      formDataToSend.append("imagesToDelete", JSON.stringify(imagesToDelete));
+    }
+
+    const response = await fetch(`${path}/api/villages/${formData._id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formDataToSend,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Update failed");
+    }
+
+    const updatedVillage = await response.json();
+
+    setVillages(villages.map(v => v._id === updatedVillage._id ? updatedVillage : v));
+
+    setImages([]);
+    setImagesToDelete([]);
+    onClose();
+  } catch (error) {
+    console.error("Update error:", error);
+    alert(`Update failed: ${error.message}`);
+  }
+};
 
 
   if (!isOpen) return null;
@@ -337,22 +442,23 @@ export default function VillageTable() {
           ))}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Mosque (comma separated)</label>
-            <input
-              value={formData.mosque.join(", ")}
-              onChange={(e) => handleArrayChange(e, "mosque")}
-              className="w-full border px-3 py-2 rounded"
-            />
-          </div>
+  <label className="block text-sm font-medium text-gray-700">Mosque (comma separated)</label>
+  <input
+    value={formData.mosque}
+    onChange={(e) => handleArrayChange(e, "mosque")}
+    className="w-full border px-3 py-2 rounded"
+  />
+</div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Schools (comma separated)</label>
-            <input
-              value={formData.schools.join(",")}
-              onChange={(e) => handleArrayChange(e, "schools")}
-              className="w-full border px-3 py-2 rounded"
-            />
-          </div>
+<div>
+  <label className="block text-sm font-medium text-gray-700">Schools (comma separated)</label>
+  <input
+    value={formData.schools}
+    onChange={(e) =>    handleArrayChange(e, "schools")}
+    className="w-full border px-3 py-2 rounded"
+  />
+</div>
+
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Existing Images</label>
@@ -423,6 +529,7 @@ export default function VillageTable() {
     </div>
   );
 }
+
 
 function AmbassadorFormModal({ isOpen, onClose, onSubmit, id }) {
   const { path } = usePatel();
