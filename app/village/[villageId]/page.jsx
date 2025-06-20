@@ -280,7 +280,7 @@ const {villages , path} = usePatel();
                       </p>
                     </div>
  {village?.ambassador && <div  className='flex items-center justify-center w-full'>
- <CompactAmbassadorCard user = { village?.ambassador }/>
+ <CompactAmbassadorCard user = { village?.ambassador} villageId={village?._id}/>
 </div>}
                   </div>
                 )}

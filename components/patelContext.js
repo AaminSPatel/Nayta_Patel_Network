@@ -415,7 +415,7 @@ export function AppProvider({ children }) {
   const fetchNews = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/news");
-      setNews(response.data);
+      setNews(response.data.reverse());
       //console.log('news',response.data);
     } catch (err) {
       setError(err.message);
@@ -434,7 +434,7 @@ export function AppProvider({ children }) {
           Authorization: `Bearer ${token}`,
         },
       });
-      setFeedbacks(response.data);
+      setFeedbacks(response.data.reverse());
       // console.log('Contact data',response.data);
     } catch (err) {
       setError(err.message);
@@ -465,7 +465,7 @@ export function AppProvider({ children }) {
   const fetchBlogs = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/blogs");
-      setBlogs(response.data);
+      setBlogs(response.data.reverse());
       // console.log(response.data);
     } catch (err) {
       setError(err.message);
@@ -476,7 +476,7 @@ export function AppProvider({ children }) {
   const fetchEvents = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/events");
-      setEvents(response.data);
+      setEvents(response.data.reverse());
     } catch (err) {
       setError(err.message);
     }

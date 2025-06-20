@@ -110,7 +110,7 @@ const handleFilterChange = (e) => {
     if (navigator.share) {
       navigator.share({
         title: `${village.name} गाँव - नायता पटेल नेटवर्क`,
-        text: `नायता पटेल नेटवर्क के माध्यम से ${village.name} गाँव की खोज करें। ${village.info}`,
+        text: `नायता पटेल नेटवर्क के माध्यम से ${village.name} गाँव की खोज करें। ${village.info.slice(0,300)}...`,
         url: `${window.location.origin}/village/${village._id}`,
       });
     } else {

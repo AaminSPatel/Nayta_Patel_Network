@@ -1,28 +1,33 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion,AnimatePresence  } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import { usePatel } from './patelContext';
 import { 
   FaFacebook, 
   FaTwitter, 
   FaWhatsapp, 
-  FaLinkedin,
+  
   FaDownload,
   FaShare,
   FaEnvelope,
   FaMapPin,
-  FaPhone
+  FaPhone,
+  FaInstagram
 } from 'react-icons/fa';
 //import './AmbassadorCard.css';
 
 const ResponsiveAmbassadorCard = (ambassador) => {
   const cardRef = useRef(null);
   const [isLandscape, setIsLandscape] = useState(false);
-  const [showSocialIcons, setShowSocialIcons] = useState(false);
-  const { siteUrl, siteBrand, user } = usePatel();
-  
+  const [showIcons, setShowIcons] = useState(false);  const { siteUrl, siteBrand, user } = usePatel();
+  const icons = [
+    { id: "facebook", icon: <FaFacebook />, color: "text-blue-600" },
+    { id: "twitter", icon: <FaTwitter />, color: "text-sky-500" },
+    { id: "whatsapp", icon: <FaWhatsapp />, color: "text-green-500" },
+    { id: "instagram", icon: <FaInstagram />, color: "text-red-600" },
+  ];
   // Default ambassador data
   const [defaultAmbassador, setDefaultAmbassador] = useState({
     name: 'John Doe',
@@ -47,8 +52,8 @@ const ResponsiveAmbassadorCard = (ambassador) => {
   useEffect(() => {
     
       setDefaultAmbassador({
-        name: ambassador.user.fullname,
-        village: ambassador.user.village,
+        name: ambassador?.user?.fullname,
+        village: ambassador?.user?.village,
         image: ambassador?.user?.profilepic?.url || '/user.avif',
         role: 'Village Ambassador',
         contact: ambassador?.user?.mobile,
@@ -56,7 +61,15 @@ const ResponsiveAmbassadorCard = (ambassador) => {
       });
     
   }, []);
-
+const iconVariants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: (i) => ({
+    opacity: 1,
+    x: 0,
+    transition: { delay: i * 0.1 },
+  }),
+  exit: { opacity: 0, x: -10 },
+};
   // Merge with passed data
   const data = { ...defaultAmbassador, ...ambassador };
 
@@ -86,9 +99,9 @@ const ResponsiveAmbassadorCard = (ambassador) => {
   };
 
   const shareOnSocial = (platform) => {
-    const shareText = `Meet ${data.name}, ${data.village}'s Community Ambassador`;
-    const shareUrl = siteUrl;
-    console.log(data);
+    const shareText = ` ${data.village} के ${data.name}   को सलाम! इन्होंने हमारे नेटवर्क पर सक्रिय रहते हुए गांव की जानकारी अपडेट कर बहुत ही सराहनीय कार्य किया है। आपका योगदान काबिल-ए-तारीफ़ है! Nayta Patel Network उनकी इस पहल का हार्दिक अभिनंदन करता है और आभार व्यक्त करता है।`;
+    const shareUrl = `${siteUrl}/village/${ambassador.villageId}`;
+    //console.log(data);
     
     switch(platform) {
       case 'facebook':
@@ -100,9 +113,18 @@ const ResponsiveAmbassadorCard = (ambassador) => {
       case 'whatsapp':
         window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`, '_blank');
         break;
-      case 'linkedin':
-        window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText)}`, '_blank');
-        break;
+      case 'instagram':
+  navigator.clipboard.writeText(`${shareText}\n${shareUrl}`)
+    .then(() => {
+     // alert("Copied! Paste it in your Instagram story/status.");
+      window.open('https://www.instagram.com/', '_blank');
+    })
+    .catch((err) => {
+      console.error("Clipboard error:", err);
+      //alert("Failed to copy. Please copy manually.");
+    });
+  break;
+
       default:
         break;
     }
@@ -174,63 +196,42 @@ const ResponsiveAmbassadorCard = (ambassador) => {
       </div>
       
       {/* Social Sharing and Download Buttons */}
-      <div className="flex flex-row items-center gap-3 mt-4">
-        
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={captureCard}
-          className="download-butto hidden"
-        >
-          <FaDownload />
-          Download Card
-        </motion.button>
-        <div className="social-share-container">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="social-share-button"
-            onClick={() => setShowSocialIcons(!showSocialIcons)}
-          >
-            <FaShare />
-            
-          </motion.button>
-          
-          <div className={`social-icons-wrapper ${showSocialIcons ? 'visible' : ''}`}>
-            <motion.div
-              /* whileHover={{ scale: 1.1 }} */
-              className="social-icon facebook"
-              onClick={() => shareOnSocial('facebook')}
-            >
-              <FaFacebook size={20} />
-            </motion.div>
-            <motion.div
-              /* whileHover={{ scale: 1.1 }} */
-              className="social-icon twitter"
-              onClick={() => shareOnSocial('twitter')}
-            >
-              <FaTwitter size={20} />
-            </motion.div>
-            <motion.div
-             /*  whileHover={{ scale: 1.1 }} */
-              className="social-icon whatsapp"
-              onClick={() => shareOnSocial('whatsapp')}
-            >
-              <FaWhatsapp size={20} />
-            </motion.div>
-            <motion.div
-              /* whileHover={{ scale: 1.1 }} */
-              className="social-icon linkedin"
-              onClick={() => shareOnSocial('linkedin')}
-            >
-              <FaLinkedin size={20} />
-            </motion.div>
-          </div>
-        </div>
-        
-      </div>
+      <div className="flex items-center gap-2 relative my-4">
+      {/* Share Button */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setShowIcons(!showIcons)}
+        className="text-xl text-gray-700 hover:text-black"
+      >
+        <FaShare />
+      </motion.button>
+
+      {/* Social Icons */}
+      <AnimatePresence>
+        {showIcons && (
+          <>
+            {icons.map((item, index) => (
+              <motion.div
+                key={item.id}
+                className={`cursor-pointer ${item.color} text-xl`}
+                custom={index}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={iconVariants}
+                onClick={() => shareOnSocial(item.id)}
+              >
+                {item.icon}
+              </motion.div>
+            ))}
+          </>
+        )}
+      </AnimatePresence>
+    </div>
     </div>
   );
 };
 
 export default ResponsiveAmbassadorCard;
+

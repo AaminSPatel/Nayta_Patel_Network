@@ -1,8 +1,10 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { FiImage, FiVideo, FiMapPin, FiSmile, FiX } from "react-icons/fi"
 import { usePatel } from "../../components/patelContext"
+
+const MAX_CHARS = 600;
 
 const CreatePostCard = ({ onAddPost, userData }) => {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -10,12 +12,20 @@ const CreatePostCard = ({ onAddPost, userData }) => {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const { path, tags } = usePatel()
-  
   const [postContent, setPostContent] = useState('')
+  const [charsRemaining, setCharsRemaining] = useState(MAX_CHARS)
 
-  const handleFocus = () => {
-    setIsExpanded(true)
+  useEffect(() => {
+    setCharsRemaining(MAX_CHARS - postContent.length)
+  }, [postContent])
+
+  const handleContentChange = (e) => {
+    if (e.target.value.length <= MAX_CHARS) {
+      setPostContent(e.target.value)
+    }
   }
+
+  const handleFocus = () => setIsExpanded(true)
 
   const handleCancel = () => {
     setIsExpanded(false)
@@ -44,13 +54,11 @@ const CreatePostCard = ({ onAddPost, userData }) => {
     }
 
     try {
-      // Extract auto-tags from content
       const foundTags = tags.filter(tag => {
         const regex = new RegExp(`\\b${tag}\\b`, 'i')
         return regex.test(postContent)
       })
 
-      // Limit to a reasonable number of tags
       const selectedTags = foundTags.slice(0, 10)
 
       const response = await fetch(path + '/api/posts', {
@@ -71,17 +79,11 @@ const CreatePostCard = ({ onAddPost, userData }) => {
       }
 
       const result = await response.json()
-      console.log("Post created successfully:", result)
-      
-      // Reset form
       setPostContent('')
       setIsExpanded(false)
-      
-      // Call success callback if provided
       if (onAddPost) onAddPost(result.post)
       
     } catch (err) {
-      console.error('Submission error:', err)
       setError(err.message || 'Failed to save post')
     } finally {
       setIsSubmitting(false)
@@ -93,7 +95,6 @@ const CreatePostCard = ({ onAddPost, userData }) => {
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
       className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
     >
       <div className="p-4">
@@ -114,11 +115,14 @@ const CreatePostCard = ({ onAddPost, userData }) => {
             <div className="flex-1 space-y-3">
               <textarea
                 value={postContent}
-                onChange={(e) => setPostContent(e.target.value)}
+                onChange={handleContentChange}
                 placeholder={`What's on your mind, ${userData.fullName.split(" ")[0]}?`}
                 className="w-full p-3 h-24 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
                 autoFocus
               />
+              <div className={`text-xs text-right ${charsRemaining < 50 ? 'text-red-500' : 'text-gray-500'}`}>
+                {charsRemaining} / {MAX_CHARS} characters remaining
+              </div>
 
               {error && (
                 <div className="p-3 bg-red-100 text-red-700 rounded-lg flex items-center text-sm">
@@ -134,26 +138,10 @@ const CreatePostCard = ({ onAddPost, userData }) => {
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            transition={{ duration: 0.2 }}
           >
-     {/*        <div className="mt-4 flex flex-wrap gap-2">
-              <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-sm flex items-center">
-                <FiMapPin className="mr-1" />
-                {userData.village}
-              </div>
-            </div> */}
-
             <div className="mt-4 flex justify-between items-center">
-             <div className="flex space-x-2">
-               {/*    <button type="button" className="p-2 text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-full">
-                  <FiImage />
-                </button>
-               <button type="button" className="p-2 text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-full">
-                  <FiVideo />
-                </button>
-                <button type="button" className="p-2 text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-full">
-                  <FiSmile />
-                </button> */}
+              <div className="flex space-x-2">
+                {/* Media buttons can go here */}
               </div>
 
               <div className="flex space-x-2">
@@ -167,9 +155,9 @@ const CreatePostCard = ({ onAddPost, userData }) => {
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  disabled={!postContent.trim() || isSubmitting}
+                  disabled={!postContent.trim() || isSubmitting || charsRemaining < 0}
                   className={`px-4 py-2 rounded-md ${
-                    !postContent.trim() || isSubmitting
+                    !postContent.trim() || isSubmitting || charsRemaining < 0
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-emerald-600 text-white hover:bg-emerald-700"
                   }`}
@@ -189,25 +177,6 @@ const CreatePostCard = ({ onAddPost, userData }) => {
           </motion.div>
         )}
       </div>
-
-   {/*    {!isExpanded && (
-        <div className="border-t border-gray-200 px-4 py-2">
-          <div className="flex justify-around">
-            <button type="button" className="flex-1 py-1 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-md">
-              <FiImage className="mr-2" />
-              <span>Photo</span>
-            </button>
-            <button type="button" className="flex-1 py-1 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-md">
-              <FiVideo className="mr-2" />
-              <span>Video</span>
-            </button>
-            <button type="button" className="flex-1 py-1 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-gray-100 rounded-md">
-              <FiMapPin className="mr-2" />
-              <span>Location</span>
-            </button>
-          </div>
-        </div>
-      )} */}
     </motion.div>
   )
 }

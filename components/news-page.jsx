@@ -161,7 +161,7 @@ export default function NewsPage() {
      }, [user])
      useEffect(()=>{
       if(news){
-        setFeaturedNews(news.reverse().slice(0,3))
+        setFeaturedNews(news.slice(0,3))
       }
      },[news])
   // Filter and search functionality
