@@ -58,14 +58,7 @@ function Loader() {
     setError(null);
 
     try {
-      // Create FormData object
-      /*  const formDataToSend = new FormData();
-      // Append all fields including the image file
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('email',formData.email);
-      formDataToSend.append('mobile', formData.mobile);
-      formDataToSend.append('message', formData.message);
-console.log(formDataToSend); */
+      
 
       const response = await fetch(path + "/api/contacts", {
         method: "POST",
@@ -87,6 +80,12 @@ console.log(formDataToSend); */
     } finally {
       setLoading(false);
       setFormStatus("success");
+      setFormData({
+         name: "",
+    email: "",
+    mobile: "",
+    message: ""
+      })
     }
   };
 
@@ -309,7 +308,15 @@ console.log(formDataToSend); */
               <h2 className="text-2xl font-semibold mb-6 text-gray-800">
                 Send Us a Message
               </h2>
-
+{error && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-red-100 border-l-4 border-red-400 text-red-700 px-6 py-4 rounded-md mb-6"
+        >
+          <p>{error}</p>
+        </motion.div>
+      )}
               {formStatus === "success" && (
                 <div className="bg-green-100 border-l-4 border-green-400 text-green-700 px-6 py-4 rounded-md mb-6">
                   <p>
@@ -394,12 +401,34 @@ console.log(formDataToSend); */
                   ></textarea>
                 </div>
 
-                <button
-                  type="submit"
-                  className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none"
-                >
-                  Send Message
-                </button>
+                <motion.button
+          type="submit"
+          disabled={loading}
+          className={`relative bg-emerald-500 text-white px-8 py-4 rounded-lg transition-all duration-300 ease-in-out focus:outline-none ${
+            loading ? "opacity-70 cursor-not-allowed" : "hover:bg-emerald-600 hover:scale-105"
+          }`}
+          whileTap={!loading ? { scale: 0.98 } : {}}
+        >
+          {loading ? (
+            <>
+              <motion.span
+                className="absolute inset-0 flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <motion.div
+                  className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                />
+              </motion.span>
+              <span className="opacity-0">Send Message</span>
+            </>
+          ) : (
+            "Send Message"
+          )}
+        </motion.button>
               </form>
             </div>
           </div>
@@ -484,52 +513,7 @@ console.log(formDataToSend); */
             </div>
           </div>
         </div>
-        {/*  <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold mb-6">Frequently Asked Questions</h2>
-
-          <div className="space-y-6">
-            <div>
-              <h3 className="font-bold mb-2">How can I join Apna Gaon Network?</h3>
-              <p className="text-gray-700">
-                You can join our network by clicking on the "Join Now" button on our homepage or visiting the signup
-                page. The registration process is simple and free.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-bold mb-2">Is there a membership fee?</h3>
-              <p className="text-gray-700">
-                No, joining Apna Gaon Network is completely free. We believe in providing accessible resources to all
-                community members.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-bold mb-2">How often are the market prices updated?</h3>
-              <p className="text-gray-700">
-                Market prices are updated daily, usually in the morning and evening, to reflect the most current rates
-                across different markets.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-bold mb-2">Can I sell my products through Apna Gaon Network?</h3>
-              <p className="text-gray-700">
-                Yes, registered members can list their agricultural products, livestock, and equipment on our
-                marketplace for free. You can manage your listings through your account dashboard.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-bold mb-2">How can I contribute content to the platform?</h3>
-              <p className="text-gray-700">
-                Members can share their knowledge, success stories, and insights through our community wall. If you're
-                interested in contributing educational content or blog articles, please contact our content team at
-                content@apnagaon.network.
-              </p>
-            </div>
-          </div>
-        </div> */}
+      
       </motion.div>
     </div>
   );

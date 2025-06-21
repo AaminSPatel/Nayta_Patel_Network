@@ -94,7 +94,7 @@ redirect('/')      }
         </motion.div>
       ) : (
         <div className="relative">
-          <div className="fixed top-30 right-4 z-50 space-y-2">
+          <div className="fixed top-30 left-4 md:left-70 z-50 space-y-2">
         <button onClick={() => setShowControls(!showControls)} className="bg-emerald-600 p-2 rounded-full text-white shadow hover:bg-emerald-700">
           <Filter size={20} />
         </button>

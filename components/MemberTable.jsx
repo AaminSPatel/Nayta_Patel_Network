@@ -4,8 +4,9 @@ import { motion } from "framer-motion"
 import { Edit, Trash2, Eye, Mail, Phone, MessageSquare, Heart, Bookmark, Filter, LayoutGrid, List } from "lucide-react"
 import { usePatel } from "./patelContext"
 import { GiCheckMark, GiCrossMark, GiPostStamp, GiSave } from "react-icons/gi"
-import { useEffect, useState } from "react"
+import { useEffect, useState,useRef } from "react"
 import { FaBell, FaCross, FaTimes } from "react-icons/fa"
+import { ArrowDown, ArrowUp } from "lucide-react"; // use any icon library you like
 
 export default function MemberTable(prop) {
   const {  formatDate, path, setUsers } = usePatel()
@@ -18,21 +19,14 @@ export default function MemberTable(prop) {
   const [filterUsers, setFilterUsers] = useState([...prop.users])
   const [view, setView] = useState(prop.view) // or "grid"
 
+const topRef = useRef(null);
+const bottomRef = useRef(null);
+
   useEffect(()=>{
    setFilterUsers(prop.users)
    setView(prop.view)
   },[prop])
-  const [copied, setCopied] = useState(false);
 
-  const handleCopy = async (userId) => {
-    try {
-      await navigator.clipboard.writeText(userId);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
-    } catch (err) {
-      console.error("Failed to copy:", err);
-    }
-  };
   const getStatusClass = (status) => {
     switch (status) {
       case "verified":
@@ -132,8 +126,9 @@ export default function MemberTable(prop) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
+      
       >
-       {view === "table" ?  (<table className="admin-table">
+       {view === "table" ?  (<table className="admin-table" ref={topRef}>
           <thead className="bg-gray-50">
             <tr>
               <th scope="col">Member</th>
@@ -231,7 +226,7 @@ export default function MemberTable(prop) {
             ))}
           </tbody>
         </table>) : (
-        <motion.div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+        <motion.div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8"    ref={topRef}>
           {filterUsers.map(member => (
             <div key={member._id} className="p-4 relative bg-white rounded shadow space-y-2">
               <div className="flex items-center gap-3">
@@ -271,19 +266,35 @@ export default function MemberTable(prop) {
           ))}
         </motion.div>
       )}
-       
+       {/* Scroll buttons */}
+<div className="fixed left-3 sm:left-55 bottom-10 flex flex-col gap-3 z-50">
+  <button
+    onClick={() => topRef.current?.scrollIntoView({ behavior: "smooth" })}
+    className="bg-white border rounded-full p-2 shadow hover:bg-gray-100"
+    title="Go to Top"
+  >
+    <ArrowUp className="w-5 h-5 text-gray-700" />
+  </button>
+  <button
+    onClick={() => bottomRef.current?.scrollIntoView({ behavior: "smooth" })}
+    className="bg-white border rounded-full p-2 shadow hover:bg-gray-100"
+    title="Go to Bottom"
+  >
+    <ArrowDown className="w-5 h-5 text-gray-700" />
+  </button>
+</div>
  </motion.div>
       {/* Notification Edit modal */}
 {isNotificationModalOpen && currentMember && (
-  <AdminNotificationForm 
-    id={currentMember._id} 
+  <AdminNotificationForm
+    id={currentMember._id}
     onCancel={() => setIsNotificationModalOpen(false)} 
   />
 )}
       {/* Edit Modal */}
       {isEditModalOpen && currentMember && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <motion.div 
+          <motion.div
             className="bg-white rounded-lg shadow-xl w-full max-w-md"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -371,6 +382,7 @@ export default function MemberTable(prop) {
           </motion.div>
         </div>
       )}
+      <div ref={bottomRef}></div>
     </div>
   )
 }
