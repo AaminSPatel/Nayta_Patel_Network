@@ -15,7 +15,7 @@ export default function StoriesPage() {
   const [selectedVillage, setSelectedVillage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedStory, setExpandedStory] = useState(null);
- const {formatContent,stories,siteUrl,user,formatDate}  = usePatel()
+ const {removeAsterisks,stories,siteUrl,user,formatDate}  = usePatel()
    const categories = [...new Set(stories.map((story) => story.category))];
 const villages = [...new Set(stories.map((story) => story.location))];
 
@@ -186,7 +186,7 @@ const villages = [...new Set(stories.map((story) => story.location))];
                 
                 </div>
                
-                  <div className='flex items-center justify-center h-full'><p className="text-gray-700 line-clamp-6">{formatContent(story?.content)}</p></div>
+                  <div className='flex items-center justify-center h-full'><p className="text-gray-700 line-clamp-6">{removeAsterisks(story?.content)}</p></div>
                
                 <Link href={`/stories/${story._id}`} className="flex items-center justify-center cursor-pointer">
                 <button

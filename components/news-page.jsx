@@ -152,7 +152,7 @@ export default function NewsPage() {
   const newsPerPage = 6
     const router = useRouter()
     const [userData,setUserData] = useState({})
-     const {news,user, setNews,formatContent} = usePatel()
+     const {news,user, setNews,formatContent,removeAsterisks} = usePatel()
 
      useEffect(()=>{
         if(user){
@@ -419,7 +419,7 @@ export default function NewsPage() {
                         {item?.title}
                       </h3>
 
-                      <p className="text-gray-600 mb-4 line-clamp-5 sm:text-sm text-xs">{item?.content}</p>
+                      <p className="text-gray-600 mb-4 line-clamp-5 sm:text-sm text-sm">{removeAsterisks(item?.content)}</p>
 
                       <div className="flex items-center justify-between  text-xs">
                         {item?.publisher?.fullname && <div className="flex items-center space-x-1 text-gray-500 bg-emerald-200 rounded-2xl px-2 py-1">
@@ -504,7 +504,7 @@ export default function NewsPage() {
                       {item?.title}
                     </h3>
 
-                    <div className="text-gray-600 mb-4 sm:text-sm text-xs font-medium line-clamp-6 mask-b-from-75%">{formatContent(item.content)} </div>
+                    <div className="text-gray-600 mb-4 sm:text-sm text-sm font-medium line-clamp-6 mask-b-from-75%">{removeAsterisks(item.content)} </div>
                     <div className="flex items-center justify-between text-xs">
                       {item?.publisher?.fullname && <div className="flex items-center space-x-1 text-gray-500  shadow-sm shadow-amber-200  bg-emerald-200 rounded-2xl px-2 py-1">
                           <FaUser />

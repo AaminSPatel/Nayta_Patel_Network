@@ -620,45 +620,59 @@ export function AppProvider({ children }) {
     }
   }, [user, fetchUsers]);
 
-
+/* if minus sign then convert in list item */
 const formatContent = (content) => {
   if (!content) return "";
 
-  const lines = content.split("\n");
+  // Normalize line breaks and split
+  const lines = content.replace(/\r\n/g, '\n').split('\n');
   const formattedLines = [];
+  let lastLineWasContent = false; // Tracks if previous line had content
 
   lines.forEach((line, index) => {
-    if (line.trim() === "") {
-      formattedLines.push(<br key={`br-${index}`} />);
+    const trimmedLine = line.trim();
+
+    // Handle empty lines
+    if (trimmedLine === '') {
+      // Only add break if previous line had content
+      if (lastLineWasContent) {
+        formattedLines.push(<br key={`br-${index}`} />);
+        lastLineWasContent = false;
+      }
       return;
     }
 
-    if (line.trim().startsWith("- ")) {
-      const listItem = line.replace(/^- /, "");
-      const formattedItem = formatTextStyles(listItem);
+    // Handle list items
+    if (trimmedLine.startsWith('- ')) {
+      const listItem = trimmedLine.substring(2);
       formattedLines.push(
-        <div key={index} className="flex items-start mb-2 ml-4">
+        <div key={`li-${index}`} className="flex items-start mb-2 ml-4">
           <span className="text-emerald-500 mr-2 mt-1">•</span>
-          <span className="text-sm md:text-base leading-relaxed">{formattedItem}</span>
+          <span className="text-sm md:text-base leading-relaxed">
+            {formatTextStyles(listItem)}
+          </span>
         </div>
       );
+      lastLineWasContent = true;
       return;
     }
 
-    const formattedLine = formatTextStyles(line);
+    // Handle regular text
     formattedLines.push(
-      <p key={index} className="mb-4 text-sm md:text-base leading-relaxed">
-        {formattedLine}
+      <p key={`p-${index}`} className="mb-4 text-sm md:text-base leading-relaxed">
+        {formatTextStyles(trimmedLine)}
       </p>
     );
+    lastLineWasContent = true;
   });
 
   return formattedLines;
 };
-
+/* if double hastrick text hilight and enlarge */
 const formatTextStyles = (text) => {
   const parts = [];
   let currentIndex = 0;
+
   const doubleAsteriskRegex = /\*\*(.*?)\*\*/g;
   let match;
 
@@ -688,6 +702,7 @@ const formatTextStyles = (text) => {
   return parts.length > 0 ? parts : formatSingleAsterisk(text);
 };
 
+/* if single Astrick bold and black text */
 const formatSingleAsterisk = (text) => {
   const parts = [];
   const singleAsteriskRegex = /\*([^*]+?)\*/g;
@@ -899,11 +914,13 @@ const formatSingleAsterisk = (text) => {
 
     return "just now";
   }
-
+function removeAsterisks(str) {
+  return str.replace(/\*/g, '');
+}
   return (
     <AppContext.Provider
       value={{
-        isSidebarOpen,
+        isSidebarOpen,removeAsterisks,
         toggleSidebar,
         closeSidebar,
         user,isPWA,
