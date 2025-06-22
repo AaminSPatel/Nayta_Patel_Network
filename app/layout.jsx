@@ -132,7 +132,7 @@ export default function RootLayout({ children }) {
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Nayta Patel Network" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="google-adsense-account" content={`${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}/>
+  <meta name="google-adsense-account" content="ca-pub-2266489672584683"></meta>
   {/* Windows Pinned Sites */}
   <meta name="msapplication-TileColor" content="#047857" />
   <meta name="msapplication-config" content="/browserconfig.xml" />
