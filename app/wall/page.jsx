@@ -30,7 +30,7 @@ import Head from "next/head"
 import Link from "next/link";
 
 const PostsSection = () => {
-  const { user, posts, setPosts,siteUrl, timeAgo, path,fetchPosts } = usePatel();
+  const { user, posts, setPosts,siteUrl, timeAgo, path,fetchPosts,comments } = usePatel();
   const [userData, setUserData] = useState({
     id:'',
     fullName: "John Doe",
@@ -46,7 +46,7 @@ const PostsSection = () => {
   const [userId,setUserId] = useState('')
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
-  const [comments, setComments] = useState([]);
+ // const [comments, setComments] = useState([]);
   const [activePost, setActivePost] = useState(null);
   const [loadingComments, setLoadingComments] = useState(false);
   const commentInputRef = useRef(null);
@@ -86,6 +86,19 @@ const PostsSection = () => {
     }
   }, [activePost, replyingTo]);
 
+/*  let allComments = 0;
+ useEffect(()=>{
+  if(comments){
+    allComments = comments.filter.length
+  }
+ },[comments])
+  */
+ function fetchComment(id){
+  
+return comments.filter((item)=> item.post._id === id).length
+  
+  
+}
   // Toggle post options menu
   const toggleOptions = (postId) => {
     setPosts(
@@ -513,7 +526,7 @@ fetchPosts()
             </div>
             <div className="flex items-center space-x-3">
                <FiMessageSquare className="mr-1" />
-              <span>{post?.comments?.length || 0}</span>
+              <span>{fetchComment(post._id)|| 0}</span>
             </div>
             <div className="fle hidden items-center space-x-3">
                <FaRegEye className="mr-1" />

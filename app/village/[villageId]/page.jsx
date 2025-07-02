@@ -275,7 +275,7 @@ const {villages , path} = usePatel();
                         History
                       </h2>
                       <p className="text-gray-700">
-                        {village?.name} was established on {formatDate(village?.createdAt)}. 
+                        {village?.name} was established on 1st Nov 1967. 
                         It has grown significantly over the years and has become a landmark location in the region.
                       </p>
                     </div>

@@ -743,7 +743,7 @@ const formatSingleAsterisk = (text) => {
     fetchVillages();
     fetchEvents();
     fetchUserFromToken();
-
+    fetchComments();
     setToken(token1);
     //fetchUserFromToken()
   }, [
@@ -752,7 +752,7 @@ const formatSingleAsterisk = (text) => {
     fetchFeedbacks,
     fetchPosts,
     fetchNews,
-    fetchPrices,
+    fetchPrices,fetchComments,
     fetchStories,
     fetchUserFromToken,
     fetchVillages,

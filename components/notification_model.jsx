@@ -1,14 +1,20 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { IoNotifications, IoCheckmarkCircle, IoWarning, IoInformationCircle } from "react-icons/io5"
-import { usePatel } from "./patelContext"
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  IoNotifications,
+  IoCheckmarkCircle,
+  IoWarning,
+  IoInformationCircle,
+} from "react-icons/io5";
+import { usePatel } from "./patelContext";
 import { HiOutlineUser } from "react-icons/hi2";
-import { MdStar } from "react-icons/md"
+import { MdStar } from "react-icons/md";
 import { RiAccountPinCircleFill } from "react-icons/ri";
+import Link from "next/link";
 export default function NotificationModal() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -37,7 +43,8 @@ export default function NotificationModal() {
     {
       id: 4,
       title: "Welcome!",
-      message: "Thanks for joining our platform. Get started with your first project",
+      message:
+        "Thanks for joining our platform. Get started with your first project",
       type: "info",
       timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
       read: true,
@@ -50,18 +57,17 @@ export default function NotificationModal() {
       timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
       read: true,
     },
-  ])
-  const {user} = usePatel();
- useEffect(()=>{
-  if(user){
-    setNotifications(user.notifications)
-  }
- },[user])
+  ]);
+  const { user } = usePatel();
+  useEffect(() => {
+    if (user) {
+      // ✅ Create new array with spread operator before reversing
+      setNotifications([...user.notifications].reverse());
+    }
+  }, [user]);
 
-  
-
-  const modalRef = useRef(null)
-  const buttonRef = useRef(null)
+  const modalRef = useRef(null);
+  const buttonRef = useRef(null);
 
   // Close modal when clicking outside
   useEffect(() => {
@@ -72,87 +78,98 @@ export default function NotificationModal() {
         buttonRef.current &&
         !buttonRef.current.contains(event.target)
       ) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-const getTimeAgo = (timestamp) => {
-  // Convert timestamp to Date object if it's a string
-  const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
-  const now = new Date();
-  const diffInSeconds = Math.floor((now - date) / 1000);
-  
-  // Calculate time differences
-  const minutes = Math.floor(diffInSeconds / 60);
-  const hours = Math.floor(diffInSeconds / (60 * 60));
-  const days = Math.floor(diffInSeconds / (60 * 60 * 24));
-  const weeks = Math.floor(diffInSeconds / (60 * 60 * 24 * 7));
-  const months = Math.floor(diffInSeconds / (60 * 60 * 24 * 30));
-  const years = Math.floor(diffInSeconds / (60 * 60 * 24 * 365));
+  const getTimeAgo = (timestamp) => {
+    // Convert timestamp to Date object if it's a string
+    const date =
+      typeof timestamp === "string" ? new Date(timestamp) : timestamp;
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
 
-  // Return appropriate time string
-  if (diffInSeconds < 5) return "Just now";
-  if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
-  if (minutes < 60) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  if (days < 7) return `${days}d ago`;
-  if (weeks < 4) return `${weeks}w ago`;
-  if (months < 12) return `${months}mo ago`;
-  return `${years}y ago`;
-}
+    // Calculate time differences
+    const minutes = Math.floor(diffInSeconds / 60);
+    const hours = Math.floor(diffInSeconds / (60 * 60));
+    const days = Math.floor(diffInSeconds / (60 * 60 * 24));
+    const weeks = Math.floor(diffInSeconds / (60 * 60 * 24 * 7));
+    const months = Math.floor(diffInSeconds / (60 * 60 * 24 * 30));
+    const years = Math.floor(diffInSeconds / (60 * 60 * 24 * 365));
+
+    // Return appropriate time string
+    if (diffInSeconds < 5) return "Just now";
+    if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days < 7) return `${days}d ago`;
+    if (weeks < 4) return `${weeks}w ago`;
+    if (months < 12) return `${months}mo ago`;
+    return `${years}y ago`;
+  };
 
   // Get notification icon based on type
   const getNotificationIcon = (type) => {
     switch (type) {
       case "admin":
-        return <HiOutlineUser className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
-        case "promotion":
-        return <MdStar className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
-        case "account":
-        return <RiAccountPinCircleFill  className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" />
+        return (
+          <HiOutlineUser className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+        );
+      case "promotion":
+        return <MdStar className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />;
+      case "account":
+        return (
+          <RiAccountPinCircleFill className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" />
+        );
       case "alert":
-        return <IoWarning className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
+        return <IoWarning className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />;
       case "social":
       default:
-        return <IoInformationCircle className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500" />
+        return (
+          <IoInformationCircle className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500" />
+        );
     }
-  }
+  };
 
   // Get notification colors based on type
   const getNotificationColors = (type, read) => {
-    const baseClasses = read ? "bg-gray-50" : "bg-white"
+    const baseClasses = read ? "bg-gray-50" : "bg-white";
 
     switch (type) {
       case "admin":
-        return `${baseClasses} border-l-4 border-blue-500 hover:bg-blue-50`
+        return `${baseClasses} border-l-4 border-blue-500 hover:bg-blue-50`;
       case "promotion":
-        return `${baseClasses} border-l-4 border-emerald-500 hover:bg-emerald-50`
+        return `${baseClasses} border-l-4 border-emerald-500 hover:bg-emerald-50`;
       case "account":
-        return `${baseClasses} border-l-4 border-yellow-400 hover:bg-yellow-50`
+        return `${baseClasses} border-l-4 border-yellow-400 hover:bg-yellow-50`;
       case "alert":
-        return `${baseClasses} border-l-4 border-red-500 hover:bg-red-50`
+        return `${baseClasses} border-l-4 border-red-500 hover:bg-red-50`;
       case "social":
       default:
-        return `${baseClasses} border-l-4 border-teal-400 hover:bg-teal-50`
+        return `${baseClasses} border-l-4 border-teal-400 hover:bg-teal-50`;
     }
-  }
+  };
 
   // Mark notification as read
   const markAsRead = (id) => {
-    setNotifications((prev) => prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif)))
-  }
+    setNotifications((prev) =>
+      prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
+    );
+  };
 
   // Mark all as read
   const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((notif) => ({ ...notif, read: true })))
-  }
+    setNotifications((prev) => prev.map((notif) => ({ ...notif, read: true })));
+  };
 
   // Get unread count
-  const unreadCount = notifications.filter((n) => !n.read).length
+  const unreadCount = notifications.filter((n) => !n.read).length;
+  //const username = notification.message.split(' ')[0];
+  // const restOfMessage = notification.message.split(' ').slice(1).join(' ');
 
   return (
     <div className="relative w-full sm:w-10">
@@ -194,7 +211,9 @@ const getTimeAgo = (timestamp) => {
             {/* Header */}
             <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900">Notifications</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900">
+                  Notifications
+                </h3>
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
@@ -222,17 +241,26 @@ const getTimeAgo = (timestamp) => {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3 }}
                       onClick={() => markAsRead(notification._id)}
-                      className={`px-4 py-3 cursor-pointer transition-colors duration-200 ${getNotificationColors(notification.type, notification.read)}`}
+                      className={`px-4 py-3 cursor-pointer transition-colors duration-200 ${getNotificationColors(
+                        notification.type,
+                        notification.read
+                      )}`}
                     >
                       <div className="flex items-start space-x-3">
                         {/* Icon */}
-                        <div className="flex-shrink-0 mt-0.5">{getNotificationIcon(notification.type)}</div>
+                        <div className="flex-shrink-0 mt-0.5">
+                          {getNotificationIcon(notification.type)}
+                        </div>
 
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <p
-                              className={`text-xs sm:text-sm font-medium ${notification.read ? "text-gray-600" : "text-gray-900"}`}
+                              className={`text-xs sm:text-sm font-medium ${
+                                notification.read
+                                  ? "text-gray-600"
+                                  : "text-gray-900"
+                              }`}
                             >
                               {notification.title}
                             </p>
@@ -240,12 +268,48 @@ const getTimeAgo = (timestamp) => {
                               <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 ml-2"></div>
                             )}
                           </div>
-                          <p
-                            className={`text-xs sm:text-sm mt-1 ${notification.read ? "text-gray-500" : "text-gray-700"}`}
-                          >
-                            {notification.message}
+                          {(notification.type === "like" || notification.type === "comment") ? (
+                            <p
+                              className={`text-xs sm:text-sm mt-1 ${
+                                notification.read
+                                  ? "text-gray-500"
+                                  : "text-gray-700"
+                              }`}
+                            >
+                              <span className="font-semibold">
+                                <Link href={`/profile/${notification?.sender}`}>
+                                  {notification.message.split(" ")[0]}
+                                </Link>
+                              </span>{" "}
+                              {notification.message
+                                .split(" ")
+                                .slice(1)
+                                .join(" ")}
+                            </p>
+                          ) : notification.type === "promotion" ? (
+                            <p
+                              className={`text-xs sm:text-sm mt-1 ${
+                                notification.read
+                                  ? "text-gray-500"
+                                  : "text-gray-700"
+                              }`}
+                            >
+                            <Link href={`/village/${notification?.sender}`} className="whitespace-pre-wrap">{notification.message}</Link> 
+                            </p>
+                          ) : (
+                            <p
+                              className={`text-xs sm:text-sm mt-1 ${
+                                notification.read
+                                  ? "text-gray-500"
+                                  : "text-gray-700"
+                              }`}
+                            >
+                              {notification.message}
+                            </p>
+                          )}
+                          <p className="text-xs text-gray-400 mt-1">
+                            {getTimeAgo(notification.createdAt)}
                           </p>
-                          <p className="text-xs text-gray-400 mt-1">{getTimeAgo(notification.createdAt)}</p>
                         </div>
                       </div>
                     </motion.div>
@@ -266,5 +330,5 @@ const getTimeAgo = (timestamp) => {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

@@ -99,7 +99,7 @@ const handleSubmit = async (e) => {
   const token = localStorage.getItem('token');
 
   try {
-    const res = await fetch(`${path}/api/villages/ambessadorUpdate/${villageDetails._id}`, {
+    const res = await fetch(`${path}/api/villages/ambassadorUpdate/${villageDetails._id}`, {
       method: "PUT",
       body: JSON.stringify(villageDetails),
       headers: {
@@ -115,7 +115,7 @@ const handleSubmit = async (e) => {
     }
 
     const result = await res.json();
-    console.log("Success:", result);
+    //console.log("Success:", result);
     setIsEditing(false);
     fetchVillages();
   } catch (err) {
