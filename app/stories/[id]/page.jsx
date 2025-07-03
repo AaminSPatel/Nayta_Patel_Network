@@ -13,6 +13,7 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt,
   FaTags,
+  FaInstagram,
 } from "react-icons/fa"
 import Image from "next/image"
 import { usePatel } from "../../../components/patelContext"
@@ -113,43 +114,25 @@ if(stories){
       day: "numeric",
     })
   }
-
- const shareStory = async (platform) => {
-  try {
-    const url = window.location.href;
-    const title = story?.title + story?.content?.substring(0, 190) || "Amazing Story";
-
-    // Use Web Share API if available (especially for mobile)
-    if (navigator.share && (platform === 'facebook' || platform === 'twitter' || platform === 'whatsapp')) {
-      await navigator.share({
-        title: title,
-        url: url
-      });
-      setShowShareMenu(false);
-      return;
-    }
+  const shareViaPlatform = (platform) => {
+    const url = encodeURIComponent(window.location.href)
+    const title = encodeURIComponent(story?.title || "Amazing Story")
+    const text = encodeURIComponent(story?.content?.substring(0, 190) || "Check this out!")
 
     const shareUrls = {
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-      whatsapp: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
-    };
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`,
+      twitter: `https://twitter.com/intent/tweet?url=${url}&text=${title}%20${text}`,
+      whatsapp: `https://wa.me/?text=${title}%20${url}`,
+      instagram : `https://www.instagram.com/?url=${url}&title=${text}`
+    }
 
     if (platform === "copy") {
-      await navigator.clipboard.writeText(url);
-     // alert("Link copied to clipboard!");
-    } else {
-      // Open in new tab instead of popup for better compatibility
-      window.open(shareUrls[platform], "_blank");
+      navigator.clipboard.writeText(window.location.href)
+      return
     }
-  } catch (error) {
-    console.error("Sharing failed:", error);
-    //alert("Sharing failed. Please try again.");
-  } finally {
-    setShowShareMenu(false);
-  }
-};
 
+    window.open(shareUrls[platform], "_blank", "noopener,noreferrer")
+  }
 
   if (loading) {
     return (
@@ -242,78 +225,59 @@ if(stories){
         </motion.article>
 
         {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-12 p-6 bg-emerald-50 rounded-xl border border-emerald-100"
-        >
-          <h3 className="text-lg md:text-xl font-bold text-black mb-3">Inspired by this story?</h3>
-          <p className="text-sm md:text-base text-gray-700 mb-4">
-            Share it with others who need motivation and inspiration to chase their dreams.
-          </p>
-       
-          
-          <div className="relative">
-  <button
-    onClick={() => setShowShareMenu(!showShareMenu)}
-    className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-full hover:bg-emerald-600 transition-colors text-sm"
-  >
-    <FaShare className="text-xs" />
-    Share This Story
-  </button>
-
-  {showShareMenu && (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="absolute left-0 top-12 bg-white rounded-lg shadow-lg border p-2 min-w-[150px] z-50"
-    >
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          shareStory("facebook");
-        }}
-        className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded text-sm cursor-pointer"
+         <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="mt-12 p-6 bg-emerald-50 rounded-xl border border-emerald-100"
       >
-        <FaFacebook className="text-blue-600" />
-        Facebook
-      </button>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          shareStory("twitter");
-        }}
-        className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded text-sm cursor-pointer"
-      >
-        <FaTwitter className="text-blue-400" />
-        Twitter
-      </button>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          shareStory("whatsapp");
-        }}
-        className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded text-sm cursor-pointer"
-      >
-        <FaWhatsapp className="text-green-500" />
-        WhatsApp
-      </button>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          shareStory("copy");
-        }}
-        className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded text-sm cursor-pointer"
-      >
-        <FaCopy className="text-gray-600" />
-        Copy Link
-      </button>
-    </motion.div>
-  )}
-</div>
-        </motion.div>
+        <h3 className="text-lg md:text-xl font-bold text-black mb-3">Inspired by this story?</h3>
+        <p className="text-sm md:text-base text-gray-700 mb-4">
+          Share it with others who need motivation and inspiration to chase their dreams.
+        </p>
         
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => shareViaPlatform("facebook")}
+            className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+            aria-label="Share on Facebook"
+          >
+            <FaFacebook className="text-lg" />
+          </button>
+          
+          <button
+            onClick={() => shareViaPlatform("twitter")}
+            className="p-3 bg-blue-400 text-white rounded-full hover:bg-blue-500 transition-colors"
+            aria-label="Share on Twitter"
+          >
+            <FaTwitter className="text-lg" />
+          </button>
+          
+          <button
+            onClick={() => shareViaPlatform("whatsapp")}
+            className="p-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors"
+            aria-label="Share on WhatsApp"
+          >
+            <FaWhatsapp className="text-lg" />
+          </button>
+          
+          <button
+            onClick={() => shareViaPlatform("instagram")}
+            className="p-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+            aria-label="Share on WhatsApp"
+          >
+            <FaInstagram className="text-lg" />
+          </button>
+          
+          <button
+            onClick={() => shareViaPlatform("copy")}
+            className="p-3 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors"
+            aria-label="Copy link"
+          >
+            <FaCopy className="text-lg" />
+          </button>
+        </div>
+      </motion.div>
       </main>
 
       {/* Click outside to close share menu */}

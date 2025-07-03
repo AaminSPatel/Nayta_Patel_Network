@@ -76,7 +76,7 @@ export default function BlogPage() {
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE
   const currentPosts = filteredPosts.slice(startIndex, startIndex + POSTS_PER_PAGE)
-  const featuredPost = filteredPosts.length > 0 ? filteredPosts[0] : null
+  const featuredPost = filteredPosts.length > 0 ? filteredPosts[filteredPosts.length -1] : null
 
   // Reset to first page when filters change
   useEffect(() => {

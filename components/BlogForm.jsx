@@ -10,6 +10,7 @@ export default function BlogForm({ onCancel, currentUser }) {
     content: "",
     tags: [],
     newTag: "",
+    category:'',
     image: null,
   })
 
@@ -49,6 +50,7 @@ export default function BlogForm({ onCancel, currentUser }) {
       formDataToSend.append('title', formData.title);
       formDataToSend.append('content', formData.content);
       formDataToSend.append('author', user._id);
+      formDataToSend.append('category', formData.category);
       formDataToSend.append('tags', formData.tags.join(',')); // <- Fix here
   
       if (formData.image) {
@@ -123,6 +125,20 @@ export default function BlogForm({ onCancel, currentUser }) {
             placeholder="Write your blog content here..."
             required
           ></textarea>
+        </div>
+ <div>
+          <label htmlFor="category" className="form-label">
+            Category
+          </label>
+          <input
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="Write your blog category here..."
+            required
+          />
         </div>
 
         <div>

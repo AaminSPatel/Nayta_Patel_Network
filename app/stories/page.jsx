@@ -189,11 +189,11 @@ export default function StoriesPage() {
               className="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col transition-all transform"
             >
               <div className="relative h-64 overflow-hidden">
-                <img
+               <Link href={`/stories/${story._id}`}><img
                   src={story.image?.url || "/placeholder.svg"}
                   alt={story.title}
                   className="object-cover w-full h-full hover:scale-105 transition duration-500"
-                />
+                /></Link> 
                 <div className="absolute top-2 right-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                   {story.category === "Community Stories"
                     ? "समाज"

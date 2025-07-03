@@ -188,7 +188,7 @@ const UpdateBlogModal = ({ blog, onClose, onUpdate }) => {
 };
 
 export default function BlogTable() {
-  const { blogs, formatDate, updateBlog ,path,setBlogs} = usePatel();
+  const { blogs, formatDate, updateBlog ,path,setBlogs,timeAgo } = usePatel();
   const [selectedBlog, setSelectedBlog] = useState(null);
 
   const handleEditClick = (blog) => {
@@ -254,7 +254,7 @@ export default function BlogTable() {
               <td className="font-medium text-gray-900">{blog?.title}</td>
               <td>{blog?.tags[0]}</td>
               <td>{blog?.author._id}</td>
-              <td>{formatDate(blog?.date)}</td>
+              <td>{timeAgo(blog?.date)}</td>
               
               <td>
                 <div className="flex space-x-2">

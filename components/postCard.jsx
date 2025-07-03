@@ -17,7 +17,7 @@ import {
   FiChevronDown,
   FiExternalLink,
 } from "react-icons/fi"
-import { FaHeart, FaWhatsapp, FaFacebook, FaInstagram, FaTelegram, FaRegEye } from "react-icons/fa"
+import { FaHeart, FaWhatsapp, FaFacebook, FaInstagram, FaTelegram, FaRegEye, FaStar } from "react-icons/fa"
 
 const PostCard = ({
   post: initialPost,
@@ -253,7 +253,7 @@ const PostCard = ({
   }
 
   const handleShare = (platform) => {
-    const postUrl = `${window.location.origin}/post/${post._id}`
+    const postUrl = `${window.location.origin}/wall/${post._id}`
     const text = `${post.user.fullname}'s post: ${post.content.substring(0, 100)}...`
     let shareUrl = ""
 
@@ -279,7 +279,7 @@ const PostCard = ({
   }
 
   const handleCopyLink = () => {
-    const postUrl = `${window.location.origin}/post/${post._id}`
+    const postUrl = `${window.location.origin}/wall/${post._id}`
     navigator.clipboard.writeText(postUrl).then(() => {
       console.log("Post link copied to clipboard!")
       // You can add a toast notification here
@@ -387,7 +387,7 @@ const PostCard = ({
               alt={post?.user?.fullname}
               className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm group-hover:ring-emerald-200 transition-all"
             />
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white">{(post?.user?.role ==='ambassador'|| post?.user?.role === 'admin'|| post?.user?.role === 'semi-admin') && <span className="h-full w-full flex items-center justify-center bg-amber-200 rounded-2xl"><FaStar className="text-indigo-800" size={9}/></span> }</div>
           </div>
           <div>
             <h4 className="font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors">
@@ -404,7 +404,7 @@ const PostCard = ({
         <div className="flex items-center space-x-2">
           {!isDetailView && enableNavigation && (
             <Link
-              href={`/post/${post._id}`}
+              href={`/wall/${post._id}`}
               className="p-2 text-gray-400 hover:text-emerald-600 rounded-full hover:bg-emerald-50 transition-colors"
               title="View full post"
             >
