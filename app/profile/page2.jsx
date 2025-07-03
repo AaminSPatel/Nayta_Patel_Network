@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import {
   FiSettings,
   FiEdit2,
@@ -12,105 +12,24 @@ import {
   FiMessageSquare,
   FiFileText,
   FiStar,
-  FiHeart,
-  FiChevronDown,
-  FiChevronUp,
-  FiCalendar,
-  FiEye,
-} from "react-icons/fi"
-import { FaRegThumbsUp } from "react-icons/fa"
-import ProfileHeader from "./profile-header"
-import SettingsSection from "./settings-section"
-import VillageDetails from "./village-details"
-import { usePatel } from "../../components/patelContext"
-import AmbassadorPortal from "../../components/AmbassadorPortal"
-import EditProfileModal from "./edit-profile-modal"
-import Head from "next/head"
-import Link from "next/link"
-import PostCard from "../../components/postCard"
-
-// Posts Section Component
-const PostsSection = ({ userData, posts, comments, likes }) => {
-  const [expandedComments, setExpandedComments] = useState({})
-  const [expandedPosts, setExpandedPosts] = useState({})
-
-  // Filter posts by current user
-  const userPosts = posts?.filter((post) => post.user._id === userData._id) || []
-
-
-const {timeAgo,setPosts,user,path} = usePatel()
-  const handlePostUpdate = (updatedPost) => {
-    setPosts((prevPosts) => prevPosts.map((post) => (post._id === updatedPost._id ? updatedPost : post)))
-  }
-
-  const truncateText = (text, maxLength = 200) => {
-    if (text.length <= maxLength) return text
-    return text.substring(0, maxLength) + "..."
-  }
-
-  if (userPosts.length === 0) {
-    return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-12">
-        <div className="mb-4">
-          <FiFileText className="mx-auto text-6xl text-gray-300" />
-        </div>
-        <h3 className="text-xl font-semibold text-gray-600 mb-2">No Posts Yet</h3>
-        <p className="text-gray-500">Start sharing your thoughts with the community!</p>
-      </motion.div>
-    )
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6"
-    >
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold text-gray-800">My Posts ({userPosts.length})</h3>
-        <div className="text-sm text-gray-500">
-          Total engagement: {userPosts.reduce((acc, post) => acc + (post.likes?.length || 0), 0)} likes
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        {userPosts.map((post, index) => {
-     /*      const postComments = getPostComments(post._id)
-          const postLikes = getPostLikes(post._id)
-          const isCommentsExpanded = expandedComments[post._id]
-          const isPostExpanded = expandedPosts[post._id]
-          const shouldTruncate = post.content.length > 200
- */
-          return (
-             <motion.div
-                key={post._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-              >
-                <PostCard
-                  post={post}
-                  user={user}
-                  timeAgo={timeAgo}
-                  allComments={comments}
-                  apiPath={path}
-                  onPostUpdate={handlePostUpdate}
-                />
-              </motion.div>
-          )
-        })}
-      </div>
-    </motion.div>
-  )
-}
+} from "react-icons/fi";
+import { FaRegThumbsUp } from "react-icons/fa";
+import ProfileHeader from "./profile-header";
+import SettingsSection from "./settings-section";
+import VillageDetails from "./village-details";
+import { usePatel } from "../../components/patelContext";
+import AmbassadorPortal from "../../components/AmbassadorPortal";
+import EditProfileModal from "./edit-profile-modal";
+import Head from "next/head";
+import Link from "next/link";
 
 const ProfileDashboard = () => {
-  const [activeTab, setActiveTab] = useState("profile")
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const { user, siteUrl, villages, likes, posts, comments } = usePatel()
-  const [loading, setLoading] = useState(true)
-  const [villageData, setVillageData] = useState({})
+  const [activeTab, setActiveTab] = useState("profile");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { user, siteUrl, villages, likes, posts, comments } = usePatel();
+  const [loading, setLoading] = useState(true);
+  const [villageData, setVillageData] = useState({});
+
   const [userData, setUserData] = useState({
     _id: "",
     fullName: "John Doe",
@@ -123,7 +42,7 @@ const ProfileDashboard = () => {
     posts: 0,
     comments: 0,
     likes: 0,
-  })
+  });
 
   useEffect(() => {
     if (user) {
@@ -140,39 +59,43 @@ const ProfileDashboard = () => {
         posts: 0,
         comments: 0,
         likes: 0,
-      })
-
+      });
       if (likes && posts && comments) {
         setUserData((prev) => ({
           ...prev,
           posts: posts.filter((item) => item.user._id === user._id).length,
-          comments: comments.filter((item) => item?.user?._id === user._id).length,
+          comments: comments.filter((item) => item.user._id === user._id)
+            .length,
           likes: posts
-            .filter((post) => post.user._id === user._id)
-            .reduce((totalLikes, post) => totalLikes + (post.likes?.length || 0), 0),
-        }))
-        console.log(comments,'Comments');
-        
+            .filter((post) => post.user._id === user._id) // Get only the user's posts
+            .reduce(
+              (totalLikes, post) => totalLikes + (post.likes?.length || 0),
+              0
+            ), // Safely sum likes
+        }));
       }
-
-      setLoading(false)
+      setLoading(false);
     } else {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [user, likes, comments, posts])
+  }, [user, likes, comments, posts]);
 
   useEffect(() => {
     if (villages && user) {
-      const filterVillage = villages.filter((item) => item.name === user.village)
-      setVillageData(filterVillage[0])
+      const filterVillage = villages.filter(
+        (item) => item.name === user.village
+      );
+      setVillageData(filterVillage[0]);
     }
-  }, [villages, user])
+  }, [villages, user]);
 
   const handleEditProfile = () => {
-    setIsEditModalOpen(true)
-  }
+    setIsEditModalOpen(true);
+  };
 
   function handleUserUpdate(newuser) {
+    //console.log(newuser,'new user');
+
     setUserData({
       _id: newuser._id,
       fullName: newuser.fullname,
@@ -185,21 +108,20 @@ const ProfileDashboard = () => {
       posts: newuser.posts.length,
       comments: newuser.comments.length,
       likes: newuser.likes.length,
-    })
+    });
   }
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
       </div>
-    )
+    );
   }
-
   if (!user) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-emerald-50 to-white p-6 text-center">
         <div className="max-w-md mx-auto">
+          {/* Animated Icon */}
           <div className="mb-8 flex justify-center">
             <div className="relative">
               <div className="absolute inset-0 flex items-center justify-center">
@@ -224,13 +146,17 @@ const ProfileDashboard = () => {
             </div>
           </div>
 
+          {/* Hindi Content */}
           <h1 className="text-2xl md:text-3xl font-bold text-emerald-800 mb-4">
             कृपया अपनी जानकारी देखने के लिए लॉग इन करें
           </h1>
+
           <p className="text-gray-600 mb-6 leading-relaxed">
-            इस पेज तक पहुँचने के लिए आपको अपना खाता बनाना होगा। हमारे समुदाय का हिस्सा बनें और विशेष सुविधाओं का लाभ उठाएं।
+            इस पेज तक पहुँचने के लिए आपको अपना खाता बनाना होगा। हमारे समुदाय का
+            हिस्सा बनें और विशेष सुविधाओं का लाभ उठाएं।
           </p>
 
+          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/login">
               <motion.button
@@ -241,6 +167,7 @@ const ProfileDashboard = () => {
                 लॉग इन करें
               </motion.button>
             </Link>
+
             <Link href="/signup">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -252,6 +179,7 @@ const ProfileDashboard = () => {
             </Link>
           </div>
 
+          {/* Additional Help */}
           <p className="mt-8 text-sm text-gray-500">
             क्या आपको मदद चाहिए?{" "}
             <Link href="/contact" className="text-emerald-600 hover:underline">
@@ -260,13 +188,15 @@ const ProfileDashboard = () => {
           </p>
         </div>
       </div>
-    )
+    );
   }
-
   return (
     <div className="container mx-auto px-4 py-8">
       <Head>
-        <title>Nayta Patel Samaj | Empowering Farmers & Rural Communities in MP. User Profile Page.</title>
+        <title>
+          Nayta Patel Samaj | Empowering Farmers & Rural Communities in MP. User
+          Profile Page.
+        </title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -281,30 +211,40 @@ const ProfileDashboard = () => {
           content="farming, milk, mandi prices, rural development, Nayta Patel, Indore, Ujjain, Dhar, Dewas, Ratlam, kisan, kisani, kheti, gaon, samaj, Nayata patel , nayata patel samaj"
         />
         <meta name="author" content="Nayta Patel Network" />
+
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${siteUrl}/profile`} />
-        <meta property="og:title" content="Nayta Patel Samaj | Empowering Farmers & Rural Communities in MP" />
-        <meta property="og:description" content="Join 250+ villages in transforming agriculture and community life." />
+        <meta
+          property="og:title"
+          content="Nayta Patel Samaj | Empowering Farmers & Rural Communities in MP"
+        />
+        <meta
+          property="og:description"
+          content="Join 250+ villages in transforming agriculture and community life."
+        />
         <meta property="og:image" content={`${userData?.profilePic}`} />
+
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={`${siteUrl}/profile`} />
-        <meta name="twitter:title" content="Nayta Patel Samaj | Farming & Rural Growth Platform" />
+        <meta
+          name="twitter:title"
+          content="Nayta Patel Samaj | Farming & Rural Growth Platform"
+        />
         <meta
           name="twitter:description"
           content="Stay updated with mandi prices, farming guides, and village empowerment programs."
         />
         <meta name="twitter:image" content={`${userData?.profilePic}`} />
+
         <link rel="canonical" href={`${siteUrl}/profile`} />
         <link rel="icon" href={`${siteUrl}/favicon.ico`} />
       </Head>
-
       <ProfileHeader userData={userData} onEditProfile={handleEditProfile} />
-
       <div className="mt-8 bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="flex border-b border-gray-200 overflow-x-auto">
           <button
             onClick={() => setActiveTab("profile")}
-            className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap ${
+            className={`flex items-center px-6 py-4 text-sm font-medium ${
               activeTab === "profile"
                 ? "text-emerald-600 border-b-2 border-emerald-600"
                 : "text-gray-500 hover:text-emerald-500"
@@ -313,20 +253,10 @@ const ProfileDashboard = () => {
             <FiUser className="mr-2" />
             Profile
           </button>
-          <button
-            onClick={() => setActiveTab("posts")}
-            className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap ${
-              activeTab === "posts"
-                ? "text-emerald-600 border-b-2 border-emerald-600"
-                : "text-gray-500 hover:text-emerald-500"
-            }`}
-          >
-            <FiFileText className="mr-2" />
-            Posts ({userData.posts})
-          </button>
+
           <button
             onClick={() => setActiveTab("village")}
-            className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap ${
+            className={`flex items-center px-6 py-4 text-sm font-medium ${
               activeTab === "village"
                 ? "text-emerald-600 border-b-2 border-emerald-600"
                 : "text-gray-500 hover:text-emerald-500"
@@ -337,7 +267,7 @@ const ProfileDashboard = () => {
           </button>
           <button
             onClick={() => setActiveTab("settings")}
-            className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap ${
+            className={`flex items-center px-6 py-4 text-sm font-medium ${
               activeTab === "settings"
                 ? "text-emerald-600 border-b-2 border-emerald-600"
                 : "text-gray-500 hover:text-emerald-500"
@@ -349,7 +279,7 @@ const ProfileDashboard = () => {
           {(userData.role === "ambassador" || userData.role === "admin") && (
             <button
               onClick={() => setActiveTab("ambassador")}
-              className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap ${
+              className={`flex items-center px-6 py-4 text-sm font-medium ${
                 activeTab === "ambassador"
                   ? "text-emerald-600 border-b-2 border-emerald-600"
                   : "text-gray-500 hover:text-emerald-500"
@@ -371,7 +301,9 @@ const ProfileDashboard = () => {
             >
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Personal Information</h3>
+                  <h3 className="text-lg font-semibold">
+                    Personal Information
+                  </h3>
                   <div className="space-y-3">
                     <div className="flex items-center">
                       <FiUser className="text-emerald-500 mr-3" />
@@ -440,17 +372,17 @@ const ProfileDashboard = () => {
             </motion.div>
           )}
 
-          {activeTab === "posts" && (
-            <PostsSection userData={userData} posts={posts} comments={comments} likes={likes} />
+          {/*    {activeTab === "activity" && <ActivitySection userData={userData} />} */}
+          {activeTab === "village" && (
+            <VillageDetails villageData={villageData} />
           )}
-
-          {activeTab === "village" && <VillageDetails villageData={villageData} />}
-
-          {activeTab === "settings" && <SettingsSection privacyStatus={userData?.visibilityStatus} />}
-
-          {activeTab === "ambassador" && (userData?.role === "ambassador" || userData?.role === "admin") && (
-            <AmbassadorPortal user={userData} />
+          {activeTab === "settings" && (
+            <SettingsSection privacyStatus={userData?.visibilityStatus} />
           )}
+          {activeTab === "ambassador" &&
+            (userData?.role === "ambassador" || userData?.role === "admin") && (
+              <AmbassadorPortal user={userData} />
+            )}
         </div>
       </div>
 
@@ -461,7 +393,7 @@ const ProfileDashboard = () => {
         onUpdate={(NewUser) => handleUserUpdate(NewUser)}
       />
     </div>
-  )
-}
+  );
+};
 
-export default ProfileDashboard
+export default ProfileDashboard;

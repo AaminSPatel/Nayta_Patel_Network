@@ -15,44 +15,29 @@ const UpdatePriceModal = ({ price, onClose, onUpdate }) => {
     intro: price.intro || '',
     prices: {
       grain: {
-        wheat: price.prices?.grain?.wheat || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-        gram: {
-          daler_gram: price.prices?.grain?.gram?.daler_gram || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-          bitki_gram: price.prices?.grain?.gram?.bitki_gram || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-          kala_gram: price.prices?.grain?.gram?.kala_gram || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-          new_gram: price.prices?.grain?.gram?.new_gram || { minPrice: 0, maxPrice: 0, currentPrice: 0 }
-        },
-        alsi: price.prices?.grain?.alsi || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-        mungfali: price.prices?.grain?.mungfali || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-        soyabean: price.prices?.grain?.soyabean || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-        sarso: price.prices?.grain?.sarso || { minPrice: 0, maxPrice: 0, currentPrice: 0 }
+        gehu: price.prices?.grain?.gehu || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
+        chana: {
+          daler_chana: price.prices?.grain?.gram?.daler_gram || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
+          bitki_chana: price.prices?.grain?.gram?.bitki_gram || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
+          },
+       soyabean: price.prices?.grain?.soyabean || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
       },
       vegetable: {
-        onion: price.prices?.vegetable?.onion || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-        new_onion: price.prices?.vegetable?.new_onion || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-        tomato: price.prices?.vegetable?.tomato || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-        dhaniya: price.prices?.vegetable?.dhaniya || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-        garlic: {
-          desi_garlic: price.prices?.vegetable?.garlic?.desi_garlic || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-          uti_garlic: price.prices?.vegetable?.garlic?.uti_garlic || { minPrice: 0, maxPrice: 0, currentPrice: 0 }
+        pyaj: price.prices?.vegetable?.pyaj || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
+        new_pyaj: price.prices?.vegetable?.new_pyaj || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
+        lahsun: {
+          desi_lahsun: price.prices?.vegetable?.garlic?.desi_garlic || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
+          uti_lahsun: price.prices?.vegetable?.garlic?.uti_garlic || { minPrice: 0, maxPrice: 0, currentPrice: 0 }
         },
-        potato: {
-          new_potato: price.prices?.vegetable?.potato?.new_potato || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-          lr_potato: price.prices?.vegetable?.potato?.lr_potato || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-          atl_potato: price.prices?.vegetable?.potato?.atl_potato || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-          jyoti_potato: price.prices?.vegetable?.potato?.jyoti_potato || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-          pukhraj_potato: price.prices?.vegetable?.potato?.pukhraj_potato || { minPrice: 0, maxPrice: 0, currentPrice: 0 }
+        aalu: {
+          safed_aalu: price.prices?.vegetable?.aalu?.safed_aalu || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
+          lr_aalu: price.prices?.vegetable?.aalu?.lr_aalu || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
+          jyoti_aalu: price.prices?.vegetable?.aalu?.jyoti_aalu || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
         }
       },
-      dairy: {
-        ghee: price.prices?.dairy?.ghee || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
-        mava: price.prices?.dairy?.mava || { minPrice: 0, maxPrice: 0, currentPrice: 0 }
-      },
-      oil: {
-        soyabeanOil: price.prices?.oil?.soyabeanOil || { minPrice: 0, maxPrice: 0, currentPrice: 0 }
-      },
-      others: {
-        sugar: price.prices?.others?.sugar || { minPrice: 0, maxPrice: 0, currentPrice: 0 }
+      flower: {
+        genda: price.prices?.flower?.genda || { minPrice: 0, maxPrice: 0, currentPrice: 0 },
+        noranga: price.prices?.flower?.noranga || { minPrice: 0, maxPrice: 0, currentPrice: 0 }
       }
     }
   });

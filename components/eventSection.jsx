@@ -100,7 +100,7 @@ const EventCubeSlider = () => {
                     )}
                   </div>
 
-                  <p className="text-gray-800 mb-3 line-clamp-3 flex-1">{event.content}</p>
+                  <p className="text-gray-800 mb-3 text-sm line-clamp-5 flex-1">{event.content}</p>
                   <div className="space-y-1">
                     <div className="flex items-center text-gray-700">
                       <FiCalendar className="mr-2 text-white" />

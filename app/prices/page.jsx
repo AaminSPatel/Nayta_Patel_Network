@@ -197,7 +197,7 @@ Mandi Price Dashboard          </motion.h2>
   <meta name="robots" content="index, follow" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="description" content="Live updates of mandi prices for vegetables, grains, and milk from Indore, Ratlam, Ujjain, Dewas, and Dhar regions." />
-  <meta name="keywords" content="mandi price, sabji rate, milk rate, kisan mandi, Indore mandi, MP vegetables, tomato, potato, wheat price, MP market rate" />
+  <meta name="keywords" content="mandi price, sabji rate, milk rate, kisan mandi, Indore mandi, MP vegetables, tomato, potato, gehu price, MP market rate" />
   <meta name="author" content="Nayta Patel Network" />
 
   <meta property="og:type" content="website" />
@@ -381,7 +381,7 @@ Mandi Price Dashboard          </motion.h2>
           {/* Price Categories */}
           <div className="p-6">
             <div className="flex overflow-x-auto mb-6 border-b">
-              {["grain", "vegetable", "dairy", "oil", "others"].map((category) => (
+              {["grain", "vegetable", "flower"].map((category) => (
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}

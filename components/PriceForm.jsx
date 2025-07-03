@@ -13,9 +13,7 @@ export default function PriceForm({ onCancel }) {
     prices: {
       grain: {},
       vegetable: {},
-      dairy: {},
-      oil: {},
-      others: {}
+      flower: {},
     }
   })
   const {path} = usePatel()
@@ -26,17 +24,15 @@ export default function PriceForm({ onCancel }) {
   const [priceFields, setPriceFields] = useState({ minPrice: "", maxPrice: "", currentPrice: "" })
 
   const categoryItems = {
-    vegetable: ["potato", "garlic", "tomato", "onion", "new_onion", "dhaniya"],
-    grain: ["wheat", "gram", "alsi", "mungfali", "soyabean", "sarso"],
-    dairy: ["ghee", "mava"],
-    oil: ["soyabeanOil"],
-    others: ["sugar"]
+    vegetable: ["aalu", "lahsun","pyaj", "new_pyaj"],
+    grain: ["gehu", "chana","soyabean"],
+    flower: ["genda", "noranga"]
   };
 
   const itemsWithVarieties = {
-    potato: ["new_potato", "lr_potato", "atl_potato", "jyoti_potato", "pukhraj_potato"],
-    garlic: ["desi_garlic", "uti_garlic"],
-    gram: ["daler_gram", "bitki_gram", "kala_gram", "new_gram"],
+    potato: [ "lr_aalu", "jyoti_aalu", "safed_aalu"],
+    garlic: ["desi_lahsun", "uti_lahsun"],
+    gram: ["daler_chana", "bitki_chana"],
   }
 
   const handleBasicChange = (e) => {
@@ -100,44 +96,29 @@ const handleSubmit = async (e) => {
     // Initialize the prices object with the exact structure from your schema
     const prices = {
       grain: {
-        wheat: null,
-        gram: {
-          daler_gram: null,
-          bitki_gram: null,
-          kala_gram: null,
-          new_gram: null
+        gehu: null,
+        chana: {
+          daler_chana: null,
+          bitki_chana: null,
         },
-        alsi: null,
-        mungfali: null,
         soyabean: null,
-        sarso: null
       },
       vegetable: {
-        onion: null,
-        new_onion: null,
-        tomato: null,
-        dhaniya: null,
-        garlic: {
-          desi_garlic: null,
-          uti_garlic: null
+        pyaj: null,
+        new_pyaj: null,
+        lahsun: {
+          desi_lahsun: null,
+          uti_lahsun: null
         },
-        potato: {
-          new_potato: null,
-          lr_potato: null,
-          atl_potato: null,
-          jyoti_potato: null,
-          pukhraj_potato: null
+        aalu: {
+          safed_aalu: null,
+          lr_aalu: null,
+          jyoti_aalu: null,
         }
       },
-      dairy: {
-        ghee: null,
-        mava: null
-      },
-      oil: {
-        soyabeanOil: null
-      },
-      others: {
-        sugar: null
+      flower: {
+        genda: null,
+        noranga: null
       }
     };
 

@@ -56,7 +56,7 @@ const {news, path,formatContent} = usePatel()
 
   const handleShare = (platform) => {
     const shareUrl = `${window.location.origin}/news/${newsId}`;
-    const message = `Check out this news: ${selectedNews?.title}`;
+    const message = `Check out this news: ${selectedNews?.title} : ${selectedNews?.content?.substring(0, 190)}...`;
 
     switch (platform) {
       case 'whatsapp':

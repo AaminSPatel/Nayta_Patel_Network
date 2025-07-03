@@ -496,17 +496,21 @@ export function AppProvider({ children }) {
   );
 
   // Fetch all comments for a post
-  const fetchComments = useCallback(
-    async (postId) => {
+  const fetchComments = async () => {
       try {
-        const response = await axios.get(path + `/api/comments/post/${postId}`);
-        setComments(response.data);
+        const response = await axios.get(path + `/api/comments`);
+        setComments(response.data.reverse());
+        console.log('All comments',response.data);
+        
       } catch (err) {
         setError(err.message);
       }
-    },
-    [path, setComments, setError]
-  );
+    }
+   useEffect(()=>{
+    console.log('log nhi ho');
+    
+    fetchComments()
+   },[])
 
   // Fetch user data
   const fetchUser = async (id) => {
@@ -732,7 +736,6 @@ const formatSingleAsterisk = (text) => {
 
   useEffect(() => {
     const token1 = localStorage.getItem("token"); // Or wherever you store the JWT
-
     fetchPosts();
     fetchNews();
     fetchFeedbacks();
@@ -743,7 +746,6 @@ const formatSingleAsterisk = (text) => {
     fetchVillages();
     fetchEvents();
     fetchUserFromToken();
-    fetchComments();
     setToken(token1);
     //fetchUserFromToken()
   }, [
@@ -752,7 +754,7 @@ const formatSingleAsterisk = (text) => {
     fetchFeedbacks,
     fetchPosts,
     fetchNews,
-    fetchPrices,fetchComments,
+    fetchPrices,
     fetchStories,
     fetchUserFromToken,
     fetchVillages,

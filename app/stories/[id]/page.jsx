@@ -52,6 +52,44 @@ if(stories){
 }
   }, [params.id, stories])
 
+   useEffect(() => {
+    if (!params.id && path === 'http://localhost:5000') return;
+    // Create a unique identifier for this view attempt
+    //const viewKey = `news-view-${newsId}`;
+    // Check if we've already tried to count this view
+   // if (sessionStorage.getItem(viewKey)) return;
+    const timer = setTimeout(async () => {
+      try {
+        // Mark this view attempt as started
+        //sessionStorage.setItem(viewKey, 'true');
+        
+        // Send the view update request
+        const response = await fetch(path + `/api/stories/viewUpdate/${params.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // No need to send IP from client - get it from the server
+        });
+
+       // console.log(response);
+        if(
+          response.success
+        ){
+        //  console.log('View updated');
+        }
+        
+
+      } catch (error) {
+        console.error('Error updating view count:', error);
+       //sessionStorage.removeItem(viewKey);
+      }
+    }, 5000); // 5 second delay
+
+    // Cleanup function to cancel the timer if component unmounts
+    return () => clearTimeout(timer);
+  }, [params.id]);
+
   const updateViews = async (storyId) => {
     try {
       // Replace with your actual API endpoint
@@ -79,7 +117,7 @@ if(stories){
  const shareStory = async (platform) => {
   try {
     const url = window.location.href;
-    const title = story?.title || "Amazing Story";
+    const title = story?.title + story?.content?.substring(0, 190) || "Amazing Story";
 
     // Use Web Share API if available (especially for mobile)
     if (navigator.share && (platform === 'facebook' || platform === 'twitter' || platform === 'whatsapp')) {

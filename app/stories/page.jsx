@@ -1,23 +1,22 @@
-'use client'
+"use client";
 
 import { useState } from "react";
-import { FaQuoteLeft, FaSearch, FaFilter, FaUser } from "react-icons/fa";
+import { FaQuoteLeft, FaSearch, FaFilter, FaUser, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { usePatel } from "../../components/patelContext";
-import Head from "next/head"
-import {motion } from 'framer-motion'
+import Head from "next/head";
+import { motion } from "framer-motion";
 //import { useSession, signIn } from 'next-auth/react'
-import { FiBook, FiSend, FiUser, FiLogIn, FiMapPin } from 'react-icons/fi'
+import { FiBook, FiSend, FiUser, FiLogIn, FiMapPin } from "react-icons/fi";
 import Link from "next/link";
-
 
 export default function StoriesPage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedStory, setExpandedStory] = useState(null);
- const {removeAsterisks,stories,siteUrl,user,formatDate}  = usePatel()
-   const categories = [...new Set(stories.map((story) => story.category))];
-const villages = [...new Set(stories.map((story) => story.location))];
+  const { removeAsterisks, stories, siteUrl, user, formatDate } = usePatel();
+  const categories = [...new Set(stories.map((story) => story.category))];
+  const villages = [...new Set(stories.map((story) => story.location))];
 
   const filteredStories = stories.filter((story) => {
     return (
@@ -25,7 +24,8 @@ const villages = [...new Set(stories.map((story) => story.location))];
       (selectedVillage === "" || story.location === selectedVillage) &&
       (searchTerm === "" ||
         story.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        story.content.toLowerCase().includes(searchTerm.toLowerCase())) && story.status ==='Published'
+        story.content.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      story.status === "Published"
     );
   });
 
@@ -34,10 +34,10 @@ const villages = [...new Set(stories.map((story) => story.location))];
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -45,115 +45,140 @@ const villages = [...new Set(stories.map((story) => story.location))];
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.5
-      }
-    }
-  }
+        duration: 0.5,
+      },
+    },
+  };
+  const [filterOpen,setFilterOpen] = useState(false)
   return (
     <div className="container mx-auto px-4 py-12">
       <Head>
-  <title>Success Stories | Farmers & Villages Transforming Together</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="index, follow" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="description" content="Read real stories from farmers and villages empowered through better farming, milk production, and samaj unity in MP." />
-  <meta name="keywords" content="success stories, farmer progress, village case studies, kisano ki kahani, gaon ki safalta, Nayta Patel Samaj" />
-  <meta name="author" content="Nayta Patel Network" />
-
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content={`${siteUrl}/success-stories`} />
-  <meta property="og:title" content="Success Stories | Empowering Villages Through Agriculture" />
-  <meta property="og:description" content="Stories of transformation from the fields of Madhya Pradesh." />
-  <meta property="og:image" content={`${siteUrl}/success.jpg`} />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content={`${siteUrl}/success-stories`} />
-  <meta name="twitter:title" content="Real Success Stories | Farming & Rural Growth" />
-  <meta name="twitter:description" content="Learn how farmers changed their lives through our platform." />
-  <meta name="twitter:image" content={`${siteUrl}/success.jpg`} />
-
-  <link rel="canonical" href={`${siteUrl}/success-stories`} />
-  <link rel="icon" href={`${siteUrl}/favicon.ico`} />
-</Head>
-<motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="text-center mb-12"
-        >
-          <motion.h2 
-            variants={itemVariants}
-            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
-          >
-            सफलता की प्रेरक कहानियाँ
-          </motion.h2>
-          <motion.p 
-            variants={itemVariants}
-            className="text-lg text-gray-700"
-          >
-हमारे नायता पटेल समाज के सदस्यों के जीवन में आए वास्तविक बदलाव और प्रगति की गाथाएँ। ये कहानियाँ न सिर्फ प्रेरणा देती हैं, बल्कि सामूहिक प्रयासों से गाँवों में आए ऐतिहासिक परिवर्तन की मिसाल भी पेश करती हैं।          </motion.p>
-        </motion.div>
-
-     {/*  <h1 className="text-3xl font-bold mb-2">सफलता की प्रेरक कहानियाँ</h1>
-      <p className="text-gray-600 mb-8">
-         
-      </p>*/}
-{/* Filters */}
-<div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-  <div className="flex items-center mb-6">
-    <FaFilter className="text-emerald-500 mr-3 text-2xl" />
-    <h2 className="text-2xl font-semibold text-gray-800">Filters</h2>
-  </div>
-
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-      <select
-        value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}
-        className="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 p-3"
-      >
-        <option value="">All Categories</option>
-        {categories.map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Village</label>
-      <select
-        value={selectedVillage}
-        onChange={(e) => setSelectedVillage(e.target.value)}
-        className="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 p-3"
-      >
-        <option value="">All Villages</option>
-        {villages.map((village) => (
-          <option key={village} value={village}>
-            {village}
-          </option>
-        ))}
-      </select>
-    </div>
-
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
-      <div className="relative">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search stories..."
-          className="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 pl-10 p-3"
+        <title>
+          Success Stories | Farmers & Villages Transforming Together
+        </title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="index, follow" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="description"
+          content="Read real stories from farmers and villages empowered through better farming, milk production, and samaj unity in MP."
         />
-        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <meta
+          name="keywords"
+          content="success stories, farmer progress, village case studies, kisano ki kahani, gaon ki safalta, Nayta Patel Samaj"
+        />
+        <meta name="author" content="Nayta Patel Network" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${siteUrl}/success-stories`} />
+        <meta
+          property="og:title"
+          content="Success Stories | Empowering Villages Through Agriculture"
+        />
+        <meta
+          property="og:description"
+          content="Stories of transformation from the fields of Madhya Pradesh."
+        />
+        <meta property="og:image" content={`${siteUrl}/success.jpg`} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={`${siteUrl}/success-stories`} />
+        <meta
+          name="twitter:title"
+          content="Real Success Stories | Farming & Rural Growth"
+        />
+        <meta
+          name="twitter:description"
+          content="Learn how farmers changed their lives through our platform."
+        />
+        <meta name="twitter:image" content={`${siteUrl}/success.jpg`} />
+
+        <link rel="canonical" href={`${siteUrl}/success-stories`} />
+        <link rel="icon" href={`${siteUrl}/favicon.ico`} />
+      </Head>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="text-center mb-12"
+      >
+        <motion.h2
+          variants={itemVariants}
+          className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
+        >
+          सफलता की प्रेरक कहानियाँ
+        </motion.h2>
+        <motion.p variants={itemVariants} className="text-lg text-gray-700">
+          हमारे नायता पटेल समाज के सदस्यों के जीवन में आए वास्तविक बदलाव और
+          प्रगति की गाथाएँ। ये कहानियाँ न सिर्फ प्रेरणा देती हैं, बल्कि सामूहिक
+          प्रयासों से गाँवों में आए ऐतिहासिक परिवर्तन की मिसाल भी पेश करती हैं।{" "}
+        </motion.p>
+      </motion.div>
+
+      {/* Filters */}
+      
+     <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div onClick={()=>setFilterOpen(!filterOpen)} className="flex items-center mb-3">
+          <FaFilter className="text-emerald-500 mr-3 text-2xl " />
+          <h2 className="text-2xl font-semibold text-gray-800 mr-3">Filters</h2>
+          <span className="text-emerald-500 pt-1">{!filterOpen?<FaChevronDown/>:<FaChevronUp/>}</span>
+        </div>
+
+     {filterOpen &&    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category
+            </label>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 p-3"
+            >
+              <option value="">All Categories</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Village
+            </label>
+            <select
+              value={selectedVillage}
+              onChange={(e) => setSelectedVillage(e.target.value)}
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 p-3"
+            >
+              <option value="">All Villages</option>
+              {villages.map((village) => (
+                <option key={village} value={village}>
+                  {village}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Search
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search stories..."
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 pl-10 p-3"
+              />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
+          </div>
+        </div>}
       </div>
-    </div>
-  </div>
-</div>
 
       {/* Stories Grid */}
       {filteredStories.length > 0 ? (
@@ -170,93 +195,95 @@ const villages = [...new Set(stories.map((story) => story.location))];
                   className="object-cover w-full h-full hover:scale-105 transition duration-500"
                 />
                 <div className="absolute top-2 right-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                  {story.category === 'Community Stories'?'समाज':`${story.category}`}
+                  {story.category === "Community Stories"
+                    ? "समाज"
+                    : `${story.category}`}
                 </div>
               </div>
               <div className="sm:p-6 p-4 flex-1 flex flex-col">
                 <div className="flex-1">
                   <div className="flex items-center justify-start mb-4 gap-3">
-              
-                  <Link href={`/profile/${story?.publisher?._id}`} > <p className=" text-gray-700 text-xs overflow-hidden gap-1 whitespace-nowrap max-w-40 min-w-40 flex w-full mr-1 items-center py-1 px-1 bg-gray-200 rounded"><FaUser className="text-emerald-700 sm:text-md min-w-5 text-xs" /> {story?.publisher?.fullname || 'Nayta Patel Network'}</p></Link> 
-                    <p className=" text-gray-700 text-xs min-w-24">{formatDate(story?.createdAt)}</p>
+                    <Link href={`/profile/${story?.publisher?._id}`}>
+                      {" "}
+                      <p className=" text-gray-700 text-xs overflow-hidden gap-1 whitespace-nowrap max-w-40 min-w-40 flex w-full mr-1 items-center py-1 px-1 bg-gray-200 rounded">
+                        <FaUser className="text-emerald-700 sm:text-md min-w-5 text-xs" />{" "}
+                        {story?.publisher?.fullname || "Nayta Patel Network"}
+                      </p>
+                    </Link>
+                    <p className=" text-gray-700 text-xs min-w-24">
+                      {formatDate(story?.createdAt)}
+                    </p>
                   </div>
-                  <h3 className="font-bold text-xl mb-1">{story?.title}</h3>
+                  <h3 className="font-bold text-md mb-1">{story?.title}</h3>
                 </div>
-                <div className="flex justify-between mt-4">
-                
+
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-gray-700 line-clamp-8 text-sm">
+                    {removeAsterisks(story?.content)}
+                  </p>
                 </div>
-               
-                  <div className='flex items-center justify-center h-full'><p className="text-gray-700 line-clamp-6">{removeAsterisks(story?.content)}</p></div>
-               
-                <Link href={`/stories/${story._id}`} className="flex items-center justify-center cursor-pointer">
-                <button
-                   
-                    className="text-emerald-500 hover:underline cursor-pointer"
-                  >
+
+                <Link
+                  href={`/stories/${story._id}`}
+                  className="flex items-center justify-center cursor-pointer mt-2"
+                >
+                  <button className="text-white hover:underline cursor-pointer bg-gradient-to-b from-emerald-200 via-emerald-400 to-emerald-600 rounded-xl px-4 py-1 decoration-emerald-500">
                     Read more
-                  </button></Link> 
+                  </button>
+                </Link>
               </div>
-              
             </div>
-            
           ))}
-          
         </div>
       ) : (
         <p>No stories found.</p>
       )}
       <div className="w-full h-auto flex items-center justify-center py-12">
-
-      <SuccessStories/>
+        <SuccessStories />
       </div>
     </div>
   );
 }
 
-
 const SuccessStories = () => {
-   // const { data: session } = useSession()
-const [formData, setFormData] = useState({
-    name: '',
-    story: '',
-    village: ''
-  })
-  const {user,path} = usePatel();
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
+  // const { data: session } = useSession()
+  const [formData, setFormData] = useState({
+    name: "",
+    story: "",
+    village: "",
+  });
+  const { user, path } = usePatel();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-  
+    e.preventDefault();
+    setIsSubmitting(true);
+
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(path +'/api/stories/apply', {
-        method: 'POST',
+      const token = localStorage.getItem("token");
+      const response = await fetch(path + "/api/stories/apply", {
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(
-          formData
-        ),
-      })
+        body: JSON.stringify(formData),
+      });
 
       if (response.ok) {
-        setIsSuccess(true)
-        setFormData({ name: '', story: '', village: '' })
+        setIsSuccess(true);
+        setFormData({ name: "", story: "", village: "" });
       }
     } catch (error) {
-      console.error('Error submitting story:', error)
+      console.error("Error submitting story:", error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
-
+  };
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-emerald-50 to-white">
       <div className="max-w-4xl mx-auto">
-        
         {!user ? (
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
@@ -268,7 +295,8 @@ const [formData, setFormData] = useState({
               अपनी सफलता की कहानी साझा करें!
             </h3>
             <p className="text-gray-600 mb-6">
-              क्या आपने कोई अनोखी सफलता हासिल की है? हमारे समुदाय के साथ बाँटें और सैकड़ों किसानों को प्रेरित करें!
+              क्या आपने कोई अनोखी सफलता हासिल की है? हमारे समुदाय के साथ बाँटें
+              और सैकड़ों किसानों को प्रेरित करें!
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -293,7 +321,8 @@ const [formData, setFormData] = useState({
               धन्यवाद! आपकी कहानी सबमिट हो गई है
             </h3>
             <p className="text-gray-600 mb-6">
-              हमारी टीम आपकी प्रेरक कहानी की समीक्षा करेगी और जल्द ही इसे हमारे समुदाय के साथ साझा करेगी।
+              हमारी टीम आपकी प्रेरक कहानी की समीक्षा करेगी और जल्द ही इसे हमारे
+              समुदाय के साथ साझा करेगी।
             </p>
             <button
               onClick={() => setIsSuccess(false)}
@@ -326,7 +355,9 @@ const [formData, setFormData] = useState({
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   required
                 />
@@ -339,7 +370,9 @@ const [formData, setFormData] = useState({
                 <input
                   type="text"
                   value={formData.village}
-                  onChange={(e) => setFormData({...formData, village: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, village: e.target.value })
+                  }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   required
                 />
@@ -351,7 +384,9 @@ const [formData, setFormData] = useState({
                 </label>
                 <textarea
                   value={formData.story}
-                  onChange={(e) => setFormData({...formData, story: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, story: e.target.value })
+                  }
                   rows={6}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   placeholder="हमें बताएं कि आपने कैसे सफलता हासिल की... (कम से कम 200 शब्द)"
@@ -369,9 +404,25 @@ const [formData, setFormData] = useState({
               >
                 {isSubmitting ? (
                   <>
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     सबमिट कर रहे हैं...
                   </>
@@ -386,5 +437,5 @@ const [formData, setFormData] = useState({
         )}
       </div>
     </section>
-  )
-}
+  );
+};

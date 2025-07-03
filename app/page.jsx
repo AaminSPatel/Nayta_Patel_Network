@@ -160,7 +160,7 @@ const containerVariants = {
       <section className="relative  h-[450px] flex items-center">
         <div className="absolute inset-0 z-0 sm:w-auto w-screen">
           <Image
-            src="/prices.avif"
+            src="/about1.avif"
             alt="Rural farming landscape"
             fill
             className="object-cover"
@@ -169,7 +169,7 @@ const containerVariants = {
           <div className="absolute inset-0 bg-black/60" />
         </div>
 
-        <div className="container mx-auto px-4 z-10 relative">
+        <div className="container mx-auto px-4 z-10 mt-32 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
