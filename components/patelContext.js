@@ -628,17 +628,14 @@ export function AppProvider({ children }) {
 const formatContent = (content) => {
   if (!content) return "";
 
-  // Normalize line breaks and split
   const lines = content.replace(/\r\n/g, '\n').split('\n');
   const formattedLines = [];
-  let lastLineWasContent = false; // Tracks if previous line had content
+  let lastLineWasContent = false;
 
   lines.forEach((line, index) => {
     const trimmedLine = line.trim();
 
-    // Handle empty lines
     if (trimmedLine === '') {
-      // Only add break if previous line had content
       if (lastLineWasContent) {
         formattedLines.push(<br key={`br-${index}`} />);
         lastLineWasContent = false;
@@ -646,7 +643,6 @@ const formatContent = (content) => {
       return;
     }
 
-    // Handle list items
     if (trimmedLine.startsWith('- ')) {
       const listItem = trimmedLine.substring(2);
       formattedLines.push(
@@ -661,17 +657,63 @@ const formatContent = (content) => {
       return;
     }
 
-    // Handle regular text
-    formattedLines.push(
-      <p key={`p-${index}`} className="mb-4 text-sm md:text-base leading-relaxed">
-        {formatTextStyles(trimmedLine)}
-      </p>
-    );
+    // Check if line contains boxed content (#...#)
+    if (trimmedLine.includes('#')) {
+      formattedLines.push(...formatBoxedText(trimmedLine, index));
+    } else {
+      formattedLines.push(
+        <p key={`p-${index}`} className="mb-4 text-sm md:text-base leading-relaxed">
+          {formatTextStyles(trimmedLine)}
+        </p>
+      );
+    }
+
     lastLineWasContent = true;
   });
 
   return formattedLines;
 };
+
+const formatBoxedText = (line, index) => {
+  const boxedRegex = /#(.*?)#/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = boxedRegex.exec(line)) !== null) {
+    if (match.index > lastIndex) {
+      const beforeText = line.slice(lastIndex, match.index);
+      parts.push(
+        <p key={`before-${index}-${lastIndex}`} className="mb-4 text-sm md:text-base leading-relaxed">
+          {formatTextStyles(beforeText)}
+        </p>
+      );
+    }
+
+    parts.push(
+      <div
+        key={`box-${index}-${match.index}`}
+        className="border-l-4 border-emerald-500 bg-emerald-50 px-3 py-2 my-2 text-sm md:text-base leading-relaxed"
+      >
+        {formatTextStyles(match[1])}
+      </div>
+    );
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < line.length) {
+    const remainingText = line.slice(lastIndex);
+    parts.push(
+      <p key={`after-${index}-${lastIndex}`} className="mb-4 text-sm md:text-base leading-relaxed">
+        {formatTextStyles(remainingText)}
+      </p>
+    );
+  }
+
+  return parts;
+};
+
 /* if double hastrick text hilight and enlarge */
 const formatTextStyles = (text) => {
   const parts = [];

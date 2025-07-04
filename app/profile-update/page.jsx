@@ -219,19 +219,27 @@ const handleSubmit = async (e) => {
     <div className="flex flex-col items-center justify-center">
       <div className="relative w-32 h-32 mb-4">
         {previewUrl ? (
+          <>
+          
           <img
             src={previewUrl || "/placeholder.svg"}
             alt="प्रोफाइल प्रिव्यू"
             className="w-full h-full rounded-full object-cover border-4 border-emerald-100"
           />
+          
+          </>
+          
         ) : (
-          <div className="w-full h-full rounded-full bg-emerald-100 flex items-center justify-center">
-            <FiUser className="text-emerald-500 text-4xl" />
-          </div>
-        )}
-        <label
+            <label
           htmlFor="profile-pic"
-          className="absolute bottom-0 right-0 bg-emerald-600 text-white p-2 rounded-full cursor-pointer hover:bg-emerald-700 transition-colors"
+          className="absolute bottom-0 right-0 p-2 text-green-600 cursor-pointer hover:bg-emerald-700 transition-colors w-full h-full rounded-full bg-emerald-100 flex items-center justify-center"
+        >
+          <FiUser size={32} />
+        </label>
+        )}
+      <label
+          htmlFor="profile-pic"
+          className="absolute bottom-0 right-0 p-2 text-white cursor-pointer hover:bg-emerald-700 transition-colors rounded-full bg-emerald-400 flex items-center justify-center"
         >
           <FiUser size={16} />
         </label>
@@ -245,7 +253,7 @@ const handleSubmit = async (e) => {
         />
       </div>
 
-      <p className="text-sm text-gray-500 mb-4">फोटो अपलोड करने के लिए बटन पर क्लिक करें</p>
+      <p className="text-sm text-gray-500 mb-4">फोटो अपलोड करने के 👆👆 लिए बटन पर क्लिक करें</p>
     </div>
 
     <div className="flex justify-end absolute bottom-0 w-full">
