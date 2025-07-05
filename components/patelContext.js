@@ -35,22 +35,32 @@ export function AppProvider({ children }) {
   } else {
     path = "http://localhost:5000";
   }
- const [isPWA, setIsPWA] = useState(true);
+const [isPWA, setIsPWA] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
   useEffect(() => {
-    // Check if the app is running as a PWA
     const checkPWA = () => {
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       const isInStandaloneIOS = isIOS && window.navigator.standalone === true;
-      
-      setIsPWA((isStandalone || isInStandaloneIOS));
+      setIsPWA(isStandalone || isInStandaloneIOS);
     };
 
     checkPWA();
-    window.addEventListener('appinstalled', checkPWA);
-    
+
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", () => {
+      setDeferredPrompt(null);
+      checkPWA();
+    });
+
     return () => {
-      window.removeEventListener('appinstalled', checkPWA);
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
 
@@ -1009,7 +1019,7 @@ function removeAsterisks(str) {
         timeAgo,
         siteUrl,
         siteBrand,
-        siteLogo,
+        siteLogo,deferredPrompt,
         deleteContact,
         logOut,
         stories,
