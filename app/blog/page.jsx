@@ -452,7 +452,7 @@ export default function BlogPage() {
                               <FaCalendar className="mr-1" />
                               {new Date(featuredPost.createdAt || featuredPost.date).toLocaleDateString("hi-IN")}
                             </span>
-                            <span className="flex items-center">
+                            <span className="fle items-center hidden">
                               <FaEye className="mr-1" />
                               {featuredPost.views || 0}
                             </span>
@@ -603,7 +603,7 @@ export default function BlogPage() {
                               <FaCalendar className="mr-1" />
                               {new Date(post.createdAt || post.date).toLocaleDateString("hi-IN")}
                             </span>
-                            <span className="flex items-center">
+                            <span className="fle items-center hidden">
                               <FaEye className="mr-1" />
                               {post.views || 0}
                             </span>

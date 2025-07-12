@@ -397,7 +397,7 @@ export default function NewsPage() {
                       <div className="absolute top-4 left-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                         मुख्य
                       </div>
-                      <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-xs flex items-center space-x-1">
+                      <div className="absolute top-4 right-4  backdrop-opacity-70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs flex items-center space-x-1">
                         <FaEye />
                         <span>{item?.views}</span>
                       </div>
@@ -482,7 +482,7 @@ export default function NewsPage() {
                     <div className="absolute top-4 left-4 bg-emerald-500 text-white px-3 py-1 rounded-full sm:text-sm text-xs font-bold">
                       {item?.category}
                     </div>
-                    <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full sm:text-sm text-xs flex items-center space-x-1">
+                    <div className="absolute top-4 right-4  backdrop-opacity-70 backdrop-blur-sm text-white px-3 py-1 rounded-full sm:text-sm text-xs flex items-center space-x-1">
                       <FaEye />
                       <span>{item?.views}</span>
                     </div>
