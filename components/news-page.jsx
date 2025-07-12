@@ -391,7 +391,7 @@ export default function NewsPage() {
                            <img
                       src={item?.image?.url || "/placeholder.svg"}
                       alt={item?.title}
-                      className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     </div> :  <div className="h-[56px] bg-orange-100">{''}</div>}
                       <div className="absolute top-4 left-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold">
@@ -474,7 +474,7 @@ export default function NewsPage() {
                            <img
                       src={item?.image?.url || "/placeholder.svg"}
                       alt={item?.title}
-                      className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     </div> :  <div className="h-[56px] bg-orange-100">{''}</div>}
                     </div>
