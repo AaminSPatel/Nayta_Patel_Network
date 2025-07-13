@@ -224,7 +224,8 @@ export default function Home() {
       </section>
 
       {/* Event section */}
-      <section className="w-full h-full sm:hidden flex items-center justify-center py-12 p-12 flex-col">
+      <section className="relative w-full h-full sm:hidden flex items-center justify-center py-12 p-12 flex-col">
+        <div className= " absolute inset  w-full h-28 shidden z-0 bottom-0 left-0"><img src="./bg2.jpg" alt="" /></div>
         <motion.div
           initial="hidden"
           animate="visible"
@@ -245,7 +246,7 @@ export default function Home() {
         <div className="w-76 sm:h-96 h-[430px] ">
           <EventCubeSlider />
         </div>
-        <div className="text-center mt-10">
+        <div className="text-center mt-10  z-20">
           <Link
             href="/events"
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"

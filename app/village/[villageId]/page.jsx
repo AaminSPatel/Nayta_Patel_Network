@@ -1,94 +1,99 @@
-"use client";
-
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FaMapMarkerAlt, 
-  FaUsers, 
-  FaUserTie, 
-  FaInfoCircle, 
-  FaMosque, 
-  FaSchool, 
-  FaCalendarAlt, 
-  FaAngleLeft, 
-  FaAngleRight, 
-  FaChevronDown, 
+"use client"
+import { useState, useEffect } from "react"
+import { useParams ,useRouter} from "next/navigation"
+//import { useRouter } from "next/navigation" // Import router
+import Image from "next/image"
+import { motion, AnimatePresence } from "framer-motion"
+import {
+  FaMapMarkerAlt,
+  FaUsers,
+  FaUserTie,
+  FaInfoCircle,
+  FaMosque,
+  FaSchool,
+  FaCalendarAlt,
+  FaAngleLeft,
+  FaAngleRight,
+  FaChevronDown,
   FaChevronUp,
-  FaUserShield
-} from 'react-icons/fa';
-import { usePatel } from '../../../components/patelContext';
-import CompactAmbassadorCard from '../../../components/CompactAmbassadorCard';
-import { GiKing } from 'react-icons/gi';
-import Head from 'next/head';
-const VillageDetailPage = () => {
-  const {villageId} = useParams();
-  //const { villageId } = router.query;
-  const [village, setVillage] = useState(null);
-  const [userData, setUserData] = useState(null);
-  const [notFound, setNotFound] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showFullDescription, setShowFullDescription] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
-const {villages , path} = usePatel();
-  // Simulate fetching data from API
+  FaUserShield,
+  FaPlay,
+  FaVideo,
+} from "react-icons/fa"
+import { usePatel } from "../../../components/patelContext"
+import CompactAmbassadorCard from "../../../components/CompactAmbassadorCard"
+import { GiKing } from "react-icons/gi"
+import Head from "next/head"
 
+const VillageDetailPage = () => {
+  const { villageId } = useParams()
+  const router = useRouter() // Declare router
+  const [village, setVillage] = useState(null)
+  const [userData, setUserData] = useState(null)
+  const [notFound, setNotFound] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [showFullDescription, setShowFullDescription] = useState(false)
+  const [activeTab, setActiveTab] = useState("overview")
+
+  const { villages, path,formatDate } = usePatel()
+
+  // Simulate fetching data from API
   useEffect(() => {
-    //console.log(villageId);
     setNotFound(false)
     if (villageId && villages) {
       // In a real app, you would fetch this data from an API
-      const foundVillage = villages.find(v => v._id === villageId);
-      if(foundVillage?.ambassador){
+      const foundVillage = villages.find((v) => v._id === villageId)
+      if (foundVillage?.ambassador) {
         setUserData(foundVillage?.ambassador)
-         setNotFound(false);
-      
+        setNotFound(false)
+      } else {
+        setTimeout(() => {
+          setNotFound(true)
+        }, 4000)
       }
-      else{
-     setTimeout(() => {
-       setNotFound(true);
-    }, 4000);  
-    //return () => clearInterval(interval);
-      }
-       setVillage(foundVillage);
+      setVillage(foundVillage)
     }
-  }, [villageId,villages]);
+  }, [villageId, villages])
+
   // Carousel navigation
   const goToNextSlide = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === (village?.images.length - 1) ? 0 : prevIndex + 1
-    );
-  };
+    setCurrentImageIndex((prevIndex) => (prevIndex === village?.images.length - 1 ? 0 : prevIndex + 1))
+  }
 
   const goToPrevSlide = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === 0 ? (village?.images.length - 1) : prevIndex - 1
-    );
-  };
+    setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? village?.images.length - 1 : prevIndex - 1))
+  }
 
   // AutoPlay for carousel
   useEffect(() => {
-    if (!village) return;
+    if (!village) return
     const interval = setInterval(() => {
-      goToNextSlide();
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, [village, currentImageIndex]);
+      goToNextSlide()
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [village, currentImageIndex])
+
+  // Function to extract YouTube video ID from URL
+  const getYouTubeVideoId = (url) => {
+    if (!url) return null
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+    const match = url.match(regExp)
+    return match && match[2].length === 11 ? match[2] : null
+  }
 
   if (!notFound && !village) {
     return (
       <div className="h-screen flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
           className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full"
         />
         <p className="ml-4 text-lg text-gray-600">Loading village details...</p>
       </div>
-    );
+    )
   }
 
   if (!village) {
@@ -96,36 +101,27 @@ const {villages , path} = usePatel();
       <div className="container mx-auto p-6 text-center">
         <h1 className="text-2xl font-bold text-red-600">Village not found!</h1>
         <p className="mt-4">The village you're looking for doesn't exist or has been removed.</p>
-        <button 
-          /* onClick={() => router.push('/villages')} */
+        <button
+          onClick={() => router.push("/villages")}
           className="mt-6 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
         >
           Go back to villages
         </button>
       </div>
-    );
+    )
   }
 
-  // Format date
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+ 
 
   // Calculate description to show
-  const shortDescription = village.info.length > 150 
-    ? `${village.info.substring(0, 150)}...` 
-    : village.info;
-  
-  const descriptionToShow = showFullDescription ? village?.info : shortDescription;
+  const shortDescription = village.info.length > 150 ? `${village.info.substring(0, 150)}...` : village.info
+
+  const descriptionToShow = showFullDescription ? village?.info : shortDescription
 
   return (
     <div className="bg-gray-50 min-h-screen">
       {village.length > 0 && <VillageSEOHead village={village} path={path} />}
+
       {/* Hero Section with Image Carousel */}
       <div className="relative h-[60vh] overflow-hidden">
         <AnimatePresence initial={false} mode="wait">
@@ -141,7 +137,7 @@ const {villages , path} = usePatel();
               src={village?.images[currentImageIndex]?.url || "/placeholder.svg"}
               alt={`${village?.name} image ${currentImageIndex + 1}`}
               fill
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: "cover" }}
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -171,7 +167,7 @@ const {villages , path} = usePatel();
               key={index}
               onClick={() => setCurrentImageIndex(index)}
               className={`w-3 h-3 rounded-full transition-all ${
-                index === currentImageIndex ? 'bg-white scale-125' : 'bg-white/50'
+                index === currentImageIndex ? "bg-white scale-125" : "bg-white/50"
               }`}
               aria-label={`Go to image ${index + 1}`}
             />
@@ -200,21 +196,21 @@ const {villages , path} = usePatel();
           <div className="lg:col-span-2">
             {/* Navigation Tabs */}
             <div className="flex border-b mb-6 overflow-x-auto">
-              <TabButton 
-                active={activeTab === 'overview'} 
-                onClick={() => setActiveTab('overview')}
+              <TabButton
+                active={activeTab === "overview"}
+                onClick={() => setActiveTab("overview")}
                 icon={<FaInfoCircle />}
                 label="Overview"
               />
-              <TabButton 
-                active={activeTab === 'facilities'} 
-                onClick={() => setActiveTab('facilities')}
+              <TabButton
+                active={activeTab === "facilities"}
+                onClick={() => setActiveTab("facilities")}
                 icon={<FaSchool />}
                 label="Facilities"
               />
-              <TabButton 
-                active={activeTab === 'leadership'} 
-                onClick={() => setActiveTab('leadership')}
+              <TabButton
+                active={activeTab === "leadership"}
+                onClick={() => setActiveTab("leadership")}
                 icon={<FaUserTie />}
                 label="Leadership"
               />
@@ -229,7 +225,7 @@ const {villages , path} = usePatel();
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                {activeTab === 'overview' && (
+                {activeTab === "overview" && (
                   <div className="space-y-6">
                     <div className="bg-white p-6 rounded-2xl shadow-sm">
                       <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800">
@@ -237,17 +233,43 @@ const {villages , path} = usePatel();
                         About {village?.name}
                       </h2>
                       <p className="text-gray-700 leading-relaxed">{descriptionToShow}</p>
-                      
+
                       {village?.info.length > 150 && (
                         <button
                           onClick={() => setShowFullDescription(!showFullDescription)}
                           className="mt-2 text-emerald-600 font-medium flex items-center"
                         >
-                          {showFullDescription ? 'Show less' : 'Read more'} 
+                          {showFullDescription ? "Show less" : "Read more"}
                           {showFullDescription ? <FaChevronUp className="ml-1" /> : <FaChevronDown className="ml-1" />}
                         </button>
                       )}
                     </div>
+
+                    {/* YouTube Video Section */}
+                    {village?.ytLink && getYouTubeVideoId(village.ytLink) && (
+                      <div className="bg-white p-6 rounded-2xl shadow-sm">
+                        <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800">
+                          <FaVideo className="mr-2 text-emerald-500" />
+                          Village Video
+                        </h2>
+                        <div className="relative w-full">
+                          <div className="relative w-full h-0 pb-[56.25%] rounded-xl overflow-hidden bg-gray-100">
+                            <iframe
+                              src={`https://www.youtube.com/embed/${getYouTubeVideoId(village.ytLink)}?rel=0&modestbranding=1&showinfo=0`}
+                              title={`${village.name} Village Video`}
+                              className="absolute top-0 left-0 w-full h-full"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
+                            />
+                          </div>
+                          <div className="mt-3 text-sm text-gray-600 flex items-center">
+                            <FaPlay className="mr-2 text-emerald-500" />
+                            Click to play the village tour video
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     <div className="bg-white p-6 rounded-2xl shadow-sm">
                       <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800">
@@ -256,7 +278,7 @@ const {villages , path} = usePatel();
                       </h2>
                       <div className="flex items-center justify-center p-6 bg-emerald-50 rounded-xl">
                         <div className="text-center">
-                          <motion.div 
+                          <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ type: "spring", stiffness: 100 }}
@@ -268,24 +290,28 @@ const {villages , path} = usePatel();
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="bg-white p-6 rounded-2xl shadow-sm">
+
+                    <div className="bg-white p-6 rounded-2xl shadow-sm hidden">
                       <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800">
                         <FaCalendarAlt className="mr-2 text-emerald-500" />
                         History
                       </h2>
                       <p className="text-gray-700">
-                        {village?.name} was established on 1st Nov 1967. 
-                        It has grown significantly over the years and has become a landmark location in the region.
+                        {village?.name} was established on 1st Nov 1967. It has grown significantly over the years and
+                        has become a landmark location in the region.
                       </p>
                     </div>
- {village?.ambassador && <div  className='flex items-center justify-center w-full'>
- <CompactAmbassadorCard user = { village?.ambassador} villageId={village?._id}/>
-</div>}
+
+                    {village?.ambassador && (
+                      <div className="flex items-center justify-center w-full">
+                        {" "}
+                        <CompactAmbassadorCard user={village?.ambassador} villageId={village?._id} />
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {activeTab === 'facilities' && (
+                {activeTab === "facilities" && (
                   <div className="space-y-6">
                     <div className="bg-white p-6 rounded-2xl shadow-sm">
                       <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800">
@@ -294,7 +320,7 @@ const {villages , path} = usePatel();
                       </h2>
                       <ul className="space-y-3">
                         {village.schools?.map((school, index) => (
-                          <motion.li 
+                          <motion.li
                             key={index}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -309,7 +335,6 @@ const {villages , path} = usePatel();
                         ))}
                       </ul>
                     </div>
-
                     <div className="bg-white p-6 rounded-2xl shadow-sm">
                       <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800">
                         <FaMosque className="mr-2 text-emerald-500" />
@@ -317,7 +342,7 @@ const {villages , path} = usePatel();
                       </h2>
                       <ul className="space-y-3">
                         {village.mosque.map((mosque, index) => (
-                          <motion.li 
+                          <motion.li
                             key={index}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -335,52 +360,48 @@ const {villages , path} = usePatel();
                   </div>
                 )}
 
-                {activeTab === 'leadership' && (
+                {activeTab === "leadership" && (
                   <div className="space-y-6">
                     <div className="bg-white p-6 rounded-2xl shadow-sm">
                       <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800">
                         <FaUserTie className="mr-2 text-emerald-500" />
                         Village Administration
                       </h2>
-                      
-                      <motion.div 
+
+                      <motion.div
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.1 }}
                         className="flex items-center bg-gray-50 p-6 rounded-lg mb-4"
                       >
                         <div className="h-16 w-16 bg-emerald-500 rounded-full flex items-center justify-center text-white text-2xl mr-4">
-                         {/*  {village.headOfVillage.split(' ').map(name => name[0]).join('')} */}
-                         <GiKing/>
+                          <GiKing />
                         </div>
                         <div>
-                          <h3 className="text-xl font-medium text-gray-800">{village.headOfVillage || '-'}</h3>
+                          <h3 className="text-xl font-medium text-gray-800">{village.headOfVillage || "-"}</h3>
                           <p className="text-gray-600">Head of Village</p>
                         </div>
                       </motion.div>
 
-                      
-                        <motion.div 
-                          initial={{ y: 20, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          transition={{ delay: 0.2 }}
-                          className="flex items-center bg-gray-50 p-6 rounded-lg"
-                        >
-                          <div className="h-16 w-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl mr-4">
-                            <FaUserShield />
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-medium text-gray-800">{village?.ambassador?.fullname || '-'}</h3>
-                            <p className="text-gray-600">Village Ambassador</p>
-                          </div>
-                        </motion.div>
-                      
+                      <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="flex items-center bg-gray-50 p-6 rounded-lg"
+                      >
+                        <div className="h-16 w-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl mr-4">
+                          <FaUserShield />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-medium text-gray-800">{village?.ambassador?.fullname || "-"}</h3>
+                          <p className="text-gray-600">Village Ambassador</p>
+                        </div>
+                      </motion.div>
                     </div>
                   </div>
                 )}
               </motion.div>
             </AnimatePresence>
-              
           </div>
 
           {/* Right Column - Map and Quick Info */}
@@ -399,14 +420,14 @@ const {villages , path} = usePatel();
                 </h2>
                 <div className="rounded-lg overflow-hidden border border-gray-100">
                   <iframe
-                    src={village?.location.length > 5? village.location : 'https://naytapatelnetwork.vercel.app/'}
+                    src={village?.location.length > 5 ? village.location : "https://naytapatelnetwork.vercel.app/"}
                     width="100%"
                     height="250"
                     style={{ border: 0 }}
                     allowFullScreen=""
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title={`Map of ${village?.name}`} 
+                    title={`Map of ${village?.name}`}
                   ></iframe>
                 </div>
               </div>
@@ -435,24 +456,25 @@ const {villages , path} = usePatel();
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center">
-                      <FaCalendarAlt className="mr-2" /> Established
+                      <FaCalendarAlt className="mr-2" /> Added to Nayta Patel Network
                     </span>
-                    <span className="font-medium">{new Date(village.createdAt).getFullYear()}</span>
+                    <span className="font-medium">{formatDate(village.createdAt)}</span>
                   </div>
                 </div>
               </div>
-              
-                 
+
               {/* Action Buttons */}
               <div className="flex space-x-3">
-                <button 
-                  onClick={() => router.push('/villages')}
+                <button
+                  onClick={() => router.push("/villages")}
                   className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg transition-colors flex items-center justify-center"
                 >
                   <FaAngleLeft className="mr-1" /> Back
                 </button>
-                <button 
-                  onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(village.location)}`, '_blank')}
+                <button
+                  onClick={() =>
+                    window.open(`https://maps.google.com/?q=${encodeURIComponent(village.location)}`, "_blank")
+                  }
                   className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-lg transition-colors flex items-center justify-center"
                 >
                   <FaMapMarkerAlt className="mr-1" /> Directions
@@ -463,8 +485,8 @@ const {villages , path} = usePatel();
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Tab Button Component
 const TabButton = ({ active, onClick, icon, label }) => {
@@ -472,25 +494,21 @@ const TabButton = ({ active, onClick, icon, label }) => {
     <button
       onClick={onClick}
       className={`flex items-center px-4 py-3 border-b-2 whitespace-nowrap ${
-        active 
-          ? "border-emerald-500 text-emerald-600" 
-          : "border-transparent text-gray-500 hover:text-gray-700"
+        active ? "border-emerald-500 text-emerald-600" : "border-transparent text-gray-500 hover:text-gray-700"
       }`}
     >
       <span className="mr-2">{icon}</span>
       {label}
     </button>
-  );
-};
+  )
+}
 
-export default VillageDetailPage;
+export default VillageDetailPage
 
-
-
-const VillageSEOHead = ({ village ,path}) => {
-  const pageTitle = `${village?.name} गाँव - नायता पटेल समाज | Nayta Patel Network`;
-  const pageDescription = `${village?.name} (${village?.district}) - नायता पटेल समाज का गाँव। ${village?.info?.substring(0, 160)}...`;
-  const canonicalUrl = `${path}/village/${village?._id}`;
+const VillageSEOHead = ({ village, path }) => {
+  const pageTitle = `${village?.name} गाँव - नायता पटेल समाज | Nayta Patel Network`
+  const pageDescription = `${village?.name} (${village?.district}) - नायता पटेल समाज का गाँव। ${village?.info?.substring(0, 160)}...`
+  const canonicalUrl = `${path}/village/${village?._id}`
 
   return (
     <Head>
@@ -518,34 +536,36 @@ const VillageSEOHead = ({ village ,path}) => {
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Village",
-          "name": `${village?.name} - Nayta Patel Samaj`,
-          "description": pageDescription,
-          "image": village?.image[0]?.url,
-          "url": canonicalUrl,
-          "address": {
+          name: `${village?.name} - Nayta Patel Samaj`,
+          description: pageDescription,
+          image: village?.image[0]?.url,
+          url: canonicalUrl,
+          address: {
             "@type": "PostalAddress",
-            "addressLocality": village?.name,
-            "addressRegion": village?.district,
-            "addressCountry": "India"
+            addressLocality: village?.name,
+            addressRegion: village?.district,
+            addressCountry: "India",
           },
-          "population": village?.population,
-          "geo": {
+          population: village?.population,
+          geo: {
             "@type": "GeoCoordinates",
-            "latitude": village?.location?.split(',')[0] || '',
-            "longitude": village?.location?.split(',')[1] || ''
-          }
+            latitude: village?.location?.split(",")[0] || "",
+            longitude: village?.location?.split(",")[1] || "",
+          },
         })}
       </script>
 
       {/* Additional SEO Tags */}
-      <meta name="keywords" content={`${village?.name}, नायता पटेल समाज, ${village?.district} गाँव, Nayta Patel Network, rural development , nayta patel samaj village, nayta gaon , indore, ujjain , dewas`} />
+      <meta
+        name="keywords"
+        content={`${village?.name}, नायता पटेल समाज, ${village?.district} गाँव, Nayta Patel Network, rural development , nayta patel samaj village, nayta gaon , indore, ujjain , dewas`}
+      />
       <meta name="geo.region" content="IN-MP" />
       <meta name="geo.placename" content={village?.district} />
-      
-      {/* Google Maps iframe fallback for bots */}
-      <meta name="place:location:latitude" content={village?.location?.split(',')[0] || ''} />
-      <meta name="place:location:longitude" content={village?.location?.split(',')[1] || ''} />
-    </Head>
-  );
-};
 
+      {/* Google Maps iframe fallback for bots */}
+      <meta name="place:location:latitude" content={village?.location?.split(",")[0] || ""} />
+      <meta name="place:location:longitude" content={village?.location?.split(",")[1] || ""} />
+    </Head>
+  )
+}

@@ -1,102 +1,140 @@
 'use client'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { usePatel } from "../../../components/patelContext"
 import { motion } from "framer-motion"
 
+export default function NewsForm({ 
+  onSubmit, 
+  onCancel, 
+  onSuccess, 
+  newsData, 
+  isEditMode = false 
+}) {
+  const [imageFile, setImageFile] = useState(null)
+  const [previewImage, setPreviewImage] = useState(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const { path, user } = usePatel()
 
-// Publish News Form Component
-export default function PublishNewsForm({ onSubmit, onCancel }) {
- 
-
-  const [imageFile, setImageFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-
-  const {path, user} = usePatel()
- const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     title: "",
     content: "",
     category: "",
     location: "",
     publisher_name: user?.fullname || "",
-  });
+    verificationStatus: "pending"
+  })
+
+  useEffect(() => {
+    console.log('newsData');
+    
+    if (newsData) {
+      setFormData({
+        title: newsData.title || "",
+        content: newsData.content || "",
+        category: newsData.category || "",
+        location: newsData.location || "",
+        publisher_name: newsData.publisher_name || user?.fullname || "",
+        verificationStatus: newsData.verificationStatus || "pending"
+      })
+      
+      if (newsData?.image?.url) {
+        setPreviewImage(newsData.image.url)
+      }
+    }
+  }, [newsData, user])
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     
     if (!formData.title || !formData.content || !formData.location || !formData.category) {
-      alert("कृपया सभी आवश्यक फील्ड भरें");
-      return;
+      alert("Please fill all required fields")
+      return
     }
 
-    setIsUploading(true);
+    setIsUploading(true)
 
     try {
-      const token = localStorage.getItem('token');
-      const submitFormData = new FormData();
+      const token = localStorage.getItem('token')
+      const submitFormData = new FormData()
       
       // Append all form fields
-      submitFormData.append("title", formData.title);
-      submitFormData.append("content", formData.content);
-      submitFormData.append("location", formData.location);
-      submitFormData.append("publisher_name", formData.publisher_name);
-      submitFormData.append("category", formData.category);
+      submitFormData.append("title", formData.title)
+      submitFormData.append("content", formData.content)
+      submitFormData.append("location", formData.location)
+      submitFormData.append("publisher_name", formData.publisher_name)
+      submitFormData.append("category", formData.category)
+      submitFormData.append("verificationStatus", formData.verificationStatus)
       
       // Append image if exists
       if (imageFile) {
-        submitFormData.append("image", imageFile);
+        submitFormData.append("image", imageFile)
       }
-console.log(submitFormData);
 
-      const response = await fetch(`${path}/api/news`, {
-        method: "POST",
+      const url = isEditMode 
+        ? `${path}/api/news/${newsData._id}`
+        : `${path}/api/news`
+
+      const response = await fetch(url, {
+        method: isEditMode ? "PUT" : "POST",
         headers: {
           'Authorization': `Bearer ${token}`
         },
         body: submitFormData,
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
       
       if (!response.ok) {
-        throw new Error(data.message || "Failed to submit news");
+        throw new Error(data.message || "Failed to submit news")
       }
 
-      // Call onSubmit callback if provided
-      if (onSubmit) {
-        await onSubmit(data);
-      }
+      // Call callbacks
+      if (onSubmit) await onSubmit(data)
+      if (onSuccess) await onSuccess(data)
       
-      // Reset form on success
-      setFormData({
-        title: "",
-        content: "",
-        category: "",
-        location: "",
-        publisher_name: user?.fullname || "",
-      });
-      setImageFile(null);
+      // Reset form if not in edit mode
+      if (!isEditMode) {
+        setFormData({
+          title: "",
+          content: "",
+          category: "",
+          location: "",
+          publisher_name: user?.fullname || "",
+          verificationStatus: "pending"
+        })
+        setImageFile(null)
+        setPreviewImage(null)
+      }
 
     } catch (error) {
-      console.error("Error submitting news:", error);
-      alert(error.message || "समाचार प्रकाशित करने में त्रुटि हुई");
+      console.error("Error submitting news:", error)
+      alert(error.message || "Error submitting news")
     } finally {
-      setIsUploading(false);
+      setIsUploading(false)
     }
-  };
+  }
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    });
-  };
+    })
+  }
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
+      const file = e.target.files[0]
+      setImageFile(file)
+      
+      // Create preview
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreviewImage(reader.result)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
-  // Category options matching your schema
   const categories = [
     { value: "Accident", label: "दुर्घटना" },
     { value: "Farming", label: "कृषि" },
@@ -108,14 +146,14 @@ console.log(submitFormData);
     { value: "Market", label: "बाजार" },
     { value: "Education", label: "शिक्षा" },
     { value: "Health", label: "स्वास्थ्य" },
-  ];
+  ]
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Title Field */}
       <div>
         <label className="block text-sm font-bold text-gray-700 mb-2">
-          समाचार शीर्षक *
+          News Title *
         </label>
         <input
           type="text"
@@ -124,14 +162,14 @@ console.log(submitFormData);
           onChange={handleChange}
           required
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-          placeholder="समाचार का शीर्षक लिखें..."
+          placeholder="Enter news title..."
         />
       </div>
 
       {/* Content Field */}
       <div>
         <label className="block text-sm font-bold text-gray-700 mb-2">
-          समाचार विवरण *
+          News Content *
         </label>
         <textarea
           name="content"
@@ -140,7 +178,7 @@ console.log(submitFormData);
           required
           rows={6}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-          placeholder="समाचार का पूरा विवरण..."
+          placeholder="Enter news content..."
         />
       </div>
 
@@ -148,7 +186,7 @@ console.log(submitFormData);
         {/* Location Field */}
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-2">
-            स्थान *
+            Location *
           </label>
           <input
             type="text"
@@ -157,14 +195,14 @@ console.log(submitFormData);
             onChange={handleChange}
             required
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="शहर, राज्य"
+            placeholder="City, State"
           />
         </div>
 
         {/* Publisher Name Field */}
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-2">
-            प्रकाशक का नाम *
+            Publisher Name *
           </label>
           <input
             type="text"
@@ -173,59 +211,94 @@ console.log(submitFormData);
             onChange={handleChange}
             required
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="आपका नाम"
-            readOnly={!!currentUser?.name}
+            placeholder="Your name"
           />
         </div>
       </div>
 
-      {/* Category Field */}
-      <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2">
-          श्रेणी *
-        </label>
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          required
-          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-        >
-          <option value="">श्रेणी चुनें</option>
-          {categories.map((cat) => (
-            <option key={cat.value} value={cat.value}>
-              {cat.label}
-            </option>
-          ))}
-        </select>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Category Field */}
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            Category *
+          </label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          >
+            <option value="">Select category</option>
+            {categories.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Status Field (visible only in edit mode) */}
+        {isEditMode && (
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              Status
+            </label>
+            <select
+              name="verificationStatus"
+              value={formData.verificationStatus}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option value="verified">Verified</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Image Upload Field */}
       <div>
         <label className="block text-sm font-bold text-gray-700 mb-2">
-          समाचार छवि
+          News Image
         </label>
-        <div className="flex items-center space-x-4">
-          <label className="flex flex-col items-center px-4 py-6 bg-white text-blue-500 rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-50">
-            <span className="text-sm font-medium">
-              {imageFile ? imageFile.name : "छवि चुनें"}
-            </span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </label>
-          {imageFile && (
-            <button
-              type="button"
-              onClick={() => setImageFile(null)}
-              className="text-red-500 hover:text-red-700"
-            >
-              हटाएं
-            </button>
+        <div className="flex flex-col space-y-4">
+          {previewImage && (
+            <div className="w-full max-w-xs">
+              <img 
+                src={previewImage} 
+                alt="Preview" 
+                className="rounded-lg border border-gray-200"
+              />
+              <p className="text-sm text-gray-500 mt-1">Current Image</p>
+            </div>
           )}
+          <div className="flex items-center space-x-4">
+            <label className="flex flex-col items-center px-4 py-6 bg-white text-blue-500 rounded-lg border border-dashed border-gray-300 cursor-pointer hover:bg-gray-50">
+              <span className="text-sm font-medium">
+                {imageFile ? imageFile.name : "Choose image"}
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
+            {(imageFile || previewImage) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setImageFile(null)
+                  setPreviewImage(null)
+                }}
+                className="text-red-500 hover:text-red-700"
+              >
+                Remove
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -242,7 +315,9 @@ console.log(submitFormData);
           whileHover={{ scale: isUploading ? 1 : 1.02 }}
           whileTap={{ scale: isUploading ? 1 : 0.98 }}
         >
-          {isUploading ? "प्रकाशित हो रहा है..." : "प्रकाशित करें"}
+          {isUploading 
+            ? (isEditMode ? "Updating..." : "Publishing...") 
+            : (isEditMode ? "Update News" : "Publish News")}
         </motion.button>
 
         <motion.button
@@ -253,9 +328,9 @@ console.log(submitFormData);
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          रद्द करें
+          Cancel
         </motion.button>
       </div>
     </form>
-  );
+  )
 }

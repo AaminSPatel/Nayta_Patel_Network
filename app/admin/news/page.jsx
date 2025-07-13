@@ -45,7 +45,8 @@ redirect('/')      }
     setNews(prev => [...prev, News])
     setShowForm(false)
   }}
-/>        </motion.div>
+/>      
+  </motion.div>
       ) : (
         <>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">

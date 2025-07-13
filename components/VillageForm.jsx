@@ -4,12 +4,14 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { X, Upload, MapPin, Users, Calendar } from "lucide-react"
 import { usePatel } from "./patelContext"
+import { FaYoutube } from "react-icons/fa"
 
 export default function VillageForm({ onCancel }) {
   const [formData, setFormData] = useState({
     name: "",
     info: "",
     location: "",
+    ytLink: "",
     population: "",
     mosque: [],
     schools: [],
@@ -47,6 +49,7 @@ export default function VillageForm({ onCancel }) {
     data.append("name", formData.name)
     data.append("info", formData.info)
     data.append("location", formData.location)
+    data.append("ytLink", formData.ytLink)
     data.append("population", formData.population)
     data.append("headOfVillage", formData.headOfVillage)
     data.append("district", formData.district)
@@ -117,6 +120,20 @@ console.log('sending this data');
                 required
               />
               <MapPin className="absolute left-3 top-2.5 text-gray-400" size={18} />
+            </div>
+          </div>
+           <div>
+            <label className="form-label">Youtube Video Link</label>
+            <div className="relative">
+              <input
+                type="text"
+                name="ytLink"
+                value={formData.ytLink}
+                onChange={handleChange}
+                className="form-input pl-10"
+                required
+              />
+              <FaYoutube className="absolute left-3 top-2.5 text-gray-400" size={18} />
             </div>
           </div>
           <div>

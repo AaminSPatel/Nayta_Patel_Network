@@ -7,7 +7,6 @@ import { FaMosque, FaSchool, FaUsers, FaUserTie } from "react-icons/fa";
 import Head from "next/head"
 import {motion} from 'framer-motion'
 import { FiArrowRight, FiShare2 } from "react-icons/fi";
-
 import { Suspense } from 'react';
 
 export default function DirectoryPage() {
@@ -17,11 +16,11 @@ export default function DirectoryPage() {
     </Suspense>
   );
 }
+
 function Loader() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white">
       <div className="relative w-24 h-24 mb-6">
-        {/* Emerald and yellow spinner */}
         <div className="absolute inset-0 border-4 border-emerald-500 rounded-full animate-spin border-t-yellow-400 border-r-yellow-400"></div>
         <div className="absolute inset-2 border-4 border-emerald-500 rounded-full animate-spin border-b-yellow-400 border-l-yellow-400 animation-delay-200"></div>
       </div>
@@ -29,35 +28,62 @@ function Loader() {
     </div>
   );
 }
+
 const DirectoryContent = () => {
   const {villages, siteUrl} = usePatel();
   const [filter, setFilter] = useState("");
   const [filteredVillages, setFilteredVillages] = useState([]);
   const [currentImageIndices, setCurrentImageIndices] = useState({});
-  const [selectedDistrict, setSelectedDistrict] = useState("all"); // New state for district filter
-  
-    const [districts, setDistricts] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState("all");
+  const [selectedTehsil, setSelectedTehsil] = useState("all");
+  const [districts, setDistricts] = useState([]);
+  const [tehsils, setTehsils] = useState([]);
 
-     useEffect(()=>{
-      if(villages){
-        let dists =  ["all", ...new Set(villages.map(village => village.district).filter(Boolean))]
-      setDistricts(dists)
-      }
-     }, [villages])
+  // Extract districts and tehsils data
+  useEffect(() => {
+    if (villages) {
+      const uniqueDistricts = ["all", ...new Set(villages.map(village => village.district).filter(Boolean))];
+      setDistricts(uniqueDistricts);
+      
+      // Initialize tehsils based on selected district
+      updateTehsils("all");
+    }
+  }, [villages]);
 
+  // Update tehsils when district changes
+  const updateTehsils = (district) => {
+    if (district === "all") {
+      setTehsils(["all"]);
+    } else {
+      let villageOfSpecificDist = villages.filter(village => village.district === district);
 
-useEffect(() => {
+      const districtTehsils = ["all", ...new Set(
+          
+          villageOfSpecificDist.map(village => village.tahsil)
+          .filter(Boolean)
+      )];
+      setTehsils(districtTehsils);
+    }
+    setSelectedTehsil("all"); // Reset tehsil filter when district changes
+  };
+
+  // Apply filters
+  useEffect(() => {
     let result = villages;
     
-    // Apply district filter if not "all"
+    // Apply district filter
     if (selectedDistrict !== "all") {
       result = result.filter(village => village.district === selectedDistrict);
     }
     
+    // Apply tehsil filter
+    if (selectedTehsil !== "all") {
+      result = result.filter(village => village.tahsil === selectedTehsil);
+    }
+    
     // Apply search filter
     if (filter) {
-      setSelectedDistrict("all")
-      result = villages.filter(village => 
+      result = result.filter(village => 
         village.name.toLowerCase().includes(filter.toLowerCase())
       );
     }
@@ -70,9 +96,9 @@ useEffect(() => {
       initialIndices[village._id] = 0;
     });
     setCurrentImageIndices(initialIndices);
-  }, [villages,  selectedDistrict , filter]);
+  }, [villages, selectedDistrict, selectedTehsil, filter]);
 
-  // Set up intervals for image rotation
+  // Image rotation intervals
   useEffect(() => {
     const intervals = filteredVillages.map(village => {
       return setInterval(() => {
@@ -89,21 +115,21 @@ useEffect(() => {
     };
   }, [filteredVillages]);
 
-/*   const handleFilterChange = (e) => {
+  const handleFilterChange = (e) => {
     setFilter(e.target.value);
-    setFilteredVillages(
-      villages.filter((village) =>
-        village.name.toLowerCase().includes(e.target.value.toLowerCase())
-      )
-    );
-  }; */
-const handleFilterChange = (e) => {
-    setFilter(e.target.value);
+    setSelectedDistrict("all");
+    setSelectedTehsil("all");
   };
 
   const handleDistrictFilter = (district) => {
     setSelectedDistrict(district);
-    setFilter(""); // Clear search filter when selecting district
+    updateTehsils(district);
+    setFilter("");
+  };
+
+  const handleTehsilFilter = (tehsil) => {
+    setSelectedTehsil(tehsil);
+    setFilter("");
   };
 
   const shareVillage = (village) => {
@@ -114,7 +140,6 @@ const handleFilterChange = (e) => {
         url: `${window.location.origin}/village/${village._id}`,
       });
     } else {
-      // Fallback for browsers that don't support Web Share API
       alert('इस गाँव को सोशल मीडिया पर शेयर करें!');
     }
   };
@@ -163,13 +188,8 @@ const handleFilterChange = (e) => {
         </motion.p>
       </motion.div>
 
-    {/*   <Head>
-        <title>गाँव निर्देशिका | 250+ गाँवों की जानकारी - नायता पटेल नेटवर्क</title>
-        <meta name="description" content="इंदौर, उज्जैन, देवास, रतलाम और धार के 250+ गाँवों की कृषि, दुग्ध उत्पादन और सामुदायिक जानकारी" />
-      </Head> */}
-
-     {/* District Filter Tags */}
-      <div className="flex flex-wrap justify-center gap-2 mb-6">
+      {/* District Filter Tags */}
+      <div className="flex flex-wrap justify-center gap-2 mb-4">
         {districts.map(district => (
           <button
             key={district}
@@ -184,6 +204,25 @@ const handleFilterChange = (e) => {
           </button>
         ))}
       </div>
+<div className="border-t-3 border-amber-400 my-3"></div>
+      {/* Tehsil Filter Tags (only shown when a district is selected) */}
+      {selectedDistrict !== "all" && (
+        <div className="flex flex-wrap justify-center gap-2 mb-4">
+          {tehsils.map(tehsil => (
+            <button
+              key={tehsil}
+              onClick={() => handleTehsilFilter(tehsil)}
+              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                selectedTehsil === tehsil
+                  ? 'bg-amber-600 text-white'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200 border-2 border-emerald-400'
+              }`}
+            >
+              {tehsil === "all" ? "सभी तहसील" : tehsil}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Search Filter */}
       <div className="mb-6 max-w-2xl mx-auto">
@@ -195,7 +234,6 @@ const handleFilterChange = (e) => {
           className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 text-center text-lg"
         />
       </div>
-
 
       {/* Village List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 px-2 sm:px-0">
@@ -220,10 +258,8 @@ const handleFilterChange = (e) => {
                 />
               )}
               
-              {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
               
-              {/* Village Name with Beautiful Typography */}
               <div className="absolute bottom-0 left-0 w-full p-4 md:p-6">
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-1 font-serif tracking-tight drop-shadow-lg">
                   {village.name}
@@ -232,7 +268,6 @@ const handleFilterChange = (e) => {
                 <p className="text-white/90 text-xs md:text-sm line-clamp-2">{village.info}</p>
               </div>
               
-              {/* Share Button (Top Right) */}
               <button 
                 className="absolute top-4 right-4 p-2 bg-white/90 rounded-full shadow-md hover:bg-white transition-colors"
                 onClick={() => shareVillage(village)}
@@ -241,7 +276,6 @@ const handleFilterChange = (e) => {
                 <FiShare2 className="text-gray-800" />
               </button>
 
-              {/* Image Counter */}
               {village?.images?.length > 1 && (
                 <div className="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
                   {`${(currentImageIndices[village._id] || 0) + 1}/${village.images.length}`}
@@ -249,7 +283,6 @@ const handleFilterChange = (e) => {
               )}
             </div>
 
-            {/* Village Stats */}
             <div className="p-4 md:p-6">
               <div className="grid grid-cols-2 gap-3 md:gap-4 mb-3 md:mb-4">
                 <div className="flex items-center gap-2">
@@ -293,12 +326,10 @@ const handleFilterChange = (e) => {
                 </div>
               </div>
 
-              {/* Brand Watermark */}
               <div className="text-center text-xs text-gray-400 mt-3 md:mt-4 border-t pt-2 md:pt-3 border-gray-100">
                 <span className="text-emerald-600 font-medium">नायता पटेल नेटवर्क</span> द्वारा संचालित
               </div>
 
-              {/* View Details Button */}
               <Link href={`/village/${village._id}`}>
                 <button className="mt-3 md:mt-4 w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base">
                   और जानकारी <FiArrowRight />
@@ -311,4 +342,3 @@ const handleFilterChange = (e) => {
     </div>
   );
 };
-

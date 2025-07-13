@@ -1,7 +1,6 @@
-"use client"
-
-import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect } from "react"
+"use client";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import {
   FaSearch,
   FaFilter,
@@ -22,206 +21,164 @@ import {
   FaGlobe,
   FaArrowRight,
   FaTractor,
-} from "react-icons/fa"
-import Head from "next/head"
-import { useRouter } from "next/navigation"
-import { usePatel } from "./patelContext"
-
-// Sample news data
-const sampleNews = [
-  {
-    id: 1,
-    title: "गाँव में नई तकनीक से बढ़ी फसल की पैदावार",
-    content:
-      "आधुनिक कृषि तकनीक के उपयोग से स्थानीय किसानों की फसल में 40% तक की वृद्धि हुई है। यह पहल नायता पटेल नेटवर्क के सहयोग से शुरू की गई थी।",
-    fullContent:
-      "आधुनिक कृषि तकनीक के उपयोग से स्थानीय किसानों की फसल में 40% तक की वृद्धि हुई है। यह पहल नायता पटेल नेटवर्क के सहयोग से शुरू की गई थी। किसान भाइयों ने बताया कि नई तकनीक से न केवल उत्पादन बढ़ा है बल्कि लागत भी कम आई है। इस सफलता को देखते हुए अन्य गांवों में भी इस तकनीक को अपनाने की योजना बनाई जा रही है।",
-    image: "/placeholder.svg?height=300&width=400",
-    location: "राजकोट, गुजरात",
-    date: "2024-01-15",
-    publisher: "राम पटेल",
-    category: "कृषि",
-    views: 1250,
-    likes: 89,
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "सामुदायिक स्वास्थ्य शिविर का आयोजन",
-    content: "गाँव में निःशुल्क स्वास्थ्य जांच शिविर का आयोजन किया गया जिसमें 500 से अधिक लोगों ने भाग लिया।",
-    fullContent:
-      "गाँव में निःशुल्क स्वास्थ्य जांच शिविर का आयोजन किया गया जिसमें 500 से अधिक लोगों ने भाग लिया। इस शिविर में डॉक्टरों की टीम ने मुफ्त जांच की और दवाइयां भी वितरित कीं। यह पहल समुदाय के स्वास्थ्य सुधार की दिशा में एक महत्वपूर्ण कदम है।",
-    image: "/placeholder.svg?height=300&width=400",
-    location: "अहमदाबाद, गुजरात",
-    date: "2024-01-14",
-    publisher: "डॉ. सुनीता शर्मा",
-    category: "स्वास्थ्य",
-    views: 890,
-    likes: 67,
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "शिक्षा क्षेत्र में डिजिटल क्रांति",
-    content: "स्थानीय स्कूलों में डिजिटल शिक्षा की शुरुआत से बच्चों की पढ़ाई में नई दिशा मिली है।",
-    fullContent:
-      "स्थानीय स्कूलों में डिजिटल शिक्षा की शुरुआत से बच्चों की पढ़ाई में नई दिशा मिली है। टैबलेट और इंटरनेट की सुविधा से बच्चे अब घर बैठे भी पढ़ाई कर सकते हैं। शिक्षकों का कहना है कि इससे बच्चों की रुचि पढ़ाई में बढ़ी है।",
-    image: "/placeholder.svg?height=300&width=400",
-    location: "सूरत, गुजरात",
-    date: "2024-01-13",
-    publisher: "प्रिंसिपल मोहन दास",
-    category: "शिक्षा",
-    views: 1100,
-    likes: 95,
-    featured: true,
-  },
-  {
-    id: 4,
-    title: "महिला सशक्तिकरण कार्यक्रम की सफलता",
-    content: "स्थानीय महिलाओं के लिए आयोजित कौशल विकास कार्यक्रम से 200 महिलाओं को रोजगार मिला।",
-    fullContent:
-      "स्���ानीय महिलाओं के लिए आयोजित कौशल विकास कार्यक्रम से 200 महिलाओं को रोजगार मिला। इस कार्यक्रम में सिलाई, कढ़ाई, और हस्तशिल्प का प्रशिक्षण दिया गया। अब ये महिलाएं घर बैठे काम करके अच्छी आमदनी कर रही हैं।",
-    image: "/placeholder.svg?height=300&width=400",
-    location: "वडोदरा, गुजरात",
-    date: "2024-01-12",
-    publisher: "सुमित्रा पटेल",
-    category: "महिला सशक्तिकरण",
-    views: 750,
-    likes: 78,
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "पर्यावरण संरक्षण में युवाओं की भागीदारी",
-    content: "गाँव के युवाओं ने मिलकर 1000 पेड़ लगाए और पर्यावरण संरक्षण का संदेश दिया।",
-    fullContent:
-      "गाँव के युवाओं ने मिलकर 1000 पेड़ लगाए और पर्यावरण संरक्षण का संदेश दिया। यह अभियान तीन दिन तक चला जिसमें स्कूल के बच्चों ने भी भाग लिया। युवाओं का कहना है कि वे हर महीने ऐसे कार्यक्रम आयोजित करेंगे।",
-    image: "/placeholder.svg?height=300&width=400",
-    location: "भावनगर, गुजरात",
-    date: "2024-01-11",
-    publisher: "विकास यादव",
-    category: "पर्यावरण",
-    views: 920,
-    likes: 112,
-    featured: true,
-  },
-  {
-    id: 6,
-    title: "किसान उत्पादक संगठन की स्थापना",
-    content: "स्थानीय किसानों ने मिलकर एक उत्पादक संगठन बनाया है जो उनकी आर्थिक स्थिति सुधारने में मदद करेगा।",
-    fullContent:
-      "स्थानीय किसानों ने मिलकर एक उत्पादक संगठन बनाया है जो उनकी आर्थिक स्थिति सुधारने में मदद करेगा। इस संगठन के माध्यम से किसान अपनी फसल को बेहतर दामों पर बेच सकेंगे और नई तकनीकों का लाभ उठा सकेंगे।",
-    image: "/placeholder.svg?height=300&width=400",
-    location: "जामनगर, गुजरात",
-    date: "2024-01-10",
-    publisher: "किशन भाई पटेल",
-    category: "कृषि",
-    views: 680,
-    likes: 54,
-    featured: false,
-  }, {
-    id: 7,
-    title: "पर्यावरण संरक्षण में युवाओं की भागीदारी",
-    content: "गाँव के युवाओं ने मिलकर 1000 पेड़ लगाए और पर्यावरण संरक्षण का संदेश दिया।",
-    fullContent:
-      "गाँव के युवाओं ने मिलकर 1000 पेड़ लगाए और पर्यावरण संरक्षण का संदेश दिया। यह अभियान तीन दिन तक चला जिसमें स्कूल के बच्चों ने भी भाग लिया। युवाओं का कहना है कि वे हर महीने ऐसे कार्यक्रम आयोजित करेंगे।",
-    image: "/placeholder.svg?height=300&width=400",
-    location: "भावनगर, गुजरात",
-    date: "2024-01-11",
-    publisher: "विकास यादव",
-    category: "पर्यावरण",
-    views: 920,
-    likes: 112,
-    featured: true,
-  },
-  
-]
-
+} from "react-icons/fa";
+import Head from "next/head";
+import { useRouter } from "next/navigation";
+import { usePatel } from "./patelContext";
 
 export default function NewsPage() {
- // const [news, setNews] = useState(sampleNews)
-  const [filteredNews, setFilteredNews] = useState(sampleNews)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedLocation, setSelectedLocation] = useState("")
-  const [selectedDate, setSelectedDate] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [featuredNews, setFeaturedNews] = useState([])
-  const [showPublishForm, setShowPublishForm] = useState(false)
-  const [showFilters, setShowFilters] = useState(false)
-  const newsPerPage = 6
-    const router = useRouter()
-    const [userData,setUserData] = useState({})
-     const {news,user, setNews,formatContent,removeAsterisks} = usePatel()
+  const [filteredNews, setFilteredNews] = useState([]);
+  const [verifiedNews, setVerifiedNews] = useState([]); // New state for verified news
+  const [updatedNews, setUpdatedNews] = useState([]); // New state to track updated news
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [featuredNews, setFeaturedNews] = useState([]);
+  const [showPublishForm, setShowPublishForm] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const newsPerPage = 6;
+  const router = useRouter();
+  const [userData, setUserData] = useState({});
+  const { news, user, setNews, formatContent, removeAsterisks, path } =
+    usePatel();
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+  });
+  // Filter news to only show verified ones
+  useEffect(() => {
+    if (news) {
+      const verified = news.filter(
+        (item) => item.verificationStatus === "verified"
+      );
+      setVerifiedNews(verified);
+      setUpdatedNews(verified); // Initialize updatedNews with verified news
+      setFeaturedNews(verified.slice(0, 3));
+    }
+  }, [news]);
 
-     useEffect(()=>{
-        if(user){
-            setUserData(user)
-        }
-     }, [user])
-     useEffect(()=>{
-      if(news){
-        setFeaturedNews(news.slice(0,3))
-      }
-     },[news])
+  // Update user data when user changes
+  useEffect(() => {
+    if (user) {
+      setUserData(user);
+    }
+  }, [user]);
+
   // Filter and search functionality
   useEffect(() => {
-    let filtered = news
+    let filtered = verifiedNews; // Use verifiedNews instead of news
 
     if (searchTerm) {
       filtered = filtered.filter(
         (item) =>
           item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.content.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
+          item.content.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
 
     if (selectedLocation) {
-      filtered = filtered.filter((item) => item.location.includes(selectedLocation))
+      filtered = filtered.filter((item) =>
+        item.location.includes(selectedLocation)
+      );
     }
 
     if (selectedDate) {
-      filtered = filtered.filter((item) => item.date === selectedDate)
+      filtered = filtered.filter((item) => {
+        const itemDate = new Date(item.publish_date)
+          .toISOString()
+          .split("T")[0];
+        return itemDate === selectedDate;
+      });
     }
 
     if (selectedCategory) {
-      filtered = filtered.filter((item) => item.category === selectedCategory)
+      filtered = filtered.filter((item) => item.category === selectedCategory);
     }
 
-    setFilteredNews(filtered)
-    setCurrentPage(1)
-  }, [searchTerm, selectedLocation, selectedDate, selectedCategory, news])
+    setFilteredNews(filtered);
+    setCurrentPage(1);
+  }, [
+    searchTerm,
+    selectedLocation,
+    selectedDate,
+    selectedCategory,
+    verifiedNews,
+  ]);
+
   // Pagination
-  const indexOfLastNews = currentPage * newsPerPage
-  const indexOfFirstNews = indexOfLastNews - newsPerPage
-  const currentNews = filteredNews.slice(indexOfFirstNews, indexOfLastNews)
-  const totalPages = Math.ceil(filteredNews.length / newsPerPage)
+  const indexOfLastNews = currentPage * newsPerPage;
+  const indexOfFirstNews = indexOfLastNews - newsPerPage;
+  const currentNews = filteredNews.slice(indexOfFirstNews, indexOfLastNews);
+  const totalPages = Math.ceil(filteredNews.length / newsPerPage);
 
   // Get unique locations and categories for filters
-  const locations = [...new Set(news.map((item) => item.location.split(",")[0]))]
-  const categories = [...new Set(news.map((item) => item.category))]
+  const locations = [
+    ...new Set(verifiedNews.map((item) => item.location.split(",")[0])),
+  ];
+  const categories = [...new Set(verifiedNews.map((item) => item.category))];
 
+  const handlePublishNews = async (formData) => {
+    const token = localStorage.getItem("token");
+    const submitFormData = new FormData();
 
-  // Handle publish news
-  const handlePublishNews = (formData) => {
-    const newNews = {
-      id: news.length + 1,
-      title: formData.title,
-      content: formData.content,
-      fullContent: formData.fullContent || formData.content,
-      image: "/placeholder.svg?height=300&width=400",
-      location: formData.location,
-      date: new Date().toISOString().split("T")[0],
-      publisher: formData.publisher,
-      category: formData.category || "सामान्य",
-      views: 0,
-      likes: 0,
-      featured: false,
+    // Append all form fields
+    submitFormData.append("title", formData.title);
+    submitFormData.append("content", formData.content);
+    submitFormData.append("location", formData.location);
+    submitFormData.append("publisher_name", formData.publisher_name);
+    submitFormData.append("category", formData.category);
+
+    // Append image if exists
+    if (formData.imageFile) {
+      submitFormData.append("image", formData.imageFile);
     }
-    setNews([newNews, ...news])
-    setShowPublishForm(false)
-  }
 
+    try {
+      setIsUploading(true);
+
+      const response = await fetch(`${path}/api/news`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: submitFormData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to submit news");
+      }
+
+      // Show notification
+      setNotification({
+        show: true,
+        message:
+          "धन्यवाद! आपका समाचार सफलतापूर्वक प्रकाशित किया गया है। हम जल्द ही इसकी समीक्षा करेंगे और सत्यापित करने के बाद यह सभी को दिखाई देगा।",
+      });
+
+      // Hide notification after 5 seconds
+      setTimeout(() => {
+        setNotification({ show: false, message: "" });
+      }, 8000);
+
+      setShowPublishForm(false);
+    } catch (error) {
+      console.error("Error submitting news:", error);
+      setNotification({
+        show: true,
+        message: "समाचार प्रकाशित करने में त्रुटि हुई: " + error.message,
+      });
+      setTimeout(() => {
+        setNotification({ show: false, message: "" });
+      }, 5000);
+    } finally {
+      setIsUploading(false);
+    }
+  };
   return (
     <>
       <Head>
@@ -230,12 +187,21 @@ export default function NewsPage() {
           name="description"
           content="नायता पटेल नेटवर्क पर नवीनतम समाचार, कृषि अपडेट, सामुदायिक खबरें और स्थानीय घटनाओं की जानकारी प्राप्त करें।"
         />
-        <meta name="keywords" content="समाचार, कृषि, समुदाय, गुजरात, नायता पटेल, स्थानीय खबरें" />
+        <meta
+          name="keywords"
+          content="समाचार, कृषि, समुदाय, गुजरात, नायता पटेल, स्थानीय खबरें"
+        />
         <meta property="og:title" content="समाचार - नायता पटेल नेटवर्क" />
-        <meta property="og:description" content="नवीनतम समाचार और सामुदायिक अपडेट्स पढ़ें नायता पटेल नेटवर्क पर।" />
+        <meta
+          property="og:description"
+          content="नवीनतम समाचार और सामुदायिक अपडेट्स पढ़ें नायता पटेल नेटवर्क पर।"
+        />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <link rel="canonical" href="https://naytapatelnetwork.vercel.app/news" />
+        <link
+          rel="canonical"
+          href="https://naytapatelnetwork.vercel.app/news"
+        />
       </Head>
 
       <div className="min-h-screen bg-gray-50">
@@ -245,7 +211,7 @@ export default function NewsPage() {
           initial={{ y: -100 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.8 }}
-        > 
+        >
           <div className="container mx-auto px-4">
             <div className="flex items-start flex-col gap-1 justify-between">
               <motion.div
@@ -255,20 +221,27 @@ export default function NewsPage() {
               >
                 <FaNewspaper className="sm:text-4xl text-2xl" />
                 <div>
-                  <h1 className="sm:text-3xl text-xl font-bold">समाचार केंद्र</h1>
-                  <p className="text-orange-50 sm:text-md text-sm">नायता पटेल नेटवर्क</p>
+                  <h1 className="sm:text-3xl text-xl font-bold">
+                    समाचार केंद्र
+                  </h1>
+                  <p className="text-orange-50 sm:text-md text-sm">
+                    नायता पटेल नेटवर्क
+                  </p>
                 </div>
               </motion.div>
 
-             { (userData.role ==='ambassador' ||  userData.role ==='admin' )&& (<motion.button
-                onClick={() => setShowPublishForm(true)}
-                className="bg-orange-400  text-white sm:px-6 px-3 sm:py-3 py-1 cursor-pointer rounded-full font-bold flex items-center space-x-2 hover:bg-orange-500 transition-colors"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <FaPlus />
-                <span>समाचार प्रकाशित करें</span>
-              </motion.button>)}
+              {(userData.role === "ambassador" ||
+                userData.role === "admin") && (
+                <motion.button
+                  onClick={() => setShowPublishForm(true)}
+                  className="bg-orange-400  text-white sm:px-6 px-3 sm:py-3 py-1 cursor-pointer rounded-full font-bold flex items-center space-x-2 hover:bg-orange-500 transition-colors"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <FaPlus />
+                  <span>समाचार प्रकाशित करें</span>
+                </motion.button>
+              )}
             </div>
           </div>
         </motion.header>
@@ -322,7 +295,7 @@ export default function NewsPage() {
                     className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="">सभी स्थान</option>
-                    {locations.map((location,index) => (
+                    {locations.map((location, index) => (
                       <option key={index} value={location}>
                         {location}
                       </option>
@@ -335,7 +308,7 @@ export default function NewsPage() {
                     className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="">सभी श्रेणियां</option>
-                    {categories.map((category,index) => (
+                    {categories.map((category, index) => (
                       <option key={index} value={category}>
                         {category}
                       </option>
@@ -351,10 +324,10 @@ export default function NewsPage() {
 
                   <motion.button
                     onClick={() => {
-                      setSearchTerm("")
-                      setSelectedLocation("")
-                      setSelectedDate("")
-                      setSelectedCategory("")
+                      setSearchTerm("");
+                      setSelectedLocation("");
+                      setSelectedDate("");
+                      setSelectedCategory("");
                     }}
                     className="bg-gray-500 text-white px-4 py-3 rounded-lg hover:bg-gray-600 transition-colors"
                     whileHover={{ scale: 1.05 }}
@@ -368,15 +341,23 @@ export default function NewsPage() {
           </div>
         </motion.section>
         {/* Featured News */}
-      { currentPage === 1 && (<motion.section className="py-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
-          <div className="container mx-auto px-4">
-            <div className="flex items-center space-x-3 mb-6">
-              <FaFire className="sm:text-3xl text-xl text-emerald-500"/>
-              <h2 className="sm:text-3xl text-xl font-bold text-gray-800">मुख्य समाचार</h2>
-            </div>
+        {currentPage === 1 && (
+          <motion.section
+            className="py-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            <div className="container mx-auto px-4">
+              <div className="flex items-center space-x-3 mb-6">
+                <FaFire className="sm:text-3xl text-xl text-emerald-500" />
+                <h2 className="sm:text-3xl text-xl font-bold text-gray-800">
+                  मुख्य समाचार
+                </h2>
+              </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {featuredNews?.map((item, index) => (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {featuredNews?.map((item, index) => (
                   <motion.div
                     key={index}
                     className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer group"
@@ -384,16 +365,20 @@ export default function NewsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 * index }}
                     whileHover={{ y: -10, scale: 1.02 }}
-                    onClick={() =>   router.push(`/news/${item?._id}`)}
+                    onClick={() => router.push(`/news/${item?._id}`)}
                   >
                     <div className="relative">
-                      {item?.image?.url ? <div className="overflow-hidden">
-                           <img
-                      src={item?.image?.url || "/placeholder.svg"}
-                      alt={item?.title}
-                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    </div> :  <div className="h-[56px] bg-orange-100">{''}</div>}
+                      {item?.image?.url ? (
+                        <div className="overflow-hidden">
+                          <img
+                            src={item?.image?.url || "/placeholder.svg"}
+                            alt={item?.title}
+                            className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-[56px] bg-orange-100">{""}</div>
+                      )}
                       <div className="absolute top-4 left-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                         मुख्य
                       </div>
@@ -411,7 +396,11 @@ export default function NewsPage() {
                         </div>
                         <div className="flex items-center space-x-1">
                           <FaCalendarAlt />
-                          <span>{new Date(item?.publish_date).toLocaleDateString("hi-IN")}</span>
+                          <span>
+                            {new Date(item?.publish_date).toLocaleDateString(
+                              "hi-IN"
+                            )}
+                          </span>
                         </div>
                       </div>
 
@@ -419,46 +408,67 @@ export default function NewsPage() {
                         {item?.title}
                       </h3>
 
-                      <p className="text-gray-600 mb-4 line-clamp-5 sm:text-sm text-sm">{removeAsterisks(item?.content)}</p>
+                      <p className="text-gray-600 mb-4 line-clamp-5 sm:text-sm text-sm">
+                        {removeAsterisks(item?.content)}
+                      </p>
 
                       <div className="flex items-center justify-between  text-xs">
-                        {item?.publisher?.fullname && <div className="flex items-center space-x-1 text-gray-500 bg-emerald-200 rounded-2xl px-2 py-1">
-                          <FaUser />
-                          <span>{item?.publisher?.fullname || item?.publisher_name}</span>
-                        </div>}
+                        {item?.publisher?.fullname && (
+                          <div className="flex items-center space-x-1 text-gray-500 bg-emerald-200 rounded-2xl px-2 py-1">
+                            <FaUser />
+                            <span>
+                              {item?.publisher?.fullname ||
+                                item?.publisher_name}
+                            </span>
+                          </div>
+                        )}
 
                         <div className="flex items-center space-x-4 py-1 px-2 rounded-2xl bg-emerald-50">
-                          
                           <motion.button
                             className="flex items-center gap-2 space-x-1  hover:text-blue-600  cursor-pointer"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                           >
-                           Share <FaShare />
+                            Share <FaShare />
                           </motion.button>
                         </div>
                       </div>
                     </div>
                   </motion.div>
                 ))}
+              </div>
             </div>
-          </div>
-        </motion.section>)}
+          </motion.section>
+        )}
 
         {/* All News */}
-        <motion.section className="py-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
+        <motion.section
+          className="py-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 <FaArrowUp className="text-xl text-emerald-500 sm:block hidden" />
                 <FaArrowRight className="text-xl text-emerald-500 sm:hidden" />
-                <h2 className="sm:text-3xl text-xl font-bold text-gray-800">सभी समाचार</h2>
+                <h2 className="sm:text-3xl text-xl font-bold text-gray-800">
+                  सभी समाचार
+                </h2>
               </div>
-             {filteredNews.length !== news.length && <div className="text-gray-600 text-xs">कुल {filteredNews.length} समाचार मिले</div>}
+              {filteredNews.length !== verifiedNews.length && (
+                <div className="text-gray-600 text-xs">
+                  कुल {filteredNews.length} समाचार मिले
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(currentNews.length > 3 ? currentNews.slice(3,currentNews.length) :currentNews) .map((item, index) => (
+              {(currentNews.length > 3
+                ? currentNews.slice(3, currentNews.length)
+                : currentNews
+              ).map((item, index) => (
                 <motion.div
                   key={index}
                   className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer group"
@@ -466,19 +476,25 @@ export default function NewsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
                   whileHover={{ y: -5, scale: 1.02 }}
-                  onClick={() => {  router.push(`/news/${item._id}`)}}
+                  onClick={() => {
+                    router.push(`/news/${item._id}`);
+                  }}
                 >
                   <div className="relative">
                     <div className="overflow-hidden">
-                   {item?.image?.url ? <div className="overflow-hidden">
-                           <img
-                      src={item?.image?.url || "/placeholder.svg"}
-                      alt={item?.title}
-                      className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    </div> :  <div className="h-[56px] bg-orange-100">{''}</div>}
+                      {item?.image?.url ? (
+                        <div className="overflow-hidden">
+                          <img
+                            src={item?.image?.url || "/placeholder.svg"}
+                            alt={item?.title}
+                            className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-[56px] bg-orange-100">{""}</div>
+                      )}
                     </div>
-                 
+
                     <div className="absolute top-4 left-4 bg-emerald-500 text-white px-3 py-1 rounded-full sm:text-sm text-xs font-bold">
                       {item?.category}
                     </div>
@@ -496,7 +512,11 @@ export default function NewsPage() {
                       </div>
                       <div className="flex items-center space-x-1">
                         <FaClock />
-                        <span>{new Date(item.publish_date).toLocaleDateString("hi-IN")}</span>
+                        <span>
+                          {new Date(item.publish_date).toLocaleDateString(
+                            "hi-IN"
+                          )}
+                        </span>
                       </div>
                     </div>
 
@@ -504,21 +524,26 @@ export default function NewsPage() {
                       {item?.title}
                     </h3>
 
-                    <div className="text-gray-600 mb-4 sm:text-sm text-sm font-medium line-clamp-6 mask-b-from-75%">{removeAsterisks(item.content)} </div>
+                    <div className="text-gray-600 mb-4 sm:text-sm text-sm font-medium line-clamp-6 mask-b-from-75%">
+                      {removeAsterisks(item.content)}{" "}
+                    </div>
                     <div className="flex items-center justify-between text-xs">
-                      {item?.publisher?.fullname && <div className="flex items-center space-x-1 text-gray-500  shadow-sm shadow-amber-200  bg-emerald-200 rounded-2xl px-2 py-1">
+                      {item?.publisher?.fullname && (
+                        <div className="flex items-center space-x-1 text-gray-500  shadow-sm shadow-amber-200  bg-emerald-200 rounded-2xl px-2 py-1">
                           <FaUser />
-                          <span>{item?.publisher?.fullname || item?.publisher_name}</span>
-                        </div>}
+                          <span>
+                            {item?.publisher?.fullname || item?.publisher_name}
+                          </span>
+                        </div>
+                      )}
 
                       <div className="flex items-center space-x-4 bg-emerald-100 py-1 px-2 rounded-2xl">
-                        
                         <motion.button
                           className="flex items-center gap-2 space-x-1  hover:text-blue-600"
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                         >
-                        Share  <FaShare />
+                          Share <FaShare />
                         </motion.button>
                       </div>
                     </div>
@@ -562,7 +587,9 @@ export default function NewsPage() {
                 ))}
 
                 <motion.button
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  onClick={() =>
+                    setCurrentPage(Math.min(totalPages, currentPage + 1))
+                  }
                   disabled={currentPage === totalPages}
                   className="p-3 rounded-full bg-white shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-50"
                   whileHover={{ scale: 1.1 }}
@@ -597,9 +624,13 @@ export default function NewsPage() {
                   ease: "linear",
                 }}
               >
-                {news.map((news, index) => (
-                  <span key={index} className="sm:text-lg text-sm flex gap-1 items-center">
-                     <FaTractor className="rotate-y-180" size={18}/>- {news.title}
+                {updatedNews.map((news, index) => (
+                  <span
+                    key={index}
+                    className="sm:text-lg text-sm flex gap-1 items-center"
+                  >
+                    <FaTractor className="rotate-y-180" size={18} />-{" "}
+                    {news.title}
                   </span>
                 ))}
               </motion.div>
@@ -607,7 +638,6 @@ export default function NewsPage() {
           </div>
         </motion.div>
 
-        
         {/* Publish News Form Modal */}
         <AnimatePresence>
           {showPublishForm && (
@@ -627,7 +657,9 @@ export default function NewsPage() {
               >
                 <div className="p-8">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-3xl font-bold text-gray-800">समाचार प्रकाशित करें</h2>
+                    <h2 className="text-3xl font-bold text-gray-800">
+                      समाचार प्रकाशित करें
+                    </h2>
                     <motion.button
                       onClick={() => setShowPublishForm(false)}
                       className="text-gray-500 hover:text-red-500"
@@ -638,17 +670,24 @@ export default function NewsPage() {
                     </motion.button>
                   </div>
 
-                  <PublishNewsForm onSubmit={handlePublishNews} onCancel={() => setShowPublishForm(false)} />
+                  <PublishNewsForm
+                    onSubmit={handlePublishNews}
+                    onCancel={() => setShowPublishForm(false)}
+                  />
                 </div>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
+        <AnimatePresence>
+          {notification.show && (
+            <Notification key="notification" notification={notification} />
+          )}
+        </AnimatePresence>
       </div>
     </>
-  )
+  );
 }
-
 
 // Publish News Form Component
 function PublishNewsForm({ onSubmit, onCancel, currentUser }) {
@@ -663,12 +702,17 @@ function PublishNewsForm({ onSubmit, onCancel, currentUser }) {
   const [imageFile, setImageFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const {path} = usePatel()
+  const { path } = usePatel();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!formData.title || !formData.content || !formData.location || !formData.category) {
+
+    if (
+      !formData.title ||
+      !formData.content ||
+      !formData.location ||
+      !formData.category
+    ) {
       alert("कृपया सभी आवश्यक फील्ड भरें");
       return;
     }
@@ -676,32 +720,32 @@ function PublishNewsForm({ onSubmit, onCancel, currentUser }) {
     setIsUploading(true);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const submitFormData = new FormData();
-      
+
       // Append all form fields
       submitFormData.append("title", formData.title);
       submitFormData.append("content", formData.content);
       submitFormData.append("location", formData.location);
       submitFormData.append("publisher_name", formData.publisher_name);
       submitFormData.append("category", formData.category);
-      
+
       // Append image if exists
       if (imageFile) {
         submitFormData.append("image", imageFile);
       }
-console.log(submitFormData);
+      //console.log(submitFormData);
 
       const response = await fetch(`${path}/api/news`, {
         method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: submitFormData,
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || "Failed to submit news");
       }
@@ -710,7 +754,7 @@ console.log(submitFormData);
       if (onSubmit) {
         await onSubmit(data);
       }
-      
+
       // Reset form on success
       setFormData({
         title: "",
@@ -720,7 +764,6 @@ console.log(submitFormData);
         publisher_name: currentUser?.name || "",
       });
       setImageFile(null);
-
     } catch (error) {
       console.error("Error submitting news:", error);
       alert(error.message || "समाचार प्रकाशित करने में त्रुटि हुई");
@@ -838,7 +881,7 @@ console.log(submitFormData);
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
         >
           <option value="">श्रेणी चुनें</option>
-          {categories.map((cat,index) => (
+          {categories.map((cat, index) => (
             <option key={index} value={cat.value}>
               {cat.label}
             </option>
@@ -905,3 +948,31 @@ console.log(submitFormData);
     </form>
   );
 }
+
+const Notification = ({ notification }) => {
+  return (
+    <motion.div
+      className="fixed bottom-12 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 100, opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="flex items-center gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <span>{notification.message}</span>
+      </div>
+    </motion.div>
+  );
+};
