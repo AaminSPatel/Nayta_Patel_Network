@@ -226,6 +226,7 @@ const bottomRef = useRef(null);
     name: "",
     info: "",
     location: "",
+    ytLink: "",
     population: "",
     district: "",
     tahsil: "",
@@ -259,6 +260,7 @@ const bottomRef = useRef(null);
         name: initialData.name || "",
         info: initialData.info || "",
         location: initialData.location || "",
+        ytLink: initialData.ytLink || "",
         tahsil: initialData.tahsil || "",
         population: initialData.population || "",
         pin: initialData.pin || "",
@@ -425,7 +427,7 @@ schoolsArray.forEach((item) => formDataToSend.append("schools", item));
         <h2 className="text-lg font-semibold mb-4">Update Village</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           {[
-            "name", "info", "location", "tahsil", "district", "pin", "population", "headOfVillage",
+            "name", "info", "location","ytLink", "tahsil", "district", "pin", "population", "headOfVillage",
           ].map((field) => (
             <div key={field}>
               <label className="block text-sm font-medium text-gray-700">
