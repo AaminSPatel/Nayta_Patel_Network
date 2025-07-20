@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaHome, FaChartLine, FaUsers, FaCalendarAlt, FaBookOpen, FaAddressBook, FaInfoCircle, FaEnvelope, FaBlog, FaNewspaper } from "react-icons/fa";
+import { FaHome, FaChartLine, FaUsers, FaCalendarAlt, FaBookOpen, FaAddressBook, FaInfoCircle, FaEnvelope, FaBlog, FaNewspaper, FaTractor } from "react-icons/fa";
 import { MdMenu, MdClose } from "react-icons/md";
 import { usePatel } from "./patelContext";
 
@@ -24,7 +24,7 @@ const {isPWA} = usePatel();
     { name: "Blogs", href: "/blog", icon: FaBlog },
     { name: "Events", href: "/events", icon: FaCalendarAlt },
     { name: "Stories", href: "/stories", icon: FaBookOpen },
-    { name: "About", href: "/about", icon: FaInfoCircle },
+    { name: "Meri Pehchan", href: "/pehchan", icon: FaTractor },
     { name: "Contact", href: "/contact", icon: FaEnvelope },
   ];
 
