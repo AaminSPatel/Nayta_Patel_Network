@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Great+Vibes&family=Monoton&family=Oxanium:wght@200..800&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik+Wet+Paint&family=Syne:wght@400..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Glegoo:wght@400;700&family=Laila:wght@300;400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Yatra+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Comfortaa:wght@300..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Glegoo:wght@400;700&family=Great+Vibes&family=Laila:wght@300;400;500;600;700&family=Marcellus&family=Monoton&family=Oxanium:wght@200..800&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Pragati+Narrow:wght@400;700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik+Wet+Paint&family=Rubik:ital,wght@0,300..900;1,300..900&family=Syne:wght@400..800&family=Yatra+One&display=swap');
 @import "tailwindcss";
 
 button{
@@ -22,41 +20,31 @@ button{
  
 .comforta {
   font-family: "Comfortaa", sans-serif;
-  font-style: normal;
+}
+.varela {
+  font-family: "Varela", sans-serif;
 }
 .laila {
   font-family: "Laila", serif;
-  font-style: normal;
 }
 .glegoo {
   font-family: "Glegoo", serif;
-  font-style: normal;
 }
 .yatra {
   font-family: "Yatra One", system-ui;
-  font-style: normal;
 }
 .pragati {
   font-family: "Pragati Narrow", sans-serif;
-  font-style: normal;
 }
 .monoton {
   font-family: "Monoton", serif;
-  font-style: normal;
 }
 .exo {
   font-family: "Exo 2", serif;
-  font-style: normal;
-}
-.syne {
-  font-family: "Syne", serif;
-  font-style: normal;
 }
 
-.roboto {
-  font-family: "Roboto", serif;
-  font-style: normal;
-}
+
+
 
 .philosopher {
   font-family: "Philosopher", serif;
@@ -77,9 +65,20 @@ button{
   font-style: normal;
 }
 
-.popin {
-  font-family: "Poppins", serif;
-  font-style: normal;
+/* Example usage */
+.poppin {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400; /* Must match imported weight */
+}
+
+.roboto {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
+
+.syne {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
 }
 
 .rubik {
@@ -513,4 +512,544 @@ button{
 
 .premium-glow:hover {
   box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+}
+
+
+
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.prose {
+  color: #374151;
+  max-width: none;
+}
+
+.prose p {
+  margin-bottom: 1.25em;
+}
+
+.prose strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Animation utilities */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #f97316, #dc2626);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Button animations */
+.btn-bounce {
+  transition: transform 0.2s ease;
+}
+
+.btn-bounce:active {
+  transform: scale(0.95);
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+
+.prose {
+  color: #374151;
+  max-width: none;
+}
+
+.prose p {
+  margin-bottom: 1.25em;
+}
+
+.prose strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+
+
+/* Animation utilities */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #f97316, #dc2626);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Button animations */
+.btn-bounce {
+  transition: transform 0.2s ease;
+}
+
+.btn-bounce:active {
+  transform: scale(0.95);
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Business Card Styles */
+.business-card {
+  width: 300px;
+  height: 200px;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 50%, #ecfdf5 100%);
+  border: 2px solid #10b981;
+  border-radius: 0px;
+  position: relative;
+  margin: auto;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(3, 71, 49, 0.886);
+  font-family: "Noto Sans Devanagari", sans-serif;
+}
+
+.business-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  
+}
+
+.business-card-header {
+  padding: 15px 20px 10px;
+  border-bottom: 1px solid #d1fae5;
+  display: flex;
+
+}
+.line-colors{
+  color: #4e5157;
+  background-color: #09b162;
+  min-width: 40px;
+  min-height: 2px;
+  border-radius: 5px;
+} 
+.business-card-name {
+  font-size: 18px;
+  font-weight: 900;
+  color: #dcab0a;
+  margin: 0;
+  line-height: 1.2;
+   font-family:"Laila" ;
+}
+
+.business-card-profession {
+  font-size: 14px;
+  color: #059971;
+  font-weight: 600;
+  margin: 2px 0 0 0;
+   font-family:"Comfortaa" ;
+}
+
+.business-card-body {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: calc(100% - 80px);
+}
+
+.business-card-left {
+  flex: 1;
+}
+
+.business-card-right {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #10b981;
+  background: #f0fdfa;
+}
+
+.business-card-right img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+ 
+
+}
+
+.business-card-info {
+  margin-bottom: 6px;
+}
+
+.business-card-label {
+  font-size: 10px;
+  color: #047857;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  margin-top: -1px;
+}
+
+.business-card-value {
+  font-size: 12px;
+  color: #065f46;
+  font-weight: 500;
+  padding: 0;
+
+  margin-top: -1px;
+}
+
+.business-card-contact {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 8px;
+  font-size: 12px;
+  padding-top: 2px;
+  }
+
+.business-card-phone {
+
+  color: #047857;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;  
+}
+.business-card-phone span{
+ padding: 0;
+
+}
+
+.business-card-whatsapp {
+  color: #25d366;
+  font-size: 14px;
+    height: full;
+
+}
+
+.business-card-footer {
+  position: absolute;
+  bottom: 8px;
+  right: 15px;
+  color: #6b7280;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  height: 21px;
+}
+.business-card-footer p {
+  padding: 0;
+ margin: 0;
+  font-size: 9px;
+  color: #6b7280;
+  font-style: italic;
+
+}
+.business-card-footer div {
+ display: flex;
+ justify-content: start;
+ align-items: start;
+ gap: 2px;
+
+}
+.business-card-footer div img{
+ height: 20px;
+ width: 20px;
+ border-radius: 5px;
+}
+.business-card-footer div h2 {
+ padding: 0;
+ margin: 0;
+  font-size: 9px;
+  color: #4e5157;
+  font-weight:500;
+ font-family:"Comfortaa" ;
+ margin-top: 5px;
+}
+
+/* Business Card Styles - Upgraded
+
+ 
+/* Card flip animation */
+.card-container {
+  perspective: 1000px;
+  width: 100%;
+  height: 650px;
+}
+
+.card-flip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card-flip.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #d1fae5;
+}
+
+/* Audio player styles */
+.audio-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f0fdfa, #ecfdf5);
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+
+.audio-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.audio-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.audio-info {
+  flex: 1;
+}
+
+.audio-title {
+  font-weight: 600;
+  color: #047857;
+  margin: 0 0 4px 0;
+}
+
+.audio-duration {
+  font-size: 14px;
+  color: #059669;
+  margin: 0;
+}
+
+/* YouTube container styles */
+.youtube-container {
+  position: relative;
+  width: 100%;
+  margin: 24px 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: #000;
+}
+
+.youtube-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.youtube-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.youtube-header {
+  background: linear-gradient(135deg, #047857, #059669);
+  color: white;
+  padding: 12px 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.youtube-icon {
+  color: #ff0000;
+  font-size: 20px;
 }

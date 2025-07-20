@@ -23,6 +23,7 @@ export function AppProvider({ children }) {
   const [stories, setStories] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [events, setEvents] = useState([]);
+  const [pehchans, setPehchans] = useState([]);
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -432,6 +433,16 @@ const [isPWA, setIsPWA] = useState(false);
     }
   }, [path, setNews]);
 
+ const fetchPehchan = useCallback(async () => {
+    try {
+      const response = await axios.get(path + "/api/pehchan");
+      setPehchans(response.data.reverse());
+      console.log('pehchans',response.data);
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [path, setPehchans]);
+
   const [feedbacks, setFeedbacks] = useState([]);
   // fetch feedbacks
 
@@ -790,6 +801,7 @@ const formatSingleAsterisk = (text) => {
     const token1 = localStorage.getItem("token"); // Or wherever you store the JWT
     fetchPosts();
     fetchNews();
+    fetchPehchan();
     fetchFeedbacks();
     fetchUsers(token1);
     fetchBlogs();
@@ -804,7 +816,7 @@ const formatSingleAsterisk = (text) => {
     fetchBlogs,
     fetchEvents,
     fetchFeedbacks,
-    fetchPosts,
+    fetchPosts,fetchPehchan,
     fetchNews,
     fetchPrices,
     fetchStories,
@@ -971,6 +983,8 @@ const formatSingleAsterisk = (text) => {
 function removeAsterisks(str) {
   return str.replace(/\*/g, '');
 }
+
+
   return (
     <AppContext.Provider
       value={{
@@ -1031,7 +1045,7 @@ function removeAsterisks(str) {
         setToken,
         setUser,
         setError,
-        logOut,
+        logOut,pehchans,setPehchans,fetchPehchan
       }}
     >
       {children}

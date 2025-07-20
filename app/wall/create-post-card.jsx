@@ -90,6 +90,22 @@ const CreatePostCard = ({ onAddPost, userData }) => {
       setLoading(false)
     }
   }
+const phrases = [
+  "अपने गांव के बारे में कुछ लिखिए",
+  "अपने समाज के बारे में कुछ लिखिए",
+  "अपने काम की कुछ बातें बताइये",
+  "खुद के बारे में कुछ लिखिए",
+  "समाज के लोगों को कुछ अच्छी राय दें"
+];
+
+const [index, setIndex] = useState(0);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setIndex((prev) => (prev + 1) % phrases.length);
+  }, 5000);
+  return () => clearInterval(interval);
+}, []);
 
   return (
     <motion.div
@@ -108,7 +124,17 @@ const CreatePostCard = ({ onAddPost, userData }) => {
             className={`flex-1 bg-gray-100 rounded-full px-4 py-2 cursor-text ${isExpanded ? "hidden" : "block"}`}
             onClick={handleFocus}
           >
-            <p className="text-gray-500">What's on your mind, {userData.fullName.split(" ")[0]}?</p>
+           <motion.p
+  key={index}
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  exit={{ opacity: 0, y: -10 }}
+  transition={{ duration: 0.5 }}
+  className="text-gray-500 text-xs p-1"
+>
+  {phrases[index]} ...
+</motion.p>
+
           </div>
 
           {isExpanded && (
@@ -116,10 +142,12 @@ const CreatePostCard = ({ onAddPost, userData }) => {
               <textarea
                 value={postContent}
                 onChange={handleContentChange}
-                placeholder={`What's on your mind, ${userData.fullName.split(" ")[0]}?`}
+                placeholder={`कुछ लिखिए, ${userData.fullName.split(" ")[0]}?`}
                 className="w-full p-3 h-24 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
                 autoFocus
               />
+
+
               <div className={`text-xs text-right ${charsRemaining < 50 ? 'text-red-500' : 'text-gray-500'}`}>
                 {charsRemaining} / {MAX_CHARS} characters remaining
               </div>
@@ -179,6 +207,7 @@ const CreatePostCard = ({ onAddPost, userData }) => {
       </div>
     </motion.div>
   )
+  
 }
 
 export default CreatePostCard

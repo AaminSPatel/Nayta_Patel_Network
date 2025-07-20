@@ -17,6 +17,9 @@ import {
   FaBlog,
   FaNewspaper,
   FaArrowDown,
+  FaMapPin,
+  FaMapSigns,
+  FaSmile,
 } from "react-icons/fa";
 import {
   LayoutDashboard,
@@ -34,10 +37,11 @@ import { MdInstallMobile } from "react-icons/md";
 const navigationItems = [
   { name: "Home", href: "/", icon: FaHome },
   { name: "News", href: "/news", icon: FaNewspaper },
-  { name: "Villages", href: "/directory", icon: FaAddressBook },
+  { name: "Villages", href: "/directory", icon: FaMapSigns },
+  { name: "Meri Pehchan", href: "/pehchan", icon: FaUsers },
   { name: "Prices", href: "/prices", icon: FaChartLine },
   { name: "Blogs", href: "/blog", icon: FaBlog },
-  { name: "Posts", href: "/wall", icon: FaUsers },
+  { name: "Posts", href: "/wall", icon: FaSmile },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
   { name: "Stories", href: "/stories", icon: FaBookOpen },
   /* { name: "Learning", href: "/learning", icon: FaGraduationCap },
@@ -62,6 +66,7 @@ export default function CustomSidebar() {
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
     { name: "Blog", icon: FileText, path: "/admin/blog" },
+      { name: "Pehchan", path: "/admin/pehchan", icon: FaUsers },
     { name: "News", icon: FaNewspaper, path: "/admin/news" },
     { name: "Stories", icon: FileText, path: "/admin/stories" },
     { name: "Events", icon: Calendar, path: "/admin/events" },

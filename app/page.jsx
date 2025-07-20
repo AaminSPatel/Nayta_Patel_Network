@@ -20,6 +20,7 @@ import Head from "next/head";
 import { usePatel } from "../components/patelContext.js";
 import EventCubeSlider from "../components/eventSection.jsx";
 import ComplimentCardsSlider from "../components/cardSlider.jsx";
+import WorkerIdentityCard from "../components/meripehchan.jsx";
 import Poster from "../components/poster.jsx";
 import AdvertisementVideo from "../components/PromotionalVideo.jsx";
 import Posters from "../components/posters.jsx";
@@ -221,6 +222,9 @@ export default function Home() {
 
       <section className="container mx-auto px-4">
         <VillageSection priceData={priceData} />
+      </section>
+<section className="container mx-auto px-4 hidden">
+        <WorkerIdentityCard />
       </section>
 
       {/* Event section */}
