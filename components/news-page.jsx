@@ -465,7 +465,7 @@ export default function NewsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(currentNews.length > 3
+              {(currentNews.length < 3
                 ? currentNews.slice(3, currentNews.length)
                 : currentNews
               ).map((item, index) => (

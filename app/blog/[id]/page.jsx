@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { usePatel } from '../../../components/patelContext'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { 
@@ -11,31 +11,46 @@ import {
   FaLinkedin,
   FaShareAlt,
   FaLink,
-  FaInstagram
+  FaInstagram,
+  FaArrowRight
 } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
+import Link from 'next/link'
 
 export default function BlogDetail() {
-  const { blogs, formatDate, formatContent} = usePatel()
-  const { id } = useParams()
+  const { blogs, formatDate, formatContent } = usePatel()
+  const { id } = useParams() // Changed from id to slug
+  const router = useRouter()
   const [blog, setBlog] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showShareOptions, setShowShareOptions] = useState(false)
+  const [relatedPosts, setRelatedPosts] = useState([])
 
   useEffect(() => {
     if (blogs && id) {
       try {
-      setLoading(true)
-        const selectedBlog = blogs.find(item => item._id === id)
-      // Navigate to home after 2 seconds
-      setTimeout(() => {
+        setLoading(true)
+        const selectedBlog = blogs.find(item => item._id === id) // Using slug instead of _id
+        
         if (!selectedBlog) {
-          throw new Error(`Blog not found ${id}`)
+          throw new Error(`Blog not found with id: ${id}`)
         }
-        setLoading(false)
+        
         setBlog(selectedBlog)
-      }, 2000);
+        
+        // Find related posts (same category or matching tags)
+        const related = blogs
+          .filter(b => 
+            b._id !== selectedBlog._id && // Exclude current post
+            (b.category === selectedBlog.category || 
+             (b.tags && selectedBlog.tags && 
+              b.tags.some(tag => selectedBlog.tags.includes(tag))))
+          )
+          .slice(0, 4) // Limit to 3 related posts
+          
+        setRelatedPosts(related.length >3 ?related : blogs.slice(1,4) )
+        
       } catch (err) {
         setError(err.message)
       } finally {
@@ -48,7 +63,6 @@ export default function BlogDetail() {
     navigator.clipboard.writeText(`${window.location.origin}/blog/${id}`)
     alert('Link copied to clipboard!')
   }
-
 
   if (loading) {
     return (
@@ -69,7 +83,7 @@ export default function BlogDetail() {
   if (!blog) {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4 text-center">
-        <p>Loading blog post...</p>
+        <p>Blog post not found</p>
       </div>
     )
   }
@@ -136,15 +150,17 @@ export default function BlogDetail() {
                 <FaFacebook className="mr-3 text-blue-600" size={20} />
                 Facebook
               </a>
+              
               <a
-      href={`https://www.instagram.com/create/story?url=${encodeURIComponent(shareUrl)}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center text-gray-700 hover:text-pink-600 transition-colors"
-    >
-      <FaInstagram className="mr-3 text-pink-600" size={20} />
-      Instagram Story
-    </a>
+                href={`https://www.instagram.com/create/story?url=${encodeURIComponent(shareUrl)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center text-gray-700 hover:text-pink-600 transition-colors"
+              >
+                <FaInstagram className="mr-3 text-pink-600" size={20} />
+                Instagram Story
+              </a>
+              
               <a 
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
                 target="_blank"
@@ -196,26 +212,64 @@ export default function BlogDetail() {
           </p>
         </div>
 
-<div className="prose glegoo max-w-none">
-  {blog.image && (
-    <div className="float-right ml-4 mb-4 w-full max-w-xs">
-      <Image
-        src={blog.image.url}
-        alt={blog.title || 'Blog image'}
-        width={500}
-        height={300}
-        className="rounded-lg object-cover"
-        priority
-      />
-      {blog.image.caption && (
-        <p className="text-sm text-gray-500 mt-2 text-center">
-          {blog?.blog.title}
-        </p>
-      )}
-    </div>
-  )}
- {formatContent(blog?.content)}
-</div>
+        <div className="prose max-w-none">
+          {blog.image && (
+            <div className="float-right ml-4 mb-4 w-full max-w-xs">
+              <Image
+                src={blog.image.url}
+                alt={blog.title || 'Blog image'}
+                width={500}
+                height={300}
+                className="rounded-lg object-cover"
+                priority
+              />
+              {blog.image.caption && (
+                <p className="text-sm text-gray-500 mt-2 text-center">
+                  {blog?.blog.title}
+                </p>
+              )}
+            </div>
+          )}
+          {formatContent(blog?.content)}
+        </div>
+
+        {/* Related Posts Section */}
+        {relatedPosts.length > 0 && (
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <h3 className="text-2xl font-bold mb-6">You might also like</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedPosts.map(post => (
+                <Link 
+                  key={post._id} 
+                  href={`/blog/${post._id}`}
+                  className="group border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+                >
+                  <div className="relative h-48 w-full">
+                    <Image
+                      src={post.image?.url || '/default-blog.jpg'}
+                      alt={post.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <span className="text-sm text-blue-600 font-medium">{post.category}</span>
+                    <h4 className="text-lg font-semibold mt-2 mb-2 group-hover:text-blue-600 transition-colors">
+                      {post.title}
+                    </h4>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                      {post.excerpt || post.content.substring(0, 100) + '...'}
+                    </p>
+                    <div className="flex items-center text-blue-600 text-sm font-medium">
+                      Read more <FaArrowRight className="ml-1" size={14} />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Inline Share Options (for mobile) */}
         <div className="mt-8 lg:hidden">
           <div className="flex items-center justify-center space-x-4">
@@ -238,14 +292,14 @@ export default function BlogDetail() {
               <FaFacebook size={28} />
             </a>
             <a
-      href={`https://www.instagram.com/create/story?url=${encodeURIComponent(shareUrl)}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-pink-600 hover:text-pink-700 transition-colors"
-      aria-label="Share on Instagram"
-    >
-      <FaInstagram size={28} />
-    </a>
+              href={`https://www.instagram.com/create/story?url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-pink-600 hover:text-pink-700 transition-colors"
+              aria-label="Share on Instagram"
+            >
+              <FaInstagram size={28} />
+            </a>
             <a 
               href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
               target="_blank"

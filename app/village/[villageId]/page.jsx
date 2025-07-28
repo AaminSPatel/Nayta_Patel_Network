@@ -1,9 +1,9 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useParams ,useRouter} from "next/navigation"
+"use client";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 //import { useRouter } from "next/navigation" // Import router
-import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaMapMarkerAlt,
   FaUsers,
@@ -19,88 +19,106 @@ import {
   FaUserShield,
   FaPlay,
   FaVideo,
-} from "react-icons/fa"
-import { usePatel } from "../../../components/patelContext"
-import CompactAmbassadorCard from "../../../components/CompactAmbassadorCard"
-import { GiKing } from "react-icons/gi"
-import Head from "next/head"
+} from "react-icons/fa";
+import { usePatel } from "../../../components/patelContext";
+import CompactAmbassadorCard from "../../../components/CompactAmbassadorCard";
+import { GiKing } from "react-icons/gi";
+import Head from "next/head";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 const VillageDetailPage = () => {
-  const { villageId } = useParams()
-  const router = useRouter() // Declare router
-  const [village, setVillage] = useState(null)
-  const [userData, setUserData] = useState(null)
-  const [notFound, setNotFound] = useState(true)
-  const [loading, setLoading] = useState(true)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [showFullDescription, setShowFullDescription] = useState(false)
-  const [activeTab, setActiveTab] = useState("overview")
+  const { villageId } = useParams();
+  const router = useRouter(); // Declare router
+  const [village, setVillage] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [notFound, setNotFound] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
 
-  const { villages, path,formatDate } = usePatel()
+  const { villages, path, formatDate, news } = usePatel();
 
   // Simulate fetching data from API
   useEffect(() => {
-    setNotFound(false)
-    if (villageId && villages) {
+    setNotFound(false);
+    if (villageId && villages && news) {
       // In a real app, you would fetch this data from an API
-      const foundVillage = villages.find((v) => v._id === villageId)
+      const foundVillage = villages.find((v) => v._id === villageId);
       if (foundVillage?.ambassador) {
-        setUserData(foundVillage?.ambassador)
-        setNotFound(false)
+        setUserData(foundVillage?.ambassador);
+        setNotFound(false);
       } else {
         setTimeout(() => {
-          setNotFound(true)
-        }, 4000)
+          setNotFound(true);
+        }, 4000);
       }
-      setVillage(foundVillage)
+      setVillage(foundVillage);
+     
+      
     }
-  }, [villageId, villages])
+  }, [villageId, villages,news]);
 
   // Carousel navigation
   const goToNextSlide = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex === village?.images.length - 1 ? 0 : prevIndex + 1))
-  }
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === village?.images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
 
   const goToPrevSlide = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? village?.images.length - 1 : prevIndex - 1))
-  }
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? village?.images.length - 1 : prevIndex - 1
+    );
+  };
 
   // AutoPlay for carousel
   useEffect(() => {
-    if (!village) return
+    if (!village) return;
     const interval = setInterval(() => {
-      goToNextSlide()
-    }, 5000)
+      goToNextSlide();
+    }, 5000);
 
-    return () => clearInterval(interval)
-  }, [village, currentImageIndex])
+    return () => clearInterval(interval);
+  }, [village, currentImageIndex]);
 
   // Function to extract YouTube video ID from URL
   const getYouTubeVideoId = (url) => {
-    if (!url) return null
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
-    const match = url.match(regExp)
-    return match && match[2].length === 11 ? match[2] : null
-  }
+    if (!url) return null;
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
+  };
 
   if (!notFound && !village) {
     return (
       <div className="h-screen flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+          transition={{
+            duration: 1,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
           className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full"
         />
         <p className="ml-4 text-lg text-gray-600">Loading village details...</p>
       </div>
-    )
+    );
   }
 
   if (!village) {
     return (
       <div className="container mx-auto p-6 text-center">
         <h1 className="text-2xl font-bold text-red-600">Village not found!</h1>
-        <p className="mt-4">The village you're looking for doesn't exist or has been removed.</p>
+        <p className="mt-4">
+          The village you're looking for doesn't exist or has been removed.
+        </p>
         <button
           onClick={() => router.push("/villages")}
           className="mt-6 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
@@ -108,15 +126,18 @@ const VillageDetailPage = () => {
           Go back to villages
         </button>
       </div>
-    )
+    );
   }
 
- 
-
   // Calculate description to show
-  const shortDescription = village.info.length > 150 ? `${village.info.substring(0, 150)}...` : village.info
+  const shortDescription =
+    village.info.length > 150
+      ? `${village.info.substring(0, 150)}...`
+      : village.info;
 
-  const descriptionToShow = showFullDescription ? village?.info : shortDescription
+  const descriptionToShow = showFullDescription
+    ? village?.info
+    : shortDescription;
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -134,7 +155,9 @@ const VillageDetailPage = () => {
             className="absolute inset-0"
           >
             <Image
-              src={village?.images[currentImageIndex]?.url || "/placeholder.svg"}
+              src={
+                village?.images[currentImageIndex]?.url || "/placeholder.svg"
+              }
               alt={`${village?.name} image ${currentImageIndex + 1}`}
               fill
               style={{ objectFit: "cover" }}
@@ -167,7 +190,9 @@ const VillageDetailPage = () => {
               key={index}
               onClick={() => setCurrentImageIndex(index)}
               className={`w-3 h-3 rounded-full transition-all ${
-                index === currentImageIndex ? "bg-white scale-125" : "bg-white/50"
+                index === currentImageIndex
+                  ? "bg-white scale-125"
+                  : "bg-white/50"
               }`}
               aria-label={`Go to image ${index + 1}`}
             />
@@ -232,15 +257,23 @@ const VillageDetailPage = () => {
                         <FaInfoCircle className="mr-2 text-emerald-500" />
                         About {village?.name}
                       </h2>
-                      <p className="text-gray-700 leading-relaxed">{descriptionToShow}</p>
+                      <p className="text-gray-700 leading-relaxed">
+                        {descriptionToShow}
+                      </p>
 
                       {village?.info.length > 150 && (
                         <button
-                          onClick={() => setShowFullDescription(!showFullDescription)}
+                          onClick={() =>
+                            setShowFullDescription(!showFullDescription)
+                          }
                           className="mt-2 text-emerald-600 font-medium flex items-center"
                         >
                           {showFullDescription ? "Show less" : "Read more"}
-                          {showFullDescription ? <FaChevronUp className="ml-1" /> : <FaChevronDown className="ml-1" />}
+                          {showFullDescription ? (
+                            <FaChevronUp className="ml-1" />
+                          ) : (
+                            <FaChevronDown className="ml-1" />
+                          )}
                         </button>
                       )}
                     </div>
@@ -255,7 +288,9 @@ const VillageDetailPage = () => {
                         <div className="relative w-full">
                           <div className="relative w-full h-0 pb-[56.25%] rounded-xl overflow-hidden bg-gray-100">
                             <iframe
-                              src={`https://www.youtube.com/embed/${getYouTubeVideoId(village.ytLink)}?rel=0&modestbranding=1&showinfo=0`}
+                              src={`https://www.youtube.com/embed/${getYouTubeVideoId(
+                                village.ytLink
+                              )}?rel=0&modestbranding=1&showinfo=0`}
                               title={`${village.name} Village Video`}
                               className="absolute top-0 left-0 w-full h-full"
                               frameBorder="0"
@@ -297,15 +332,19 @@ const VillageDetailPage = () => {
                         History
                       </h2>
                       <p className="text-gray-700">
-                        {village?.name} was established on 1st Nov 1967. It has grown significantly over the years and
-                        has become a landmark location in the region.
+                        {village?.name} was established on 1st Nov 1967. It has
+                        grown significantly over the years and has become a
+                        landmark location in the region.
                       </p>
                     </div>
 
                     {village?.ambassador && (
                       <div className="flex items-center justify-center w-full">
                         {" "}
-                        <CompactAmbassadorCard user={village?.ambassador} villageId={village?._id} />
+                        <CompactAmbassadorCard
+                          user={village?.ambassador}
+                          villageId={village?._id}
+                        />
                       </div>
                     )}
                   </div>
@@ -378,7 +417,9 @@ const VillageDetailPage = () => {
                           <GiKing />
                         </div>
                         <div>
-                          <h3 className="text-xl font-medium text-gray-800">{village.headOfVillage || "-"}</h3>
+                          <h3 className="text-xl font-medium text-gray-800">
+                            {village.headOfVillage || "-"}
+                          </h3>
                           <p className="text-gray-600">Head of Village</p>
                         </div>
                       </motion.div>
@@ -393,7 +434,9 @@ const VillageDetailPage = () => {
                           <FaUserShield />
                         </div>
                         <div>
-                          <h3 className="text-xl font-medium text-gray-800">{village?.ambassador?.fullname || "-"}</h3>
+                          <h3 className="text-xl font-medium text-gray-800">
+                            {village?.ambassador?.fullname || "-"}
+                          </h3>
                           <p className="text-gray-600">Village Ambassador</p>
                         </div>
                       </motion.div>
@@ -420,7 +463,11 @@ const VillageDetailPage = () => {
                 </h2>
                 <div className="rounded-lg overflow-hidden border border-gray-100">
                   <iframe
-                    src={village?.location.length > 5 ? village.location : "https://naytapatelnetwork.vercel.app/"}
+                    src={
+                      village?.location.length > 5
+                        ? village.location
+                        : "https://naytapatelnetwork.vercel.app/"
+                    }
                     width="100%"
                     height="250"
                     style={{ border: 0 }}
@@ -440,13 +487,17 @@ const VillageDetailPage = () => {
                     <span className="flex items-center">
                       <FaUsers className="mr-2" /> Population
                     </span>
-                    <span className="font-medium">{village.population.toLocaleString()}</span>
+                    <span className="font-medium">
+                      {village.population.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center pb-2 border-b border-emerald-400">
                     <span className="flex items-center">
                       <FaSchool className="mr-2" /> Schools
                     </span>
-                    <span className="font-medium">{village.schools.length}</span>
+                    <span className="font-medium">
+                      {village.schools.length}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center pb-2 border-b border-emerald-400">
                     <span className="flex items-center">
@@ -456,9 +507,12 @@ const VillageDetailPage = () => {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center">
-                      <FaCalendarAlt className="mr-2" /> Added to Nayta Patel Network
+                      <FaCalendarAlt className="mr-2" /> Added to Nayta Patel
+                      Network
                     </span>
-                    <span className="font-medium">{formatDate(village.createdAt)}</span>
+                    <span className="font-medium">
+                      {formatDate(village.createdAt)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -473,7 +527,12 @@ const VillageDetailPage = () => {
                 </button>
                 <button
                   onClick={() =>
-                    window.open(`https://maps.google.com/?q=${encodeURIComponent(village.location)}`, "_blank")
+                    window.open(
+                      `https://maps.google.com/?q=${encodeURIComponent(
+                        village.location
+                      )}`,
+                      "_blank"
+                    )
                   }
                   className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-lg transition-colors flex items-center justify-center"
                 >
@@ -483,10 +542,11 @@ const VillageDetailPage = () => {
             </motion.div>
           </div>
         </div>
+        <RecommendedNews news={news} dist={village.district} />
       </div>
     </div>
-  )
-}
+  );
+};
 
 // Tab Button Component
 const TabButton = ({ active, onClick, icon, label }) => {
@@ -494,21 +554,25 @@ const TabButton = ({ active, onClick, icon, label }) => {
     <button
       onClick={onClick}
       className={`flex items-center px-4 py-3 border-b-2 whitespace-nowrap ${
-        active ? "border-emerald-500 text-emerald-600" : "border-transparent text-gray-500 hover:text-gray-700"
+        active
+          ? "border-emerald-500 text-emerald-600"
+          : "border-transparent text-gray-500 hover:text-gray-700"
       }`}
     >
       <span className="mr-2">{icon}</span>
       {label}
     </button>
-  )
-}
+  );
+};
 
-export default VillageDetailPage
+export default VillageDetailPage;
 
 const VillageSEOHead = ({ village, path }) => {
-  const pageTitle = `${village?.name} गाँव - नायता पटेल समाज | Nayta Patel Network`
-  const pageDescription = `${village?.name} (${village?.district}) - नायता पटेल समाज का गाँव। ${village?.info?.substring(0, 160)}...`
-  const canonicalUrl = `${path}/village/${village?._id}`
+  const pageTitle = `${village?.name} गाँव - नायता पटेल समाज | Nayta Patel Network`;
+  const pageDescription = `${village?.name} (${
+    village?.district
+  }) - नायता पटेल समाज का गाँव। ${village?.info?.substring(0, 160)}...`;
+  const canonicalUrl = `${path}/village/${village?._id}`;
 
   return (
     <Head>
@@ -520,10 +584,19 @@ const VillageSEOHead = ({ village, path }) => {
       {/* Open Graph / Facebook */}
       <meta property="og:type" content="website" />
       <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:title" content={`${village?.name} गाँव - नायता पटेल समाज | Nayta Patel Samaj Ka Gaon`} />
+      <meta
+        property="og:title"
+        content={`${village?.name} गाँव - नायता पटेल समाज | Nayta Patel Samaj Ka Gaon`}
+      />
       <meta property="og:description" content={pageDescription} />
-      <meta property="og:image" content={village?.image[0]?.url || `${path}/logo1.jpg`} />
-      <meta property="og:image:alt" content={`${village?.name} गाँव का दृश्य`} />
+      <meta
+        property="og:image"
+        content={village?.image[0]?.url || `${path}/logo1.jpg`}
+      />
+      <meta
+        property="og:image:alt"
+        content={`${village?.name} गाँव का दृश्य`}
+      />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -564,8 +637,70 @@ const VillageSEOHead = ({ village, path }) => {
       <meta name="geo.placename" content={village?.district} />
 
       {/* Google Maps iframe fallback for bots */}
-      <meta name="place:location:latitude" content={village?.location?.split(",")[0] || ""} />
-      <meta name="place:location:longitude" content={village?.location?.split(",")[1] || ""} />
+      <meta
+        name="place:location:latitude"
+        content={village?.location?.split(",")[0] || ""}
+      />
+      <meta
+        name="place:location:longitude"
+        content={village?.location?.split(",")[1] || ""}
+      />
     </Head>
-  )
-}
+  );
+};
+
+const RecommendedNews = ({ news, dist }) => {
+  const router = useRouter();
+const {formatDate}= usePatel()
+  const filteredNews = news.filter((item) =>
+    item.location?.toLowerCase().includes(dist.toLowerCase())
+  );
+
+  //if (!filteredNews.length) return news.slice(0.3);
+
+  return (
+    <div className="mt-12 px-4 max-w-6xl mx-auto">
+      <h2 className="text-2xl font-bold text-gray-800 mb-5">
+        📰 Nayta Patel Samaj की ताज़ा खबरें
+      </h2>
+
+      <Swiper
+        modules={[Navigation]}
+        spaceBetween={20}
+        slidesPerView={1.2}
+        breakpoints={{
+          640: { slidesPerView: 1.3 },
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        }}
+      >
+        {(filteredNews.length > 3 ? filteredNews : news.slice(0,4)).map((item) => (
+          <SwiperSlide key={item._id}>
+            <div
+              onClick={() => router.push(`/news/${item._id}`)}
+              className="cursor-pointer bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300"
+            >
+              <img
+                src={item.image?.url}
+                alt={item.title}
+                className="w-full h-44 object-cover"
+              />
+              <div className="p-4 space-y-1">
+                <div className="flex justify-between items-center text-sm text-gray-500 mb-1">
+                  <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md">
+                    {item.category}
+                  </span>
+                  <span>{formatDate(item.createdAt)}</span>
+                </div>
+                <p className="text-sm text-gray-600">📍 {item.location}</p>
+                <h3 className="text-md font-semibold text-gray-900 line-clamp-2">
+                  {item.title}
+                </h3>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+};

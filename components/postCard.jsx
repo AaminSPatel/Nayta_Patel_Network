@@ -387,7 +387,7 @@ const PostCard = ({
               alt={post?.user?.fullname}
               className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm group-hover:ring-emerald-200 transition-all"
             />
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white">{(post?.user?.role ==='ambassador'|| post?.user?.role === 'admin'|| post?.user?.role === 'semi-admin') && <span className="h-full w-full flex items-center justify-center bg-amber-200 rounded-2xl"><FaStar className="text-indigo-800" size={9}/></span> }</div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4  rounded-full">{(post?.user?.role ==='ambassador'|| post?.user?.role === 'admin'|| post?.user?.role === 'semi-admin') && <span className="h-full w-full flex items-center justify-center bg-amber-200 rounded-2xl"><FaStar className="text-indigo-800" size={9}/></span> }</div>
           </div>
           <div>
             <h4 className="font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors">

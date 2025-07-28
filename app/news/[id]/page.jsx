@@ -6,6 +6,12 @@ import { useState, useEffect } from 'react';
 import { usePatel } from '../../../components/patelContext';
 import Head from 'next/head';
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+//import moment from "moment"; // for formatting date
+
 
 export default function NewsDetail() {
   const params = useParams();
@@ -14,6 +20,12 @@ export default function NewsDetail() {
   const [showShareOptions, setShowShareOptions] = useState(false);
 const {news, path,formatContent} = usePatel()
   const selectedNews = news.find(news => news._id === newsId);
+const similarNews = news.filter(
+  item =>
+    item._id !== selectedNews?._id &&
+    (item.category === selectedNews?.category ||
+     item.location === selectedNews?.location)
+);
 
  useEffect(() => {
     if (!newsId && path === 'http://localhost:5000') return;
@@ -88,7 +100,7 @@ const {news, path,formatContent} = usePatel()
   const pageTitle = `${selectedNews?.title} - नायता पटेल नेटवर्क | Nayta Patel Network`;
   const metaDescription = `${selectedNews?.content?.substring(0, 160)}...`; // First 160 chars of content
   const canonicalUrl = `${path}/news/${selectedNews._id}`;
-  const imageUrl = selectedNews?.image?.url || `${path}/home.png`;
+  const imageUrl = selectedNews?.image?.url;
 
   return (
     <div className=" mb-12 bg-white bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-2 ">
@@ -262,7 +274,93 @@ const {news, path,formatContent} = usePatel()
             </div>
           </div>
         </div>
+     {similarNews.length > 0 && (
+  <RecommendedNews news={news} currentId={params.id} />
+)}
+
+
       </motion.div>
+      
     </div>
   );
 }
+
+const RecommendedNews = ({ news, currentId }) => {
+  const router = useRouter();
+ const {formatDate} = usePatel()
+  const selectedNews = news.find((n) => n._id === currentId);
+  const similarNews = news.filter(
+    (item) =>
+      item._id !== currentId &&
+      (item.category === selectedNews?.category ||
+        item.location === selectedNews?.location)
+  );
+
+  if (!similarNews.length) return null;
+
+  return (
+    <div className="mt-10 px-4 max-w-6xl mx-auto">
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        🔁 सिफारिश की गई खबरें
+      </h2>
+      <Swiper
+        modules={[Navigation]}
+        spaceBetween={20}
+        slidesPerView={1.1}
+        breakpoints={{
+          640: { slidesPerView: 1.3 },
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        }}
+      >
+        {similarNews.map((item) => (
+          <SwiperSlide key={item._id}>
+            <div
+              onClick={() => router.push(`/news/${item._id}`)}
+              className="cursor-pointer bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300"
+            >
+              <img
+                src={item.image?.url}
+                alt={item.title}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4 space-y-2">
+                <div className="flex justify-between text-sm text-gray-500">
+                  <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+                    {item.category}
+                  </span>
+                  <span>{formatDate(item.createdAt)}</span>
+                </div>
+                <p className="text-sm text-gray-600">📍 {item.location}</p>
+                <h3 className="text-md font-semibold text-gray-800 line-clamp-2">
+                  {item.title}
+                </h3>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+        <SwiperSlide >
+            <div
+              onClick={() => router.push(`/news`)}
+              className="cursor-pointer bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300"
+            >
+             
+              <div className="p-4 space-y-2">
+                <div className="flex justify-between text-sm text-gray-500">
+                  <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+                    All News
+                  </span>
+                  <span>Everyday</span>
+                </div>
+                <p className="text-sm text-gray-600"> Nayta Patel Network Par Sabhi News Padiye.</p>
+                <h3 className="text-md font-semibold text-gray-800 line-clamp-2">
+                 📍 Nayta Patel Network
+                </h3>
+              </div>
+            </div>
+          </SwiperSlide>
+      </Swiper>
+    </div>
+  );
+};
+

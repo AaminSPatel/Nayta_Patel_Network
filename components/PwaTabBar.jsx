@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaHome, FaChartLine, FaUsers, FaCalendarAlt, FaBookOpen, FaAddressBook, FaInfoCircle, FaEnvelope, FaBlog, FaNewspaper, FaTractor } from "react-icons/fa";
+import { FaHome, FaChartLine, FaUsers, FaCalendarAlt, FaBookOpen, FaAddressBook, FaMapSigns, FaEnvelope, FaBlog, FaNewspaper, FaTractor } from "react-icons/fa";
 import { MdMenu, MdClose } from "react-icons/md";
 import { usePatel } from "./patelContext";
 
@@ -17,7 +17,7 @@ const {isPWA} = usePatel();
 
   const navigationItems = [
     { name: "Home", href: "/", icon: FaHome },
-    { name: "Villages", href: "/directory", icon: FaAddressBook },
+    { name: "Villages", href: "/directory", icon: FaMapSigns },
     { name: "Posts", href: "/wall", icon: FaUsers },
     { name: "News", href: "/news", icon: FaNewspaper },
     { name: "Prices", href: "/prices", icon: FaChartLine },

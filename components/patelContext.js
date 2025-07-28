@@ -413,15 +413,16 @@ const [isPWA, setIsPWA] = useState(false);
   }, [path, setUser, setError]);
 
   // Fetch all posts
-  const fetchPosts = useCallback(async () => {
-    try {
-      const response = await axios.get(path + "/api/posts");
-      setPosts(response.data);
-      //  console.log('Posts',response.data);
-    } catch (err) {
-      setError(err.message);
-    }
-  }, [path, setPosts, setError]);
+const fetchPosts = useCallback(async () => {
+  try {
+    const response = await axios.get(path + "/api/posts");
+    // Filter out posts with status 'rejected'
+    const filteredPosts = response.data.filter(post => post.verificationStatus !== 'rejected');
+    setPosts(filteredPosts);
+  } catch (err) {
+    setError(err.message);
+  }
+}, [path, setPosts, setError]);
   // Fetch all news
   const fetchNews = useCallback(async () => {
     try {
@@ -958,13 +959,12 @@ const formatSingleAsterisk = (text) => {
 
     // Time intervals in seconds
     const intervals = {
-      year: 31536000,
+      yr: 31536000,
       month: 2592000,
-      week: 604800,
-      day: 86400,
-      hour: 3600,
-      minute: 60,
-      second: 1,
+      d: 86400,
+      hr: 3600,
+      min : 60,
+      sec: 1,
     };
 
     // Calculate the time difference for each interval
@@ -973,8 +973,8 @@ const formatSingleAsterisk = (text) => {
 
       if (interval >= 1) {
         return interval === 1
-          ? `${interval} ${unit} ago`
-          : `${interval} ${unit}s ago`;
+          ? `${interval}${unit} ago`
+          : `${interval}${unit} ago`;
       }
     }
 

@@ -22,23 +22,12 @@ const PostPage = () => {
     if (id) {
       fetchPost()
     }
-  }, [id])
+  }, [id,posts])
 
   const fetchPost = async () => {
     try {
       setLoading(true)
-     // const token = localStorage.getItem("token")
-     /*  const response = await fetch(`${path}/api/posts/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error("Post not found")
-      }
-
-      const data = await response.json() */
+     
       let postt = await posts.filter((item)=>item._id === id)
       setPost(postt[0])
       setError(null)
@@ -48,6 +37,22 @@ const PostPage = () => {
     } finally {
       setLoading(false)
     }
+  }
+//const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (posts && posts.length > 0) {
+      setLoading(false);
+    }
+  }, [posts]);
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-white dark:bg-black">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-emerald-500"></div>
+        {/* You can replace this with your custom loader */}
+      </div>
+    );
   }
 
   const handlePostUpdate = (updatedPost) => {
