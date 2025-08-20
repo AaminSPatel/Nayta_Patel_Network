@@ -25,7 +25,6 @@ import Poster from "../components/poster.jsx";
 import AdvertisementVideo from "../components/PromotionalVideo.jsx";
 import Posters from "../components/posters.jsx";
 import VillageSection from "../components/villageSection.jsx";
-import UiComponents from "../components/UiComponents.jsx";
 import WelcomeCard from "../components/welcomeCard.jsx";
 import "swiper/css/effect-coverflow";
 import NayataPatelCard from "../components/poster.jsx";
@@ -224,9 +223,7 @@ export default function Home() {
       <section className="container mx-auto px-4">
         <VillageSection priceData={priceData} />
       </section>
-<section className="container mx-auto px-4 ">
-        <UiComponents />
-      </section>
+
    
       {/* Event section */}
       <section className="relative w-full h-full sm:hidden flex items-center justify-center py-12 p-12 flex-col">
