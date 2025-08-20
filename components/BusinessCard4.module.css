@@ -1,0 +1,192 @@
+.card {
+  width: 340px;
+  height: 240px;
+  background: white;
+  margin: 0 auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.header {
+  height: 60px;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  padding: 0 25px;
+  position: relative;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logoIcon {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  margin-right: 12px;
+}
+
+.cube1,
+.cube2,
+.cube3 {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #2196f3;
+}
+
+.cube1 {
+  top: 0;
+  left: 0;
+  transform: perspective(20px) rotateX(45deg) rotateY(-45deg);
+}
+
+.cube2 {
+  top: 6px;
+  left: 6px;
+  background: #1976d2;
+  transform: perspective(20px) rotateX(45deg) rotateY(-45deg);
+}
+
+.cube3 {
+  top: 12px;
+  left: 12px;
+  background: #0d47a1;
+  transform: perspective(20px) rotateX(45deg) rotateY(-45deg);
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  line-height: 1;
+}
+
+.brandType {
+  font-size: 14px;
+  font-weight: 300;
+  color: #666;
+  line-height: 1;
+}
+
+.slogan {
+  font-size: 8px;
+  color: #999;
+  margin-top: 2px;
+}
+
+.blueAccent {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 120px;
+  height: 100%;
+  background: #2196f3;
+}
+
+.content {
+  height: 180px;
+  display: flex;
+  padding: 25px;
+}
+
+.leftSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: start;
+  color: #333;
+}
+.iconBox{
+  background: #2196f3;
+  color: #ffffff;
+ 
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+   margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon {
+  background: #2196f3;
+  color: #ffffff;
+  padding: 0px;
+  
+ 
+  font-size: 14px;
+ 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contactItem div {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #666;
+}
+
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-left: 20px;
+}
+
+.profileContainer {
+  margin-bottom: 15px;
+}
+
+.profileImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(9, 66, 235, 0.319);
+}
+
+.nameSection {
+  text-align: center;
+}
+
+.name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 5px 0;
+  letter-spacing: 0.5px;
+}
+
+.lastName {
+  color: #2196f3;
+}
+
+.title {
+  font-size: 11px;
+  color: #2196f3;
+  margin: 0;
+  font-weight: 400;
+}

@@ -1053,3 +1053,13 @@ html {
   color: #ff0000;
   font-size: 20px;
 }
+
+
+.bg-ui{
+  background-image: linear-gradient(to left bottom,#4910cb , #683dcd );
+  color: #fff;
+}
+
+.text-ui{
+  color: #4910cb;
+}

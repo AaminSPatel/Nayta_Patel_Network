@@ -20,11 +20,12 @@ import Head from "next/head";
 import { usePatel } from "../components/patelContext.js";
 import EventCubeSlider from "../components/eventSection.jsx";
 import ComplimentCardsSlider from "../components/cardSlider.jsx";
-import WorkerIdentityCard from "../components/meripehchan.jsx";
+import BusinessCard4 from "../components/BusinessCard4.jsx";
 import Poster from "../components/poster.jsx";
 import AdvertisementVideo from "../components/PromotionalVideo.jsx";
 import Posters from "../components/posters.jsx";
 import VillageSection from "../components/villageSection.jsx";
+import UiComponents from "../components/UiComponents.jsx";
 import WelcomeCard from "../components/welcomeCard.jsx";
 import "swiper/css/effect-coverflow";
 import NayataPatelCard from "../components/poster.jsx";
@@ -223,10 +224,10 @@ export default function Home() {
       <section className="container mx-auto px-4">
         <VillageSection priceData={priceData} />
       </section>
-<section className="container mx-auto px-4 hidden">
-        <WorkerIdentityCard />
+<section className="container mx-auto px-4 ">
+        <UiComponents />
       </section>
-
+   
       {/* Event section */}
       <section className="relative w-full h-full sm:hidden flex items-center justify-center py-12 p-12 flex-col">
         <div className= " absolute inset  w-full h-28 shidden z-0 bottom-0 left-0"><img src="./bg2.jpg" alt="" /></div>

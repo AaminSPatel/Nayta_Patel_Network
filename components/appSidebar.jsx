@@ -77,7 +77,7 @@ export default function CustomSidebar() {
     { name: "Feedbacks", icon: MessageCircle, path: "/admin/feedbacks" },
   ];
 
-  if (isPWA && user?.role !== "admin") return;
+  if (isPWA && user?.role !== ("admin" || "semi-admin")) return;
   return (
     <>
       {/* Mobile Overlay Background */}

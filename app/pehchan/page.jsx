@@ -16,6 +16,7 @@ import Link from "next/link"
 import Image from "next/image"
 import html2canvas from "html2canvas"
 import { usePatel } from "../../components/patelContext"
+import BusinessCard4 from "../../components/BusinessCard4.jsx";
 
 import { 
   BiPhone,
@@ -481,7 +482,9 @@ Array.from(businessCard).forEach(el => {
         {/* Back Side - Business Card */}
         <div className={`${isFlipped ? "block" : "hidden"}`}>
           <div className="w-full mx-auto">
-            <BusinessCard story={story} />
+           
+            <BusinessCard4 story={story} />
+            
 
             <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-3 mt-4 sm:mt-6">
               <motion.button

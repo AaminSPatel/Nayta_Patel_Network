@@ -3,7 +3,6 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { Bell, Mail, Menu, Search, User } from "lucide-react"
 import { usePatel } from "./patelContext"
-import Image from "next/image"
 
 export default function HeaderAdmin() {
   const [notifications, setNotifications] = useState(5)

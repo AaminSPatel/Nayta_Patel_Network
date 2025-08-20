@@ -15,8 +15,8 @@ export default function Page() {
 
   if (loading) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-white dark:bg-black">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-emerald-500"></div>
+      <div className="w-full h-screen flex items-center justify-center bg-white ">
+        <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-emerald-500"></div>
         {/* You can replace this with your custom loader */}
       </div>
     );
