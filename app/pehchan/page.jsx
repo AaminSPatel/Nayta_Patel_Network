@@ -328,7 +328,7 @@ Array.from(businessCard).forEach(el => {
           <img 
             src={story.image.url} 
             alt={story.name} 
-            className="w-full h-48 sm:h-56 md:h-64 object-cover"
+            className="w-full h-56 sm:h-56 md:h-64 object-cover"
           />
           
           <div className="p-4 sm:p-5">
