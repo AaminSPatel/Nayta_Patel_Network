@@ -9,12 +9,13 @@ import { FaBell, FaCross, FaTimes } from "react-icons/fa"
 import { ArrowDown, ArrowUp } from "lucide-react"; // use any icon library you like
 
 export default function MemberTable(prop) {
-  const {  formatDate, path, setUsers } = usePatel()
+  const {  formatDate, path, setUsers , villages} = usePatel()
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false)
   const [currentMember, setCurrentMember] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const allVillages = villages.map(item => item.name)
 
   const [filterUsers, setFilterUsers] = useState([...prop.users])
   const [view, setView] = useState(prop.view) // or "grid"
@@ -91,6 +92,7 @@ const bottomRef = useRef(null);
         },
         body: JSON.stringify({
           role: currentMember.role,
+          village: currentMember.village,
           status: currentMember.status,
           achievement: currentMember.achievement
         })
@@ -254,14 +256,20 @@ const bottomRef = useRef(null);
               
               <div className="text-sm">Mobile: {member.mobile}</div>
               <div className="flex gap-2 justify-end">
-                 <button
+                {/* <div className="flex">
+                  Posts 
+                </div> */}
+                <div className="flex gap-2">
+<button
                     onClick={()=>openNotificationModal(member)}
                     className=" text-gray-500 hover:text-gray-700">
                       <FaBell size={16} />
                     </button>
                 <button onClick={() => openEditModal(member)} className="text-blue-500"><Edit size={16} /></button>
                 <button className="text-red-500"><Trash2 size={16} /></button>
-              </div>
+              
+                </div>
+                 </div>
             </div>
           ))}
         </motion.div>
@@ -343,6 +351,25 @@ const bottomRef = useRef(null);
                       <option value="unknown">Unknown</option>
                       <option value="verified">Verified</option>
                       <option value="defaulter">Defaulter</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Village
+                    </label>
+                    <select
+                      name="village"
+                      value={currentMember.village}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                    >
+<option value="unknown">Unknown</option>
+                      {
+                        allVillages.map((village)=>(
+                                           <option value={village}>{village}</option>
+   ))
+                      }
+                      
                     </select>
                   </div>
 

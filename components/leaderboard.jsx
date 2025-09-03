@@ -1,15 +1,17 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { FaCrown, FaMedal, FaTrophy, FaUsers, FaMapMarkerAlt, FaCalendarAlt, FaEye, FaStar } from "react-icons/fa"
+import { FaCrown, FaMedal, FaTrophy, FaUsers, FaMapMarkerAlt, FaCalendarAlt, FaEye, FaStar, FaTimes, FaSpinner } from "react-icons/fa"
 import { HiSparkles } from "react-icons/hi"
 
-const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments = [], likes = [] }) => {
+const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments = [], likes = [], news = [] }) => {
   const [activeTab, setActiveTab] = useState("ambassadors")
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
   const [selectedItem, setSelectedItem] = useState(null)
   const [showSidebar, setShowSidebar] = useState(true)
+  const [pointsBreakdown, setPointsBreakdown] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Months in English
   const months = [
@@ -23,33 +25,69 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
     return id1.toString() === id2.toString()
   }
 
-  // Points calculation functions
-  const calculateAmbassadorPoints = (postCount, likeCount, commentCount, replyCount) => {
-    const basePoints = 1000
+  // Points calculation functions with detailed breakdown
+  const calculateAmbassadorPoints = (postCount, likeCount, commentCount, replyCount, newsCount) => {
+    const basePoints = 100
     const postPoints = postCount * 10
     const likePoints = likeCount * 2
     const commentPoints = commentCount * 5
     const replyPoints = replyCount * 3
+    const newsPoints = newsCount * 30
     
-    return basePoints + postPoints + likePoints + commentPoints + replyPoints
+    const total = basePoints + postPoints + likePoints + commentPoints + replyPoints + newsPoints
+    
+    return {
+      total,
+      breakdown: [
+        { label: "Base Points", points: basePoints },
+        { label: "Post Points", points: postPoints, count: postCount },
+        { label: "Like Points", points: likePoints, count: likeCount },
+        { label: "Comment Points", points: commentPoints, count: commentCount },
+        { label: "Reply Points", points: replyPoints, count: replyCount },
+        { label: "News Points", points: newsPoints, count: newsCount }
+      ]
+    }
   }
 
-  const calculateUserPoints = (postCount, likeCount, commentCount) => {
+  const calculateUserPoints = (postCount, likeCount, commentCount, replyComments) => {
     const basePoints = 100
-    const postPoints = postCount * 5
-    const likePoints = likeCount * 1
-    const commentPoints = commentCount * 3
+    const postPoints = postCount * 10
+    const likePoints = likeCount * 2
+    const commentPoints = commentCount * 5
+    const replyComment = replyComments * 3
+    const total = basePoints + postPoints + likePoints + commentPoints + replyComment
     
-    return basePoints + postPoints + likePoints + commentPoints
+    return {
+      total,
+      breakdown: [
+        { label: "Base Points", points: basePoints },
+        { label: "Post Points", points: postPoints, count: postCount },
+        { label: "Like Points", points: likePoints, count: likeCount },
+        { label: "Comment Points", points: commentPoints, count: commentCount },
+        { label: "Reply Points", points: replyComment, count: replyComments },
+      ]
+    }
   }
 
-  const calculateVillagePoints = (userCount, postCount, likeCount, commentCount) => {
-    const basePoints = 500
+  const calculateVillagePoints = (userCount, postCount, likeCount, commentCount, ambassadorPoints , ambassadorName) => {
+    const basePoints = 100
     const userPoints = userCount * 10
     const postPoints = postCount * 5
-    const engagementPoints = (likeCount * 0.5) + (commentCount * 2)
+    const engagementPoints = Math.round((likeCount * 0.5) + (commentCount * 2))
+    const ambassadorBonus = ambassadorPoints // Add ambassador points to village
     
-    return basePoints + userPoints + postPoints + engagementPoints
+    const total = basePoints + userPoints + postPoints + engagementPoints + ambassadorBonus
+    
+    return {
+      total,
+      breakdown: [
+        { label: "Base Points", points: basePoints },
+        { label: "User Points", points: userPoints, count: userCount },
+        { label: "Post Points", points: postPoints, count: postCount },
+        { label: "Engagement Points", points: engagementPoints, details: `${likeCount} likes, ${commentCount} comments` },
+        { label: `${ambassadorName} Ambassador Points`, points: ambassadorBonus, count: 0 }
+      ]
+    }
   }
 
   // Achievement functions
@@ -83,7 +121,7 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
     return achievements.length > 0 ? achievements : ["New User"]
   }
 
-  const getVillageAchievements = (userCount, verifiedCount, postCount) => {
+  const getVillageAchievements = (userCount, verifiedCount, postCount, ambassadorPoints) => {
     const achievements = []
     
     if (userCount >= 50) achievements.push("50+ users")
@@ -95,10 +133,15 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
     if (postCount >= 100) achievements.push("100+ posts")
     else if (postCount >= 50) achievements.push("50+ posts")
     
+    if (ambassadorPoints > 0) achievements.push("Has Ambassadors")
+    
     return achievements.length > 0 ? achievements : ["New Village"]
   }
+
   // Process data
   const processedData = useMemo(() => {
+    setIsLoading(true)
+    
     // Convert all IDs to strings for consistent comparison
     const usersWithStringIds = users.map(user => ({
       ...user,
@@ -112,19 +155,20 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
       ...post,
       _id: post._id?.toString(),
       user: post.user?._id.toString(),
-      likes: post.likes?.map(id => id?.toString()) || [],
-      comments: post.comments?.map(id => id?.toString()) || []
+      likes: post.likes.length,
+      comments: post.comments?.map(id => id?.toString()) || [],
+      allComments: post.comments.length
     }))
 
     const commentsWithStringIds = comments.map(comment => ({
       ...comment,
       _id: comment._id?.toString(),
       user: comment.user?._id.toString(),
-      post: comment.post?.toString(),
+      post: comment.post?._id.toString(),
       replies: comment.replies?.map(reply => ({
         ...reply,
-        user: reply.user?.toString(),
-        replyTo: reply.replyTo?.toString()
+        user: reply.user?._id.toString(),
+        replyTo: reply.replyTo
       })) || [],
       likes: comment.likes?.map(id => id?.toString()) || []
     }))
@@ -136,21 +180,27 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
       post: like.post?._id.toString(),
       comment: like.comment?._id.toString()
     }))
+    
+    const newsWithStringIds = news.map(news => ({
+      ...news,
+      _id: news._id?.toString(),
+      publisher: news.publisher?._id.toString(),
+    }))
 
     // Process ambassadors (users with role 'ambassador')
     const ambassadors = usersWithStringIds
-      .filter(user => user.role === "ambassador")
+      .filter(user => (user.role === "ambassador") && (user?.profilepic?.url?.length > 2))
       .map(user => {
         const ambassadorPosts = postsWithStringIds.filter(post => 
           compareIds(post.user, user._id)
         )
-        const postIds = ambassadorPosts.map(p => p._id)
-      //  console.log('ambassadorPosts',ambassadorPosts);
+        const ambassadorNews = newsWithStringIds.filter(news =>
+          compareIds(news.publisher, user._id)
+        )
+        const postIds = ambassadorPosts.map(p => p._id.toString())
         
-        // Count likes on ambassador's posts
-        const postLikes = likesWithStringIds.filter(like => 
-          like.post && postIds.includes(like.post)
-        ).length
+        const totalLikes = ambassadorPosts.map(p => p.likes)
+        const postLikes = totalLikes.reduce((sum, likes) => sum + likes, 0)
         
         // Count comments on ambassador's posts
         const postComments = commentsWithStringIds.filter(comment => 
@@ -162,44 +212,51 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
           comment.replies?.some(reply => compareIds(reply.user, user._id))
         ).length
         
+        const pointsData = calculateAmbassadorPoints(ambassadorPosts.length, postLikes, postComments, replyComments, ambassadorNews.length)
+        
         return {
           ...user,
-          points: calculateAmbassadorPoints(ambassadorPosts.length, postLikes, postComments, replyComments),
+          points: pointsData.total,
+          pointsBreakdown: pointsData.breakdown,
           achievements: getAmbassadorAchievements(ambassadorPosts.length, postLikes, postComments),
           location: user.village || "Unknown",
           stats: {
             posts: ambassadorPosts.length,
             likes: postLikes,
             comments: postComments,
-            replies: replyComments
+            replies: replyComments,
+            news: ambassadorNews.length
           }
         }
       })
 
     // Process regular users
     const regularUsers = usersWithStringIds
-      .filter(user => user.role !== "ambassador")
+      .filter(user => (user.role !== "ambassador") && (user.role !== "admin") && (user?.profilepic?.url?.length > 0))
       .map(user => {
         const userPosts = postsWithStringIds.filter(post => 
           compareIds(post.user, user._id)
         )
         const postIds = userPosts.map(p => p._id)
         
-        const postLikes = likesWithStringIds.filter(like => 
-          like.post && postIds.includes(like.post)
-        ).length
+        const totalLikes = userPosts.map(p => p.likes)
+        const postLikes = totalLikes.reduce((sum, likes) => sum + likes, 0)
         
-        const postComments = commentsWithStringIds.filter(comment => 
+        const userComments = commentsWithStringIds.filter(comment => 
           comment.post && postIds.includes(comment.post)
         ).length
         
-        const userComments = commentsWithStringIds.filter(comment => 
-          compareIds(comment.user, user._id)
+        // Count replies to user's comments
+        const replyComments = commentsWithStringIds.filter(comment => 
+          comment.replies?.some(reply => compareIds(reply.user, user._id))
         ).length
+        
+        const pointsData = calculateUserPoints(userPosts.length, postLikes, userComments, replyComments)
         
         return {
           ...user,
-          points: calculateUserPoints(userPosts.length, postLikes, userComments),
+          points: pointsData.total,
+          pointsBreakdown: pointsData.breakdown,
           achievements: getUserAchievements(userPosts.length, postLikes, userComments),
           location: user.village || "Unknown",
           stats: {
@@ -230,10 +287,47 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
       
       const verifiedUsers = villageUsers.filter(u => u.status === "verified").length
       
+ //const 
+
+
+      /* // Calculate ambassador points for this village
+      const villageAmbassadors = ambassadors.filter(ambassador => 
+        ambassador.village === village.name
+      ) */
+     /*  const ambassadorPoints = 
+ */
+ const ambassadorId = village?.ambassador?._id 
+       const ambassadorPosts = postsWithStringIds.filter(post => 
+          compareIds(post.user,ambassadorId)
+        )
+        const ambassadorNews = newsWithStringIds.filter(news =>
+          compareIds(news.publisher,ambassadorId)
+        )
+        const postIds = ambassadorPosts.map(p => p._id.toString())
+        
+        const totalLikes = ambassadorPosts.map(p => p.likes)
+        const postLikes = totalLikes.reduce((sum, likes) => sum + likes, 0)
+        
+        // Count comments on ambassador's posts
+        const postComments = commentsWithStringIds.filter(comment => 
+          comment.post && postIds.includes(comment.post)
+        ).length
+        
+        // Count replies to ambassador's comments
+        const replyComments = commentsWithStringIds.filter(comment => 
+          comment.replies?.some(reply => compareIds(reply.user, ambassadorId))
+        ).length
+        
+        const ambassadorPoints = calculateAmbassadorPoints(ambassadorPosts.length, postLikes, postComments, replyComments, ambassadorNews.length)
+        
+      
+      const pointsData = calculateVillagePoints(villageUsers.length, villagePosts.length, villageLikes, villageComments, ambassadorPoints.total, village?.ambassador?.fullname)
+      
       return {
         ...village,
-        points: villageUsers.length ,// calculateVillagePoints(villageUsers.length /* , villagePosts.length, villageLikes, villageComments */),
-        achievements: getVillageAchievements(villageUsers.length, verifiedUsers, villagePosts.length),
+        points: pointsData.total,
+        pointsBreakdown: pointsData.breakdown,
+        achievements: getVillageAchievements(villageUsers.length, verifiedUsers, ambassadorPoints.total),
         state: village.district || village.location || "Unknown",
         population: village.population ? `${village.population}+` : "Unknown",
         stats: {
@@ -241,18 +335,21 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
           verifiedUsers,
           posts: villagePosts.length,
           likes: villageLikes,
-          comments: villageComments
+          comments: villageComments,
+         
+          ambassadorPoints : ambassadorPoints.total
         }
       }
     })
 
+    setIsLoading(false)
+    
     return {
       ambassadors: ambassadors.sort((a, b) => b.points - a.points),
       users: regularUsers.sort((a, b) => b.points - a.points),
       villages: processedVillages.sort((a, b) => b.points - a.points)
     }
-  }, [villages, users, posts, comments, likes])
-
+  }, [villages, users, posts, comments, likes, news])
 
   // Filter by month
   const filterByMonth = (data) => {
@@ -267,19 +364,21 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
   const getCurrentData = () => {
     const data = processedData[activeTab] || []
     return data
-   // return filterByMonth(data)
   }
 
-  // Rest of your component remains the same...
-  // (Keep all the JSX rendering code from your original file)
- const getTabIcon = (tab) => {
+  const handleItemClick = (item) => {
+    setSelectedItem(item)
+    setPointsBreakdown(item.pointsBreakdown)
+  }
+
+  const getTabIcon = (tab) => {
     switch (tab) {
       case "ambassadors":
-        return <FaCrown className="w-5 h-5" />
+        return <FaCrown className="w-4 h-4" />
       case "users":
-        return <FaUsers className="w-5 h-5" />
+        return <FaUsers className="w-4 h-4" />
       case "villages":
-        return <FaMapMarkerAlt className="w-5 h-5" />
+        return <FaMapMarkerAlt className="w-4 h-4" />
       default:
         return null
     }
@@ -298,14 +397,27 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
     }
   }
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-emerald-50">
+        <div className="text-center">
+          <FaSpinner className="w-12 h-12 text-emerald-600 animate-spin mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-700">Loading Leaderboard Data...</h2>
+          <p className="text-gray-500">Please wait while we process the data</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen p-4 lg:p-8 bg-gray-50">
+    <div className="min-h-screen p-4 lg:p-8 bg-gradient-to-br from-blue-50 to-emerald-50">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <HiSparkles className="w-8 h-8 text-yellow-500" />
-            <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-yellow-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
               Leaderboard
             </h1>
             <HiSparkles className="w-8 h-8 text-yellow-500" />
@@ -321,12 +433,12 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
           className="flex flex-col lg:flex-row gap-4 mb-8"
         >
           {/* Tab Selection */}
-          <div className="flex bg-white rounded-xl p-2 shadow-lg border-2 border-emerald-100">
+          <div className="flex bg-white rounded-xl justify-around p-2 shadow-lg border-2 border-emerald-100">
             {["ambassadors", "users", "villages"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
+                className={`flex items-center text-sm gap-1 px-2 py-2 rounded-lg font-semibold transition-all duration-300 ${
                   activeTab === tab
                     ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg"
                     : "text-gray-600 hover:bg-emerald-50"
@@ -339,7 +451,7 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
           </div>
 
           {/* Month Filter */}
-          <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-2 shadow-lg border-2 border-yellow-100">
+          <div className=" items-center hidden gap-2 bg-white rounded-xl px-4 py-2 shadow-lg border-2 border-yellow-100">
             <FaCalendarAlt className="w-4 h-4 text-yellow-600" />
             <select
               value={selectedMonth}
@@ -354,16 +466,16 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
             </select>
           </div>
 
-          {/* Sidebar Toggle */}
+          {/* Sidebar Toggle - Show on mobile */}
           <button
             onClick={() => setShowSidebar(!showSidebar)}
-            className="lg:hidden bg-white rounded-xl px-4 py-2 shadow-lg border-2 border-emerald-100 text-emerald-600 font-semibold"
+            className="bg-white rounded-xl px-4 py-2 shadow-lg border-2 border-emerald-100 text-emerald-600 font-semibold lg:hidden"
           >
-            Top 50 {showSidebar ? "Hide" : "Show"}
+            {showSidebar ? "Hide" : "Show"} Top 50
           </button>
         </motion.div>
 
-        <div className="flex gap-8">
+        <div className="flex sm:flex-row flex-col gap-8">
           {/* Main Leaderboard */}
           <div className="flex-1">
             {/* Top 3 Podium */}
@@ -395,7 +507,7 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                         transition={{ delay: 0.3 + actualIndex * 0.1 }}
                         className={`flex flex-col items-center ${position === 2 ? "order-first lg:order-none" : ""}`}
                       >
-                        <div className="relative cursor-pointer group" onClick={() => setSelectedItem(item)}>
+                        <div className="relative cursor-pointer group" onClick={() => handleItemClick(item)}>
                           {(activeTab === "ambassadors" || activeTab === "users") &&  (
                             <div className="relative mb-4">
                               <img
@@ -411,6 +523,24 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                             </div>
                           )}
 
+                          {activeTab === "villages" && (
+                            <div className="relative mb-4">
+                              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full border-4 border-white shadow-lg group-hover:scale-110 transition-transform duration-300 bg-gradient-to-r from-emerald-400 to-blue-400 flex items-center justify-center">
+                               {/*  <FaMapMarkerAlt className="w-8 h-8 text-white" /> */}
+                                <img
+                                src={item?.images[0]?.url || "/placeholder.svg"}
+                                alt={item.name}
+                                className="w-16 h-16 lg:w-20 lg:h-20 rounded-full border-4 border-white shadow-lg group-hover:scale-110 transition-transform duration-300"
+                              />
+                              </div>
+                              <div
+                                className={`absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r ${colors[actualIndex]} rounded-full flex items-center justify-center text-white text-sm shadow-lg`}
+                              >
+                                {icons[actualIndex]}
+                              </div>
+                            </div>
+                          )}
+
                           <div
                             className={`bg-gradient-to-t ${colors[actualIndex]} ${heights[actualIndex]} w-20 mx-4 lg:w-24 rounded-t-lg shadow-lg flex flex-col items-center justify-end pb-2 group-hover:shadow-xl transition-all duration-300`}
                           >
@@ -418,7 +548,7 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                           </div>
 
                           <div className="text-center mt-2">
-                            <h3 className="font-bold text-gray-800 text-sm lg:text-base max-w-20">{item.name}</h3>
+                            <h3 className="font-bold text-gray-800 text-sm lg:text-base max-w-20 truncate">{activeTab === "villages" ? item.name : item.fullname}</h3>
                             <p className="text-emerald-600 font-semibold">{item.points} अंक</p>
                           </div>
                         </div>
@@ -439,30 +569,40 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                 .slice(3, 10)
                 .map((item, index) => (
                   <motion.div
-                    key={item.id}
+                    key={item._id}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6 + index * 0.05 }}
                     className="bg-white rounded-xl p-4 shadow-lg border-2 border-emerald-50 hover:border-emerald-200 cursor-pointer group transition-all duration-300"
-                    onClick={() => setSelectedItem(item)}
+                    onClick={() => handleItemClick(item)}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-emerald-100 to-yellow-100 rounded-full flex items-center justify-center font-bold text-emerald-700 text-lg">
+                      <div className="w-12 h-12 bg-gradient-to-r from-emerald-100 to-blue-100 rounded-full flex items-center justify-center font-bold text-emerald-700 text-lg">
                         {index + 4}
                       </div>
 
-                      {activeTab === "ambassadors" && (
+                      {(activeTab === "ambassadors" || activeTab === "users") && (
                         <img
-                          src={item?.profilepic?.url || "/placeholder.svg"}
+                          src={item?.profilepic?.url ||  "/home4.jpg"}
                           alt={item.fullname}
                           className="w-12 h-12 rounded-full border-2 border-emerald-200 group-hover:scale-110 transition-transform duration-300"
                         />
                       )}
 
+                      {activeTab === "villages" && (
+                        <div className="w-12 h-12 rounded-full border border-emerald-200 group-hover:scale-110 transition-transform duration-300 bg-gradient-to-r from-emerald-400 to-blue-400 flex items-center justify-center">
+                          <img
+                          src={item?.images[0]?.url || "/home4.jpg"}
+                          alt={item.name}
+                          className="min-w-12 w-12 h-12 object-cover rounded-full border-2 border-emerald-200 group-hover:scale-110 transition-transform duration-300"
+                        />
+                        </div>
+                      )}
+
                       <div className="flex-1">
                         <h3 className="font-bold text-gray-800">{activeTab === "villages" ? `${item.name}`:`${item.fullname}`}</h3>
                         <p className="text-gray-600 text-sm">
-                          {activeTab === "villages" ? `${item.name} • ${item.population}` : item.village}
+                          {activeTab === "villages" ? `${item.state} • ${item.population}` : item.location}
                         </p>
                       </div>
 
@@ -481,31 +621,39 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
             </motion.div>
           </div>
 
-          {/* Sidebar - Top 50 List */}
+          {/* Sidebar - Top 50 List - Now visible on mobile when toggled */}
           <AnimatePresence>
-            {showSidebar && (
+            {(showSidebar || window.innerWidth >= 1024) && (
               <motion.div
                 initial={{ opacity: 0, x: 300 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 300 }}
-                className="w-80 bg-white rounded-xl shadow-lg border-2 border-emerald-100 p-6 h-fit sticky top-8 hidden lg:block"
+                className="w-full lg:w-80 bg-white rounded-xl shadow-lg border-2 border-emerald-100 p-6 h-fit lg:sticky top-8"
               >
-                <h3 className="font-bold text-xl text-gray-800 mb-4 flex items-center gap-2">
-                  <FaTrophy className="w-5 h-5 text-yellow-500" />
-                  टॉप 50 {getTabLabel(activeTab)}
-                </h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-xl text-gray-800 flex items-center gap-2">
+                    <FaTrophy className="w-5 h-5 text-yellow-500" />
+                    टॉप 50 {getTabLabel(activeTab)}
+                  </h3>
+                  <button 
+                    onClick={() => setShowSidebar(false)}
+                    className="lg:hidden text-gray-500 hover:text-gray-700"
+                  >
+                    <FaTimes className="w-5 h-5" />
+                  </button>
+                </div>
 
-                <div className="space-y-2 max-h-96 overflow-y-auto">
+                <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
                   {getCurrentData()
                     .slice(0, 50)
                     .map((item, index) => (
                       <motion.div
-                        key={item.id}
+                        key={item._id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.01 }}
                         className="flex items-center gap-3 p-2 rounded-lg hover:bg-emerald-50 cursor-pointer transition-colors duration-200"
-                        onClick={() => setSelectedItem(item)}
+                        onClick={() => handleItemClick(item)}
                       >
                         <div
                           className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
@@ -517,16 +665,26 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                           {index + 1}
                         </div>
 
-                        {activeTab === "ambassadors" && (
+                        {(activeTab === "ambassadors" || activeTab === "users") && (
                           <img
-                            src={item.image || "/placeholder.svg"}
-                            alt={item.name}
+                            src={item?.profilepic?.url || "/placeholder.svg"}
+                            alt={item.fullname}
                             className="w-8 h-8 rounded-full border border-emerald-200"
                           />
                         )}
 
+                        {activeTab === "villages" && (
+                          <div className="w-8 h-8 rounded-full border border-emerald-200 bg-gradient-to-r from-emerald-400 to-blue-400 flex items-center justify-center">
+                            <img
+                          src={item?.images[0]?.url ||  "./home4.jpg"}
+                          alt={''}
+                          className="w-8 h-8 rounded-full border-2 border-emerald-200 group-hover:scale-110 transition-transform duration-300"
+                        />
+                        </div>
+                        )}
+
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-sm text-gray-800 truncate">{item.name}</p>
+                          <p className="font-semibold text-sm text-gray-800 truncate">{activeTab === "villages" ? item.name : item.fullname}</p>
                           <p className="text-xs text-emerald-600">{item.points} अंक</p>
                         </div>
                       </motion.div>
@@ -545,24 +703,45 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-              onClick={() => setSelectedItem(null)}
+              onClick={() => {
+                setSelectedItem(null)
+                setPointsBreakdown(null)
+              }}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl"
+                className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-gray-800">Details</h2>
+                  <button 
+                    onClick={() => {
+                      setSelectedItem(null)
+                      setPointsBreakdown(null)
+                    }}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <FaTimes className="w-5 h-5" />
+                  </button>
+                </div>
+
                 <div className="text-center mb-6">
-                  {activeTab === "ambassadors" && (
+                  {(activeTab === "ambassadors" || activeTab === "users") && (
                     <img
-                      src={selectedItem.profilepic.url || "/placeholder.svg"}
-                      alt={selectedItem.name}
+                      src={selectedItem.profilepic?.url || "/placeholder.svg"}
+                      alt={selectedItem.fullname}
                       className="w-20 h-20 rounded-full border-4 border-emerald-200 mx-auto mb-4"
                     />
                   )}
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">{selectedItem.name}</h2>
+                  {activeTab === "villages" && (
+                    <div className="w-20 h-20 rounded-full border-4 border-emerald-200 mx-auto mb-4 bg-gradient-to-r from-emerald-400 to-blue-400 flex items-center justify-center">
+                      <FaMapMarkerAlt className="w-10 h-10 text-white" />
+                    </div>
+                  )}
+                  <h2 className="text-2xl font-bold text-gray-800 mb-2">{activeTab === "villages" ? selectedItem.name : selectedItem.fullname}</h2>
                   <p className="text-emerald-600 font-semibold text-lg">{selectedItem.points} अंक</p>
                   <p className="text-gray-600">
                     {activeTab === "villages"
@@ -570,6 +749,37 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                       : selectedItem.location}
                   </p>
                 </div>
+
+                {/* Points Breakdown */}
+                {pointsBreakdown && (
+                  <div className="mb-6">
+                    <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                      <HiSparkles className="w-4 h-4 text-yellow-500" />
+                      Points Breakdown
+                    </h3>
+                    <div className="space-y-2">
+                      {pointsBreakdown.map((item, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="flex justify-between items-center p-2 bg-blue-50 rounded-lg"
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span className="text-gray-700">
+                              {item.label}
+                              {item.count !== undefined && ` (${item.count})`}
+                              {item.details && ` - ${item.details}`}
+                            </span>
+                          </div>
+                          <span className="font-semibold text-emerald-600">+{item.points}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="mb-6">
                   <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
@@ -593,7 +803,10 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                 </div>
 
                 <button
-                  onClick={() => setSelectedItem(null)}
+                  onClick={() => {
+                    setSelectedItem(null)
+                    setPointsBreakdown(null)
+                  }}
                   className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
                 >
                   बंद करें
@@ -606,13 +819,5 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
     </div>
   )
 }
- function getTabIcon(tab) {
-    switch (tab) {
-      case "ambassadors": return <FaCrown className="w-5 h-5" />
-      case "users": return <FaUsers className="w-5 h-5" />
-      case "villages": return <FaMapMarkerAlt className="w-5 h-5" />
-      default: return null
-    }
-  }
 
 export default LeaderboardDashboard

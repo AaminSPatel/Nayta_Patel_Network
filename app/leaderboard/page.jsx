@@ -3,7 +3,7 @@ import LeaderboardDashboard from "../../components/leaderboard";
 import { usePatel } from "../../components/patelContext";
 
 export default function Loading() {
- const {villages,users,posts,comments,likes} = usePatel()
+ const {villages,users,posts,comments,likes,news} = usePatel()
 
 
 return(
@@ -14,6 +14,7 @@ return(
   posts={posts}
   comments={comments}
   likes={likes}
+  news={news}
 />
     </div>
 )

@@ -200,7 +200,7 @@ function StoryCard({ story, index }) {
 
   // Share on specific platform
   const shareOnPlatform = async (platform) => {
-    const message = `${story.name} की प्रेरणादायक कहानी देखें: ${story.story.slice(0,150)} ${window.location.href}/pehchan/${story._id}`
+    const message = `${story.name} की प्रेरणादायक कहानी देखें: ${story.story.slice(0,150)} ${window.location.href}/${story._id}`
     let url = ''
     
     switch(platform) {
@@ -378,7 +378,7 @@ Array.from(businessCard).forEach(el => {
 
             {/* Story Preview */}
             <p className="text-gray-700 mb-3 sm:mb-4 line-clamp-3 leading-relaxed text-xs sm:text-sm">
-              {story.story}
+              {story.story.replace(/\*/g, '')}
             </p>
 
             {/* Stats - Now shows views, likes, and shares */}

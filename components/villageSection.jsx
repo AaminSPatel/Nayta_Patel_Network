@@ -125,7 +125,7 @@ const containerVariants = {
     </motion.p>
             </motion.div>
       <div 
-        className="relative sm:h-[350px] h-[250px] w-full rounded-xl overflow-hidden shadow-md"
+        className="relative sm:h-[350px] h-[250px] w-full rounded-xl overflow-hidden shadow-xl shadow-sky-950"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >

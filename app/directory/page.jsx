@@ -320,8 +320,8 @@ const DirectoryContent = () => {
                     <FaUserTie />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500">सरपंच</p>
-                    <p className="font-medium line-clamp-1">{village.headOfVillage || "जानकारी उपलब्ध नहीं"}</p>
+                    <p className="text-xs text-gray-500">Ambassador</p>
+                    <p className="font-medium text-xs line-clamp-1">{village?.ambassador?.fullname || "जानकारी उपलब्ध नहीं"}</p>
                   </div>
                 </div>
               </div>

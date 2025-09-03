@@ -420,7 +420,7 @@ export default function StoryPage() {
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.9 + index * 0.1 }}
-                  className="flex-shrink-0"
+                  className="flex-shrink-0  w-72"
                 >
                   <div className="bg-white rounded-xl shadow-md overflow-hidden min-w-[280px] hover:shadow-lg transition-all duration-300 border border-emerald-100">
                     <div className="relative h-40 overflow-hidden">
@@ -433,10 +433,10 @@ export default function StoryPage() {
 
                     <div className="p-4">
                       <h4 className="font-bold text-emerald-800 mb-1">{relatedStory.name}</h4>
-                      <p className="text-sm text-emerald-600 mb-2 font-medium">
+                      <p className="text-sm text-emerald-600 mb-2 font-medium  line-clamp-1">
                         {relatedStory.village} • {relatedStory.profession}
                       </p>
-                      <p className="text-sm text-gray-700 line-clamp-2 mb-3">{relatedStory.story}</p>
+                      <p className="text-sm text-gray-700 line-clamp-3 mb-3">{relatedStory.story.replace(/\*/g, '')}</p>
 
                       <Link href={`/pehchan/${relatedStory._id}`}>
                         <motion.button

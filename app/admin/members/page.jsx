@@ -70,17 +70,17 @@ redirect('/')      }
     return matchesSearch && matchesVillage && matchesRole
   }) || []
 
-  console.log('filteredUsers',filteredUsers);
+  //console.log('filteredUsers',filteredUsers);
   
 
   return (
     <div className=" p-2 space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="sm:text-2xl text-md font-bold">Members Management</h2>
-        <button className="sm:text-md text-sm btn btn-primary flex items-center gap-2" onClick={() => setShowForm(true)}>
+        {/* <button className="sm:text-md text-sm btn btn-primary flex items-center gap-2" onClick={() => setShowForm(true)}>
           <Plus size={18} />
           Add New Member
-        </button>
+        </button> */}
       </div>
 
       {showForm ? (
@@ -90,7 +90,7 @@ redirect('/')      }
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <MemberForm onCancel={() => setShowForm(false)} />
+         {/*  <MemberForm onCancel={() => setShowForm(false)} /> */}
         </motion.div>
       ) : (
         <div className="relative">
