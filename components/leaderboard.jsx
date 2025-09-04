@@ -485,7 +485,7 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
               transition={{ delay: 0.2 }}
               className="mb-8"
             >
-              <div className="flex items-end justify-center gap-4 lg:gap-8 mb-8">
+              <div className="flex items-end justify-center gap-3 lg:gap-8 mb-8 px-2">
                 {getCurrentData()
                   .slice(0, 3)
                   .map((item, index) => {
