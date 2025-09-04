@@ -509,14 +509,14 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                       >
                         <div className="relative cursor-pointer group" onClick={() => handleItemClick(item)}>
                           {(activeTab === "ambassadors" || activeTab === "users") &&  (
-                            <div className="relative mb-4">
+                            <div className="relative mb-4 flex items-center justify-center">
                               <img
                                 src={item?.profilepic?.url || "/placeholder.svg"}
                                 alt={item.fullname}
                                 className="w-16 h-16 lg:w-20 lg:h-20 rounded-full border-4 border-white shadow-lg group-hover:scale-110 transition-transform duration-300"
                               />
                               <div
-                                className={`absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r ${colors[actualIndex]} rounded-full flex items-center justify-center text-white text-sm shadow-lg`}
+                                className={`absolute -top-2 right-2 w-8 h-8 bg-gradient-to-r ${colors[actualIndex]} rounded-full flex items-center justify-center text-white text-sm shadow-lg`}
                               >
                                 {icons[actualIndex]}
                               </div>
@@ -524,13 +524,13 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                           )}
 
                           {activeTab === "villages" && (
-                            <div className="relative mb-4">
+                            <div className="relative mb-4 flex items-center justify-center">
                               <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full border-4 border-white shadow-lg group-hover:scale-110 transition-transform duration-300 bg-gradient-to-r from-emerald-400 to-blue-400 flex items-center justify-center">
                                {/*  <FaMapMarkerAlt className="w-8 h-8 text-white" /> */}
                                 <img
                                 src={item?.images[0]?.url || "/placeholder.svg"}
                                 alt={item.name}
-                                className="w-16 h-16 lg:w-20 lg:h-20 rounded-full border-4 border-white shadow-lg group-hover:scale-110 transition-transform duration-300"
+                                className="w-16 h-16 object-cover lg:w-20 lg:h-20 rounded-full border-4 border-white shadow-lg group-hover:scale-110 transition-transform duration-300"
                               />
                               </div>
                               <div
@@ -576,8 +576,8 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                     className="bg-white rounded-xl p-4 shadow-lg border-2 border-emerald-50 hover:border-emerald-200 cursor-pointer group transition-all duration-300"
                     onClick={() => handleItemClick(item)}
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-emerald-100 to-blue-100 rounded-full flex items-center justify-center font-bold text-emerald-700 text-lg">
+                    <div className="relative flex items-center gap-4">
+                      <div className="absolute w-5 h-5 bottom-0 z-30 left-0 bg-gradient-to-r from-emerald-100 to-blue-100 rounded-full flex items-center justify-center font-bold text-emerald-700 text-lg">
                         {index + 4}
                       </div>
 
@@ -738,7 +738,11 @@ const LeaderboardDashboard = ({ villages = [], users = [], posts = [], comments 
                   )}
                   {activeTab === "villages" && (
                     <div className="w-20 h-20 rounded-full border-4 border-emerald-200 mx-auto mb-4 bg-gradient-to-r from-emerald-400 to-blue-400 flex items-center justify-center">
-                      <FaMapMarkerAlt className="w-10 h-10 text-white" />
+                     <img
+                          src={selectedItem?.images[0]?.url || "/home4.jpg"}
+                          alt={selectedItem.name}
+                          className="min-w-12 w-12 h-12 object-cover rounded-full border-2 border-emerald-200 group-hover:scale-110 transition-transform duration-300"
+                        />
                     </div>
                   )}
                   <h2 className="text-2xl font-bold text-gray-800 mb-2">{activeTab === "villages" ? selectedItem.name : selectedItem.fullname}</h2>

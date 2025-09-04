@@ -270,10 +270,11 @@ export default function Home() {
                 </button>
               </Link>
             ): (
-              <Link href="/signup">
+              <Link href="https://chat.whatsapp.com/IABp5obYWKEIMcHLVTDkNs">
                 <button className="bg-emerald-500 flex gap-2 items-center hover:bg-emerald-600 text-white px-6 md:px-8 py-2 md:py-3 rounded-md text-base md:text-lg font-medium transition-colors">
                  <FaWhatsapp size={19}/> Join Whatsapp Group
                 </button>
+                
               </Link>
             )}
           </motion.div>
