@@ -425,7 +425,7 @@ export default function Home() {
                     </div>
                     <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded-full text-xs flex items-center">
                       <FaEye className="mr-1" />
-                      <span>{newsItem.views || 0}</span>
+                      <span>{newsItem?.views || 0}</span>
                     </div>
                   </div>
 
@@ -433,20 +433,20 @@ export default function Home() {
                     <div className="flex items-center text-xs text-gray-500 mb-3">
                       <div className="flex items-center mr-3">
                         <FaMapMarkerAlt className="mr-1" />
-                        <span>{newsItem.location}</span>
+                        <span>{newsItem?.location}</span>
                       </div>
                       <div className="flex items-center">
                         <FaClock className="mr-1" />
-                        <span>{new Date(newsItem.publish_date).toLocaleDateString('hi-IN')}</span>
+                        <span>{new Date(newsItem?.publish_date).toLocaleDateString('hi-IN')}</span>
                       </div>
                     </div>
 
                     <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-2 hover:text-emerald-600 transition-colors">
-                      {newsItem.title}
+                      {newsItem?.title}
                     </h3>
 
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {newsItem.content.replace(/\*/g, '')}
+                      {newsItem?.content?.replace(/\*/g, '')}
                     </p>
 
                     <div className="flex items-center justify-between">
