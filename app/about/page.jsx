@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import {
   FaUsers,
@@ -16,32 +15,6 @@ import Head from "next/head";
 
 export default function AboutPage() {
   // Team members data
-  const teamMembers = [
-    {
-      name: "Imran Khan",
-      role: "Founder & CEO",
-      image: "/placeholder.svg?height=300&width=300",
-      bio: "Former agricultural scientist with 15 years of experience in rural development projects.",
-    },
-    {
-      name: "Fatima Begum",
-      role: "Community Director",
-      image: "/placeholder.svg?height=300&width=300",
-      bio: "Rural education advocate with deep connections to women's self-help groups across the region.",
-    },
-    {
-      name: "Abdul Hameed",
-      role: "Agricultural Expert",
-      image: "/placeholder.svg?height=300&width=300",
-      bio: "Agricultural engineer specializing in sustainable farming techniques and water conservation.",
-    },
-    {
-      name: "Zainab Khatoon",
-      role: "Education Lead",
-      image: "/placeholder.svg?height=300&width=300",
-      bio: "Former teacher dedicated to bringing quality education and digital literacy to rural areas.",
-    },
-  ];
 
   // Values data
  const values = [
@@ -232,10 +205,10 @@ export default function AboutPage() {
             <div className="flex flex-col md:flex-row">
               <div className="md:w-1/2">
                 <div className="relative h-64 md:h-full">
-                  <Image
+                  <img
                     src="/prices.avif"
                     alt="Apna Gaon community members"
-                    fill
+                    loading="lazy"
                     className="object-cover"
                   />
                 </div>

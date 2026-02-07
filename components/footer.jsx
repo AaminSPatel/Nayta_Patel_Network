@@ -59,7 +59,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/stories"
+                  href="/pehchan"
                   className="text-gray-600 hover:text-emerald-500"
                 >
                   Success Stories

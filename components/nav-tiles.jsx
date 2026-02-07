@@ -8,7 +8,7 @@ const tiles = [
   { href: "/events", title: "कार्यक्रम", desc: "आगामी आयोजन", icon: FiCalendar },
   { href: "/prices", title: "मंडी भाव", desc: "लाइव भाव", icon: FiTrendingUp },
   { href: "/wall", title: "समाज की आवाज़", desc: "पोस्ट और राय", icon: FiUsers },
-  { href: "/stories", title: "कहानियाँ", desc: "प्रेरक सफर", icon: FiBookOpen },
+  { href: "/pehchan", title: "कहानियाँ", desc: "प्रेरक सफर", icon: FiBookOpen },
 ]
 
 export default function NavTiles() {

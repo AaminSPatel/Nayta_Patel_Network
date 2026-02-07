@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -22,39 +22,36 @@ import {
   FaCalendarAlt,
   FaBookOpen,
   FaTractor,
-  FaEnvelope,FaEye ,FaMapMarkerAlt ,FaClock ,
+  FaEnvelope,
+  FaEye,
+  FaMapMarkerAlt,
+  FaClock,
 } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/pagination";
 import Head from "next/head";
 import { usePatel } from "../components/patelContext.js";
 import EventCubeSlider from "../components/eventSection.jsx";
-import ComplimentCardsSlider from "../components/cardSlider.jsx";
-import BusinessCard4 from "../components/BusinessCard4.jsx";
-import Poster from "../components/poster.jsx";
-import AdvertisementVideo from "../components/PromotionalVideo.jsx";
-import Posters from "../components/posters.jsx";
+import { FiBook, FiUser, FiMapPin, FiSend, FiLogIn, FiX } from "react-icons/fi";
+
 import VillageSection from "../components/villageSection.jsx";
 import WelcomeCard from "../components/welcomeCard.jsx";
 import "swiper/css/effect-coverflow";
-import NayataPatelCard from "../components/poster.jsx";
-import PromotionalPosters from "../components/posters.jsx";
-import ResponsiveCommunityCards from "../components/cardSlider2.jsx";
-import AdUnit from "../components/AdUnit";
 import AdSection from "../components/home/adSection";
 import { MdLeaderboard } from "react-icons/md";
 // Navigation items for the tile section
+
 const navigationItems = [
   { name: "Home", href: "/", icon: FaHome },
   { name: "Villages", href: "/directory", icon: FaMapSigns },
   { name: "Posts", href: "/wall", icon: FaUsers },
   { name: "News", href: "/news", icon: FaNewspaper },
-  { name: "Prices", href: "/prices", icon: FaChartLine },
   { name: "Blogs", href: "/blog", icon: FaBlog },
   { name: "Rank", href: "/leaderboard", icon: MdLeaderboard },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
-  { name: "Stories", href: "/stories", icon: FaBookOpen },
-  { name: "Pehchan", href: "/pehchan", icon: FaTractor },
+  { name: "Stories", href: "/pehchan", icon: FaBookOpen },
+  /*   { name: "Stories", href: "/stories", icon: FaBookOpen }, */
+  { name: "Prices", href: "/prices", icon: FaChartLine },
   { name: "Contact", href: "/contact", icon: FaEnvelope },
 ];
 
@@ -64,42 +61,213 @@ export default function Home() {
     blogs,
     formatDate,
     user,
-    stories,
+    path,
     posts,
-    siteUrl,news,
+    users,
+    siteUrl,
+    news,
     prices,
     showWelcomeCard,
     setShowWelcomeCard,
-    formatContent,pehchans,
+    formatContent,
+    pehchans,
+    villages,
   } = usePatel();
   const [priceData, setPriceData] = useState([]);
-   const [breakingNews, setBreakingNews] = useState([]);
+  const [breakingNews, setBreakingNews] = useState([]);
   const [featuredNews, setFeaturedNews] = useState([]);
-    const [featuredPehchans, setFeaturedPehchans] = useState([]);
+  const [featuredPehchans, setFeaturedPehchans] = useState([]);
+  // Function to clean and extract Hindi/English name for better matching
+  // Loading state check karein
+  const isLoading = !mounted || (user && !user.village && news.length === 0);
+  const cleanMatch = (str, target) => {
+    if (!str || !target) return false;
+
+    const normalize = (text) => {
+      return (
+        text
+          .toLowerCase()
+          .replace(/[()[\],]/g, "") // Brackets aur punctuation hatata hai
+          // Hindi Normalization: Matra aur Bindi ka variation khatam karne ke liye
+          .replace(/्/g, "") // Halant (aadhe akshar)
+          .replace(/[ंँ]/g, "") // Bindi aur Chandrabindu
+          .replace(/़/g, "") // Nuqta
+          .replace(/[‌‍]/g, "") // Zero-width joiners (hidden characters)
+          .replace(/\s+/g, "") // Saare spaces khatam (taki 'New Delhi' aur 'NewDelhi' match ho jaye)
+          .trim()
+      );
+    };
+
+    const cleanStr = normalize(str);
+    const cleanTarget = normalize(target);
+
+    // Dono taraf se check: Kya ek dusre ke andar maujood hai?
+    return cleanStr.includes(cleanTarget) || cleanTarget.includes(cleanStr);
+  };
+  // Personalized Gallery Logic
+  const userVillage = user?.village || "";
+
+const dynamicGallery = useMemo(() => {
+  if (isLoading) return [];
+
+  // Sirf users ko reverse kar rahe hain taaki naye sadasya pehle dikhen
+  const recentUsers = users ? [...users].reverse() : [];
+
+  return [
+    // 1. AAPKE GAON KI NEWS (Original order)
+    ...(news
+      ?.filter((item) =>
+          item.verificationStatus === "verified" &&
+          cleanMatch(item.location, userVillage),
+      )
+      .slice(0, 3)
+      .map((item) => ({
+        url: item.image?.url,
+        label: item.title.slice(0, 40),
+        category: "आपके गाँव की न्यूज़",
+        id: item._id,
+        link: `/news/${item._id}`,
+      })) || []),
+
+    // 2. AAPKE GAON KI IMAGE
+    ...(villages
+      ?.filter((v) => cleanMatch(v.name, userVillage))
+      .slice(0, 1)
+      .map((v) => ({
+        url: v.images?.[0]?.url,
+        label: v.name,
+        category: "आपका गाँव",
+        id: v._id,
+        link: `/directory/${v._id}`,
+      })) || []),
+
+    // 3. GAON KE LOG (Sirf yahan recent users dikhenge)
+    ...(recentUsers
+      ?.filter((u) =>
+          cleanMatch(u.village, userVillage) &&
+          u.profilepic?.url &&
+          u._id !== user?._id,
+      )
+      .slice(0, 6)
+      .map((item) => ({
+        url: item.profilepic.url,
+        label: item.fullname,
+        category: item.role === "ambassador" ? "गाँव एम्बेसडर" : "आपके गाँव से",
+        id: item._id,
+        link: `/profile/${item._id}`,
+      })) || []),
+
+    // 4. SAMAJ KI STORIES (Pehchan)
+    ...(pehchans?.slice(0, 2).map((item) => ({
+      url: item.image?.url,
+      label: item.name,
+      category: "प्रेरक कहानी",
+      id: item._id,
+      link: `/pehchan/${item._id}`,
+    })) || []),
+
+    // 5. DUSRE GAON KI JHALKIYAN
+    ...(villages
+      ?.filter((v) => !cleanMatch(v.name, userVillage))
+      .slice(0, 4)
+      .map((v) => ({
+        url: v.images?.[0]?.url,
+        label: v.name,
+        category: "अपने समाज के गाँव",
+        id: v._id,
+        link: `/directory/${v._id}`,
+      })) || []),
+
+    // 6. BAKI NEWS (Original order, no reverse)
+    ...(news
+      ?.filter((item) =>
+          item.verificationStatus === "verified" &&
+          !cleanMatch(item.location, userVillage),
+      )
+      .slice(0, 4)
+      .map((item) => ({
+        url: item.image?.url,
+        label: item.title.slice(0, 40),
+        category: "समाचार",
+        id: item._id,
+        link: `/news/${item._id}`,
+      })) || []),
+  ].filter((item) => item.url);
+}, [news, user, users, villages, pehchans, userVillage, isLoading]);
+
+const doubledGallery = [...dynamicGallery, ...dynamicGallery];
+
+  const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    story: "",
+    village: "",
+  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      // path aapke usePatel context se aa raha hai
+      const response = await fetch(`${path}/api/stories/apply`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setIsSuccess(true);
+        setFormData({ name: "", story: "", village: "" });
+        // 3 second baad modal apne aap band ho jaye (Optional)
+        setTimeout(() => {
+          setIsSuccess(false);
+          setIsStoryModalOpen(false);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("Error submitting story:", error);
+      alert("Kuch error aaya, please fir se koshish karein");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   useEffect(() => {
     setMounted(true);
   }, []);
- // Filter news for homepage
+  // Filter news for homepage
   useEffect(() => {
     if (news && news.length > 0) {
       // Get verified news only
-      const verifiedNews = news.filter(item => item.verificationStatus === "verified");
-      
+      const verifiedNews = news.filter(
+        (item) => item.verificationStatus === "verified",
+      );
+
       // Get breaking news (marked as important or recent)
       const breaking = verifiedNews
-        .filter(item => item.category === "Breaking" || new Date(item.publish_date) > new Date(Date.now() - 24 * 60 * 60 * 1000))
+        .filter(
+          (item) =>
+            item.category === "Breaking" ||
+            new Date(item.publish_date) >
+              new Date(Date.now() - 24 * 60 * 60 * 1000),
+        )
         .slice(0, 3);
-      
+
       // Get featured news
       const featured = verifiedNews
-        .filter(item => !breaking.includes(item))
+        .filter((item) => !breaking.includes(item))
         .slice(0, 3);
-      
+
       setBreakingNews(breaking);
       setFeaturedNews(featured);
     }
   }, [news]);
-  
+
   // Filter Pehchan stories for homepage
   useEffect(() => {
     if (pehchans && pehchans.length > 0) {
@@ -108,13 +276,12 @@ export default function Home() {
       setFeaturedPehchans(featured);
     }
   }, [pehchans]);
-  
 
   const [userData, setUserData] = useState({});
   useEffect(() => {
     if (user) setUserData(user);
   }, [user]);
-  
+
   useEffect(() => {
     if (prices) {
       if (!prices || !prices[0]?.prices?.grain) {
@@ -142,7 +309,7 @@ export default function Home() {
       }
     }
   }, [prices]);
-  
+
   if (!mounted) return null;
 
   const containerVariants = {
@@ -215,75 +382,171 @@ export default function Home() {
         <link rel="icon" href={`${siteUrl}/favicon.ico`} />
       </Head>
 
-      {/* Hero Section */}
-      <section className="relative h-[450px] flex items-center">
-        <div className="absolute inset-0 z-0 sm:w-auto w-screen">
-          <Image
-            src="/about1.avif"
-            alt="Rural farming landscape"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/60" />
-        </div>
+     {/* Hero Section */}
+{/* Hero Section */}
+<section className="relative h-[460px] flex items-center">
+  <div className="absolute inset-0 z-0 sm:w-auto w-screen">
+    <Image
+      src="/about1.avif"
+      alt="Rural farming landscape"
+      fill
+      className="object-cover"
+      priority
+    />
+    <div className="absolute inset-0 bg-black/60" />
+  </div>
 
-        <div className="container mx-auto px-4 z-10 mt-24 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-2xl text-white"
-          >
-            <h1 className="text-3xl md:text-4xl font-bold mb-4 glegoo">
-              <span className="text-emerald-300 font-bold text-4xl md:text-4xl ">
-                नायता पटेल नेटवर्क{" "}
-              </span>{" "}
-              – हमारी ग्रामीण शक्ति की डिजिटल आवाज़।
-            </h1>
-            {user && (
-              <p className="text-md font-semibold md:text-xl mb-8 ">
-                सच्ची खबरें, स्मार्ट तकनीक और सही बाज़ार की मदद से
-                <span className="text-emerald-300 font-bold">
-                  {" "}
-                  नायता पटेल समाज
-                </span>{" "}
-                को आगे बढ़ाने की एक मजबूत शुरुआत।
-              </p>
-            )}
-            {!user && (
-              <p className="text-md font-semibold md:text-xl mb-8 glegoo">
+  <div className="container mx-auto px-4 z-10 mt-14 relative">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-2xl text-white"
+    >
+      <h1 className="text-3xl md:text-4xl font-bold mb-4 glegoo">
+        <span className="text-emerald-300 font-bold text-4xl md:text-4xl ">
+          नायता पटेल नेटवर्क{" "}
+        </span>{" "}
+        – इत्तेहाद, तरक्की और खुशहाली की डिजिटल आवाज़।
+      </h1>
+      
+      {user && (
+        <p className="text-md font-semibold md:text-xl mb-8 ">
+          अस्सलाम अलैकुम, <span className="text-emerald-300 font-bold">{user.fullname}</span> साहब! 
+          अल्लाह आपके काम में बरकत दे। समाज की मजबूती और तरक्की के लिए हम सब साथ हैं।
+        </p>
+      )}
+      
+      {!user && (
+        <p className="text-md font-semibold md:text-xl mb-8 glegoo">
+
                 आपके लिए, आपके समाज के लिए। अब
-                <span className="text-emerald-300 font-bold">
-                  {" "}
-                  नायता पटेल समाज
-                </span>{" "}
-                की खबरें, भाव अपडेट और योजनाएं एक ही जगह। बस एक छोटा सा
-                रजिस्ट्रेशन और आप हमारे अपने डिजिटल परिवार का हिस्सा बन जाएंगे।
-              </p>
-            )}
 
-            {!user ? (
-              <Link href="/signup">
-                <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 md:px-8 py-2 md:py-3 rounded-md text-base md:text-lg font-medium transition-colors">
-                  Join Now
-                </button>
-              </Link>
-            ): (
-              <Link href="https://chat.whatsapp.com/IABp5obYWKEIMcHLVTDkNs">
-                <button className="bg-emerald-500 flex gap-2 items-center hover:bg-emerald-600 text-white px-6 md:px-8 py-2 md:py-3 rounded-md text-base md:text-lg font-medium transition-colors">
-                 <FaWhatsapp size={19}/> Join Whatsapp Group
-                </button>
-                
-              </Link>
-            )}
-          </motion.div>
+                <span className="text-emerald-300 font-bold">
+
+                  {" "}
+
+                  नायता पटेल समाज
+
+                </span>{" "}
+
+                की खबरें, भाव अपडेट और योजनाएं एक ही जगह। बस एक छोटा सा
+
+                रजिस्ट्रेशन और आप हमारे अपने डिजिटल परिवार का हिस्सा बन जाएंगे। </p>
+      )}
+
+      {!user ? (
+       <Link href="/signup">
+            <button className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl text-lg font-bold shadow-lg shadow-emerald-900/20 transition-all active:scale-95">
+              अभी जुड़ें (Sign Up)
+            </button>
+          </Link>
+      ) : (
+        <div className="flex flex-col gap-3">
+         <Link href="https://chat.whatsapp.com/IABp5obYWKEIMcHLVTDkNs" className="w-full sm:w-auto">
+            <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl text-lg font-bold flex items-center justify-center gap-3 shadow-xl shadow-green-900/20 transition-all animate-bounce-subtle">
+              <FaWhatsapp size={24} /> 
+              WhatsApp ग्रुप ज्वाइन करें
+            </button>
+          </Link>
+          <p className="text-sm text-green-400 font-medium">
+            *इंशाअल्लाह, हर अपडेट मिलेगी सीधा आपके WhatsApp पर।
+          </p>
         </div>
-        <div className="w-68 hidden sm:block top-0 right-0">
-          <EventCubeSlider />
+      )}
+    </motion.div>
+  </div>
+  <div className="w-68 hidden sm:block top-0 right-0">
+    <EventCubeSlider />
+  </div>
+</section>
+      <CommunityCarousel doubledGallery={doubledGallery} />
+      {/* --- Compact Community Section --- */}
+      <section className="py-8 bg-emerald-900 text-white overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col gap-6">
+            <div className="text-left">
+              <h2 className="text-2xl font-bold">समाज के लिए योगदान</h2>
+              <p className="text-emerald-200 text-sm">
+                अपनी आवाज़ और अनुभव साझा करें
+              </p>
+            </div>
+
+            {/* Horizontal Scrollable Grid for Mobile */}
+            <div className="flex flex-wrap justify-center gap-4 pb-4 no-scrollbar -mx-4 px-4">
+              {[
+                {
+                  title: "सुधार विचार",
+                  desc: "वॉल पर पोस्ट करें",
+                  icon: FaUsers,
+                  link: "/wall",
+                  color: "bg-emerald-500",
+                },
+                {
+                  title: "सफलता की कहानी",
+                  desc: "अपनी कहानी बताएं",
+                  icon: FaBookOpen,
+                  action: () => setIsStoryModalOpen(true),
+                  color: "bg-blue-500",
+                },
+                {
+                  title: "गाँव के एम्बेसडर",
+                  desc: "मदद के लिए जुड़ें",
+                  icon: FaMapMarkerAlt,
+                  link: "/contact",
+                  color: "bg-amber-500",
+                },
+                {
+                  title: "शिक्षा मुहिम",
+                  desc: "युवाओं को जोड़ें",
+                  icon: FaCalendarAlt,
+                  link: "/blog",
+                  color: "bg-purple-500",
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  onClick={item.action ? item.action : null}
+                  className="flex-shrink-0 w-40 bg-white/10 p-4 rounded-xl border border-white/10 backdrop-blur-sm active:scale-95 transition-all"
+                >
+                  <div
+                    className={`${item.color} w-10 h-10 rounded-lg flex items-center justify-center mb-3`}
+                  >
+                    <item.icon size={20} />
+                  </div>
+                  <h3 className="font-bold text-sm leading-tight mb-1">
+                    {item.title}
+                  </h3>
+                  <p className="text-[10px] text-emerald-200">{item.desc}</p>
+                  {!item.action && (
+                    <Link
+                      href={item.link}
+                      className="absolute inset-0 z-10"
+                      aria-label={item.title}
+                    ></Link>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Quick Contact Bar */}
+            <div className="bg-white rounded-2xl p-4 flex items-center justify-between shadow-lg">
+              <div className="flex items-center gap-3">
+                <div className="bg-green-100 p-2 rounded-full">
+                  <FaWhatsapp className="text-green-600" size={24} />
+                </div>
+                <p className="text-gray-800 font-bold text-sm">मैसेज भेजें</p>
+              </div>
+              <Link
+                href="https://wa.me/917747074810"
+                className="bg-green-500 text-white px-5 py-2 rounded-lg text-sm font-bold active:bg-green-600"
+              >
+                WhatsApp
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
-
       {/* Navigation Tiles Section */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
@@ -297,13 +560,13 @@ export default function Home() {
               variants={itemVariants}
               className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
             >
-              हमारे प्लेटफ़ॉर्म को जानें 
+              हमारे प्लेटफ़ॉर्म को जानें
             </motion.h2>
             <motion.p variants={itemVariants} className="text-lg text-gray-700">
               आपके लिए उपलब्ध हर फीचर और मददगार संसाधन एक्सप्लोर करें।
             </motion.p>
           </motion.div>
-          
+
           {/* Two rows of scrollable tiles */}
           <div className="space-y-6">
             {/* First row */}
@@ -321,7 +584,9 @@ export default function Home() {
                     <Link href={item.href}>
                       <div className="bg-white rounded-xl shadow-md  p-3 w-20 h-20 flex flex-col items-center justify-center border border-emerald-100 hover:shadow-lg transition-all duration-300">
                         <item.icon className="text-emerald-600 text-xl mb-1" />
-                        <span className="text-black font-medium text-center">{item.name}</span>
+                        <span className="text-black font-medium text-center">
+                          {item.name}
+                        </span>
                       </div>
                     </Link>
                   </motion.div>
@@ -340,14 +605,16 @@ export default function Home() {
                     <Link href={item.href}>
                       <div className="bg-white rounded-xl shadow-md p-3 w-20 h-20 flex flex-col items-center justify-center border border-emerald-100 hover:shadow-lg transition-all duration-300">
                         <item.icon className="text-emerald-600 text-xl mb-1" />
-                        <span className="text-black font-medium text-center">{item.name}</span>
+                        <span className="text-black font-medium text-center">
+                          {item.name}
+                        </span>
                       </div>
                     </Link>
                   </motion.div>
                 ))}
               </div>
             </div>
-            
+
             {/* Second row */}
             {/* <div className="overflow-x-auto hidden pb-4">
               <div className="flex space-x-4 min-w-max">
@@ -372,6 +639,9 @@ export default function Home() {
             </div> */}
           </div>
         </div>
+      </section>
+     <section className="container mx-auto px-4">
+        <VillageSection priceData={priceData} />
       </section>
 
       {/* News Section */}
@@ -437,7 +707,11 @@ export default function Home() {
                       </div>
                       <div className="flex items-center">
                         <FaClock className="mr-1" />
-                        <span>{new Date(newsItem?.publish_date).toLocaleDateString('hi-IN')}</span>
+                        <span>
+                          {new Date(newsItem?.publish_date).toLocaleDateString(
+                            "hi-IN",
+                          )}
+                        </span>
                       </div>
                     </div>
 
@@ -446,7 +720,7 @@ export default function Home() {
                     </h3>
 
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {newsItem?.content?.replace(/\*/g, '')}
+                      {newsItem?.content?.replace(/\*/g, "")}
                     </p>
 
                     <div className="flex items-center justify-between">
@@ -478,13 +752,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="container mx-auto px-4">
-        <VillageSection priceData={priceData} />
-      </section>
-
+ 
       {/* Event section */}
       <section className="relative w-full h-full sm:hidden flex items-center justify-center py-12 p-12 flex-col">
-        <div className="absolute inset w-full h-28 shidden z-0 bottom-0 left-0"><img src="./bg2.jpg" alt="" /></div>
+        <div className="absolute inset w-full h-28 shidden z-0 bottom-0 left-0">
+          <img src="./bg2.jpg" alt="" />
+        </div>
         <motion.div
           initial="hidden"
           animate="visible"
@@ -526,7 +799,7 @@ export default function Home() {
           }}
         />
       )}
-  <AdSection/>
+      <AdSection />
       {/* Top Posts Carousel */}
       <section className="py-16 mt-6 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -566,32 +839,38 @@ export default function Home() {
               .slice(0, 6)
               .map((post) => (
                 <SwiperSlide key={post._id} className="pb-4 mb-6">
-                 <Link href={`/wall/${post._id}`}> 
-                 <motion.div
-                    whileHover={{ y: -5 }}
-                    className="bg-white rounded-lg shadow-md p-6 h-full"
-                  >
-                    <div className="flex items-center mb-4">
-                      <Image
-                        src={post?.user?.profilepic?.url || "/placeholder.svg"}
-                        alt={post.user?.fullname}
-                        width={40}
-                        height={40}
-                        className="rounded-full bg-amber-500 h-10 w-10"
-                      />
-                      <div className="ml-3">
-                        <h3 className="font-medium">{post?.user?.fullname}</h3>
-                        <p className="text-sm text-gray-500">{post?.village}</p>
+                  <Link href={`/wall/${post._id}`}>
+                    <motion.div
+                      whileHover={{ y: -5 }}
+                      className="bg-white rounded-lg shadow-md p-6 h-full"
+                    >
+                      <div className="flex items-center mb-4">
+                        <Image
+                          src={
+                            post?.user?.profilepic?.url || "/placeholder.svg"
+                          }
+                          alt={post.user?.fullname}
+                          width={40}
+                          height={40}
+                          className="rounded-full bg-amber-500 h-10 w-10"
+                        />
+                        <div className="ml-3">
+                          <h3 className="font-medium">
+                            {post?.user?.fullname}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            {post?.village}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <p className="mb-4 text-gray-700 line-clamp-3">
-                      {post.content}
-                    </p>
-                    <div className="flex items-center text-gray-500">
-                      <FaHeart className="text-red-500 mr-1" />
-                      <span>{post?.likes?.length} likes</span>
-                    </div>
-                  </motion.div>
+                      <p className="mb-4 text-gray-700 line-clamp-3">
+                        {post.content}
+                      </p>
+                      <div className="flex items-center text-gray-500">
+                        <FaHeart className="text-red-500 mr-1" />
+                        <span>{post?.likes?.length} likes</span>
+                      </div>
+                    </motion.div>
                   </Link>
                 </SwiperSlide>
               ))}
@@ -705,7 +984,7 @@ export default function Home() {
                     {/* Twitter */}
                     <a
                       href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                        blog.title
+                        blog.title,
                       )}&url=${window.location.origin}/blog/${blog._id}`}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -720,7 +999,7 @@ export default function Home() {
                       href={`https://www.linkedin.com/shareArticle?mini=true&url=${
                         window.location.origin
                       }/blog/${blog._id}&title=${encodeURIComponent(
-                        blog.title
+                        blog.title,
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -746,7 +1025,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-  {/* Pehchan Stories Section */}
+      {/* Pehchan Stories Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <motion.div
@@ -759,10 +1038,11 @@ export default function Home() {
               variants={itemVariants}
               className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
             >
-              मेरा काम मेरी पहचान
+              अपने काम से चमकते नाम
             </motion.h2>
             <motion.p variants={itemVariants} className="text-lg text-gray-700">
-              हमारे समाज के प्रेरणादायक लोगों की कहानियाँ जो अपने काम से अपनी पहचान बना रहे हैं
+              हमारे समाज के प्रेरणादायक लोगों की कहानियाँ जो अपने काम से अपनी
+              पहचान बना रहे हैं
             </motion.p>
           </motion.div>
 
@@ -821,7 +1101,7 @@ export default function Home() {
                         </div>
 
                         <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                          {pehchan.story?.replace(/\*/g, '')}
+                          {pehchan.story?.replace(/\*/g, "")}
                         </p>
 
                         <div className="flex items-center justify-between">
@@ -856,239 +1136,222 @@ export default function Home() {
         </div>
       </section>
       {/* Success Stories */}
-      <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
+
+      {/* --- Story Modal Component --- */}
+      {isStoryModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="text-center mb-12"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl relative max-h-[90vh] overflow-y-auto"
           >
-            <motion.h2
-              variants={itemVariants}
-              className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
-            >
-              सफलता की प्रेरक कहानियाँ
-            </motion.h2>
-            <motion.p variants={itemVariants} className="text-lg text-gray-700">
-              हमारे नायता पटेल समाज के सदस्यों के जीवन में आए वास्तविक बदलाव और
-              प्रगति की गाथाएँ। ये कहानियाँ न सिर्फ प्रेरणा देती हैं, बल्कि
-              सामूहिक प्रयासों से गाँवों में आए ऐतिहासिक परिवर्तन की मिसाल भी
-              पेश करती हैं।{" "}
-            </motion.p>
-          </motion.div>
-          <div className="flex flex-wrap gap-8 justify-center">
-            {stories
-              .filter((item) => item.status === "Published")
-              .slice(0, 3)
-              .map((story, index) => (
-                <Link href={`/stories/${story._id}`} key={story._id}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    whileHover={{ y: -5 }}
-                    className="bg-white rounded-lg shadow-md p-4 py-6 w-full sm:w-72"
+            {/* Header */}
+            <div className="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10">
+              <h3 className="text-lg font-bold text-emerald-800">
+                सफलता की कहानी
+              </h3>
+              <button
+                onClick={() => setIsStoryModalOpen(false)}
+                className="p-2 bg-gray-100 rounded-full text-gray-500"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+
+            <div className="p-6">
+              {!user ? (
+                <div className="text-center py-8">
+                  <FiBook className="mx-auto text-5xl text-emerald-200 mb-4" />
+                  <p className="text-gray-600 mb-6 font-medium">
+                    कहानी साझा करने के लिए लॉग इन आवश्यक है
+                  </p>
+                  <Link
+                    href="/signup"
+                    className="block w-full bg-emerald-600 text-white py-3 rounded-xl font-bold"
                   >
-                    <div className="flex items-center mb-4">
-                      <Image
-                        src={story?.image?.url || "/placeholder.svg"}
-                        alt={story?.title}
-                        width={80}
-                        height={80}
-                        className="rounded-full h-16 w-16 object-cover"
+                    Log In
+                  </Link>
+                </div>
+              ) : isSuccess ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                    ✓
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    सबमिट हो गया!
+                  </h3>
+                  <p className="text-gray-500 text-sm mb-6">
+                    आपकी प्रेरक कहानी की समीक्षा के बाद प्रकाशित की जाएगी।
+                  </p>
+                  <button
+                    onClick={() => {
+                      setIsSuccess(false);
+                      setIsStoryModalOpen(false);
+                    }}
+                    className="w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-bold"
+                  >
+                    बंद करें
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase ml-1">
+                      आपका नाम
+                    </label>
+                    <div className="relative mt-1">
+                      <FiUser className="absolute left-3 top-3 text-gray-400" />
+                      <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
+                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-emerald-500 text-black"
+                        placeholder="Full Name"
                       />
-                      <div className="ml-3">
-                        <h3 className="font-medium line-clamp-2">
-                          {story?.title}
-                        </h3>
-                        <p className="text-sm text-gray-500 line-clamp-1">
-                          {story?.location}
-                        </p>
-                      </div>
                     </div>
-                    <p className="text-sm text-gray-700 line-clamp-6">
-                      {formatContent(story?.content)}
-                    </p>
-                  </motion.div>
-                </Link>
-              ))}
-          </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase ml-1">
+                      आपका गाँव
+                    </label>
+                    <div className="relative mt-1">
+                      <FiMapPin className="absolute left-3 top-3 text-gray-400" />
+                      <input
+                        type="text"
+                        required
+                        value={formData.village}
+                        onChange={(e) =>
+                          setFormData({ ...formData, village: e.target.value })
+                        }
+                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-emerald-500 text-black"
+                        placeholder="Village Name"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase ml-1">
+                      कहानी (विस्तार में)
+                    </label>
+                    <textarea
+                      required
+                      rows={5}
+                      minLength={100}
+                      value={formData.story}
+                      onChange={(e) =>
+                        setFormData({ ...formData, story: e.target.value })
+                      }
+                      className="w-full mt-1 p-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-emerald-500 text-black"
+                      placeholder="हमें बताएं कि आपने कैसे सफलता हासिल की... (कम से कम 100 शब्द)"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-200 active:scale-95 transition-all flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      "सबमिट हो रहा है..."
+                    ) : (
+                      <>
+                        <FiSend /> सबमिट करें
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
+          </motion.div>
         </div>
-        <div className="text-center mt-10">
-          <Link
-            href="/stories"
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
-          >
-            View All Stories
-            <FaArrowRight className="ml-2" />
-          </Link>
-        </div>
-      </section>
+      )}
     </div>
   );
 }
 
-const PriceSection = ({ priceData }) => {
-  return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <div className="mx-auto max-w-7xl">
-        {/* Heading and Description */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="text-center mb-12"
-        >
-          <motion.h2
-            variants={itemVariants}
-            className="text-3xl md:text-4xl font-bold text-emerald-800 mb-4"
-          >
-            आज के मंडी भाव
-          </motion.h2>
-          <motion.p variants={itemVariants} className="text-lg text-gray-700">
-            संपूर्ण मंडी भाव: पूरे भारत की कृषि मंडियों के लाइव भाव, एक क्लिक
-            में!
-          </motion.p>
-        </motion.div>
-
-        {/* Swiper with Grab Cursor and Auto-scroll */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="mb-12"
-        >
-          <Swiper
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView={1} // Default for mobile
-            spaceBetween={20}
-            breakpoints={{
-              640: {
-                slidesPerView: 2,
-              },
-              1024: {
-                slidesPerView: 3,
-              },
-            }}
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            }}
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
-            }}
-            modules={[Autoplay, Pagination]}
-            className="w-auto"
-          >
-            {priceData.map((item, index) => (
-              <SwiperSlide
-                key={index}
-                className="flex justify-center pb-10 items-center px-10 max-w-full"
-              >
-                <motion.div variants={itemVariants}>
-                  <PriceCard item={item} />
-                </motion.div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </motion.div>
-
-        {/* View More Button */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-center"
-        >
-          <Link href="/prices" passHref>
-            <motion.a
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-block px-8 py-3 bg-emerald-600 text-white font-medium rounded-lg shadow-md hover:bg-emerald-700 transition-colors"
-            >
-              View Price Charts
-            </motion.a>
-          </Link>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-const PriceCard = ({ item }) => {
-  const priceChange =
-    item.currentPrice && item.previousPrice
-      ? ((item.currentPrice - item.previousPrice) / item.previousPrice) * 100
-      : null;
-
-  // Get product icon based on name
-  const getProductIcon = (name) => {
-    const lowerName = name.toLowerCase();
-    if (lowerName.includes("soyabean")) return "🌱";
-    if (lowerName.includes("wheat")) return "🌾";
-    if (lowerName.includes("gram") || lowerName.includes("chana")) return "🟤";
-    if (lowerName.includes("mungfali")) return "🥜";
-    if (lowerName.includes("alsi")) return "🫘";
-    return "🌿"; // Default icon
-  };
-
-  // Format name with proper capitalization
-  const formatName = (name) => {
-    let formatted = name.toLowerCase();
-    formatted = formatted.replace(/\bgram\b/g, "चना");
-    formatted = formatted.replace(/\bdaler\b/g, "डालर");
-    formatted = formatted.replace(/\bbitki\b/g, "काबुली");
-    formatted = formatted.replace(/\bkala\b/g, "काला");
-    formatted = formatted.replace(/\bnew\b/g, "नया");
-    formatted = formatted.replace(/\balsi\b/g, "अलसी");
-    formatted = formatted.replace(/\bsarso\b/g, "सरसो");
-    formatted = formatted.replace(/\bsoyabean\b/g, "सोयाबीन");
-    formatted = formatted.replace(/\bwheat\b/g, "गेंहू");
-    formatted = formatted.replace(/\bmungfali\b/g, "मुंगफली");
-    // Capitalize first letter of each word
-    return formatted.replace(/\b\w/g, (char) => char.toUpperCase());
+const CommunityCarousel = ({ doubledGallery }) => {
+  const getTagColor = (cat) => {
+    // Apne categories ke matching names yahan check karein
+    if (
+      cat?.includes("Gaon") ||
+      cat?.includes("आपका गाँव") ||
+      cat?.includes("गाँव")
+    )
+      return "bg-amber-500/20";
+    if (cat === "News" || cat === "समाचार") return "bg-red-500/20";
+    if (cat === "Ambassador" || cat === "एम्बेसडर") return "bg-purple-500/20";
+    if (cat === "Story" || cat === "कहानी") return "bg-blue-500/20";
+    return "bg-emerald-600/20";
   };
 
   return (
-    <div className="bg-white md:w-72 w-full h-32 py-6 min-w-48 border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-2xl">{getProductIcon(item.name)}</span>
-        <h3 className="text-md font-semibold border-b-emerald-400 border-b pb-2 flex-1">
-          {formatName(item.name)}
-        </h3>
-      </div>
-
-      <div className="space-y-3">
-        <div className="flex justify-between items-center">
-          <span className="text-gray-600">Current Price:</span>
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-lg">₹{item.currentPrice}</span>
-            {priceChange && (
-              <span
-                className={`text-xs px-2 py-0.5 rounded-full ${
-                  priceChange > 0
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }`}
-              >
-                {priceChange > 0
-                  ? `+${priceChange.toFixed(1)}%`
-                  : `${priceChange.toFixed(1)}%`}
-              </span>
-            )}
-          </div>
+    <div className="py-8 bg-white overflow-hidden relative border-y border-gray-100">
+      {/* Header Section */}
+      <div className="px-6 mb-6 flex items-center justify-between">
+        <div>
+          <h3 className="text-black font-bold text-xl glegoo">
+            समाज की झलकियां
+          </h3>
+          <div className="h-1 w-12 bg-emerald-500 rounded-full mt-1"></div>
         </div>
+        <span className="text-amber-500 text-xs font-medium animate-pulse">
+          ● Live Feed
+        </span>
+      </div>
 
-        {item.previousPrice && (
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-gray-600">Previous Price:</span>
-            <span>₹{item.previousPrice}</span>
-          </div>
-        )}
+      {/* Animation Container */}
+      <div className="flex relative w-full">
+        <motion.div
+          className="flex gap-4 px-4"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            x: {
+              repeat: Infinity,
+              repeatType: "loop",
+              duration: 35,
+              ease: "linear",
+            },
+          }}
+        >
+          {doubledGallery?.map((item, index) => (
+            <Link href={item.link || "#"} key={index}>
+              <div className="flex-shrink-0 w-44 h-56 rounded-3xl overflow-hidden relative group border border-gray-200 shadow-xl active:scale-95 transition-transform bg-gray-100">
+                {/* --- Simple HTML Image Tag --- */}
+                <img
+                  src={item.url}
+                  alt={item.label}
+                  loading="lazy" // Sirf screen ke paas aane par load hogi (Data save karega)
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+                />
+
+                {/* Top Category Tag */}
+                <div className="absolute top-3 left-3 z-20">
+                  <span
+                    className={`${getTagColor(item.category)} text-white text-[9px] font-black uppercase px-2.5 py-1 rounded-lg shadow-lg backdrop-blur-sm`}
+                  >
+                    {item.category}
+                  </span>
+                </div>
+
+                {/* Overlays */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+                <div className="absolute inset-0 z-20 flex items-end p-4">
+                  <p className="text-white text-xs font-semibold leading-tight line-clamp-2 drop-shadow-md">
+                    {item.label}
+                  </p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </motion.div>
+
+        {/* Fades - White background ke liye from-white use kiya he */}
+        <div className="absolute inset-y-0 left-0 w-12 md:w-24 bg-gradient-to-r from-white via-white/50 to-transparent z-30 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-12 md:w-24 bg-gradient-to-l from-white via-white/50 to-transparent z-30 pointer-events-none" />
       </div>
     </div>
   );

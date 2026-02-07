@@ -30,7 +30,7 @@ export default function Header() {
     { name: "News", href: "/news" },
     { name: "Posts", href: "/wall" },
     { name: "Events", href: "/events" },
-    { name: "Stories", href: "/stories" },
+    { name: "Stories", href: "/pehchan" },
   ]
 
 /*   // Debugging logs

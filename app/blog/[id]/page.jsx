@@ -1,5 +1,4 @@
 'use client'
-import Image from 'next/image'
 import { usePatel } from '../../../components/patelContext'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -215,13 +214,13 @@ export default function BlogDetail() {
         <div className="prose max-w-none">
           {blog.image && (
             <div className="float-right ml-4 mb-4 w-full max-w-xs">
-              <Image
+              <img
                 src={blog.image.url}
                 alt={blog.title || 'Blog image'}
                 width={500}
                 height={300}
                 className="rounded-lg object-cover"
-                priority
+                loading="eager"
               />
               {blog.image.caption && (
                 <p className="text-sm text-gray-500 mt-2 text-center">
@@ -245,11 +244,11 @@ export default function BlogDetail() {
                   className="group border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
                 >
                   <div className="relative h-48 w-full">
-                    <Image
+                    <img
                       src={post.image?.url || '/default-blog.jpg'}
                       alt={post.title}
-                      fill
-                      className="object-cover"
+                      className="object-cover w-full h-full"
+                      loading="lazy"
                     />
                   </div>
                   <div className="p-4">
@@ -325,11 +324,11 @@ export default function BlogDetail() {
             <div className="flex items-center">
               {blog.author.image && (
                 <div className="relative h-12 w-12 rounded-full overflow-hidden mr-4">
-                  <Image
+                  <img
                     src={blog?.author?.image}
                     alt={blog.author.fullname || blog.author.name || 'Author image'}
-                    fill
-                    className="object-cover"
+                    className="object-cover w-full h-full"
+                    loading="lazy"
                   />
                 </div>
               )}

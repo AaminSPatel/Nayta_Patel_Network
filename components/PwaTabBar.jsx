@@ -20,12 +20,12 @@ const {isPWA} = usePatel();
     { name: "Villages", href: "/directory", icon: FaMapSigns },
     { name: "Posts", href: "/wall", icon: FaUsers },
     { name: "News", href: "/news", icon: FaNewspaper },
-    { name: "Prices", href: "/prices", icon: FaChartLine },
     { name: "Blogs", href: "/blog", icon: FaBlog },
+    { name: "Stories", href: "/pehchan", icon: FaBookOpen },
     { name: "Events", href: "/events", icon: FaCalendarAlt },
-    { name: "Stories", href: "/stories", icon: FaBookOpen },
-    { name: "Meri Pehchan", href: "/pehchan", icon: FaTractor },
-    { name: "Contact", href: "/contact", icon: FaEnvelope },
+    { name: "Prices", href: "/prices", icon: FaChartLine },
+/*     { name: "Stories", href: "/stories", icon: FaBookOpen },
+    { name: "Contact", href: "/contact", icon: FaEnvelope }, */
   ];
 
   const mainItems = navigationItems.slice(0, 4); // Show first 4 items in the main bar

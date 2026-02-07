@@ -20,6 +20,10 @@ import {
   FaMapPin,
   FaMapSigns,
   FaSmile,
+  FaInstagram,
+  FaYoutube,
+  FaWhatsapp,
+  FaFacebook,
 } from "react-icons/fa";
 import {
   LayoutDashboard,
@@ -38,16 +42,16 @@ const navigationItems = [
   { name: "Home", href: "/", icon: FaHome },
   { name: "News", href: "/news", icon: FaNewspaper },
   { name: "Villages", href: "/directory", icon: FaMapSigns },
-  { name: "Meri Pehchan", href: "/pehchan", icon: FaUsers },
-  { name: "Prices", href: "/prices", icon: FaChartLine },
-  { name: "Blogs", href: "/blog", icon: FaBlog },
+  { name: "Stories", href: "/pehchan", icon: FaBookOpen },
   { name: "Posts", href: "/wall", icon: FaSmile },
+  { name: "Blogs", href: "/blog", icon: FaBlog },
   { name: "Events", href: "/events", icon: FaCalendarAlt },
-  { name: "Stories", href: "/stories", icon: FaBookOpen },
-  /* { name: "Learning", href: "/learning", icon: FaGraduationCap },
-  { name: "Marketplace", href: "/marketplace", icon: FaStore }, */
+  { name: "Prices", href: "/prices", icon: FaChartLine },
+   /*{ name: "Stories", href: "/stories", icon: FaBookOpen },
+  { name: "Learning", href: "/learning", icon: FaGraduationCap },
+  { name: "Marketplace", href: "/marketplace", icon: FaStore }, 
   { name: "About", href: "/about", icon: FaInfoCircle },
-  { name: "Contact", href: "/contact", icon: FaEnvelope },
+  { name: "Contact", href: "/contact", icon: FaEnvelope },*/
 ];
 
 export default function CustomSidebar() {
@@ -61,12 +65,13 @@ export default function CustomSidebar() {
     isPWA,
     user,
     deferredPrompt,
+    socialLinks,
   } = usePatel();
-
+/* Admin links */
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
     { name: "Blog", icon: FileText, path: "/admin/blog" },
-      { name: "Pehchan", path: "/admin/pehchan", icon: FaUsers },
+    { name: "Pehchan", path: "/admin/pehchan", icon: FaUsers },
     { name: "News", icon: FaNewspaper, path: "/admin/news" },
     { name: "Stories", icon: FileText, path: "/admin/stories" },
     { name: "Events", icon: Calendar, path: "/admin/events" },
@@ -195,6 +200,56 @@ export default function CustomSidebar() {
             )}
           </nav>
         </div>
+
+        {!isAdmin && (
+          <div className="mb-6">
+            <h4 className="text-gray-500 uppercase text-xs px-3 mb-2">
+              Social Media
+            </h4>
+            <div className="flex space-x-4 px-3">
+              {socialLinks.instagram && socialLinks.instagram !== "#" && (
+                <a
+                  href={socialLinks.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-pink-500 transition-colors"
+                >
+                  <FaInstagram className="h-5 w-5" />
+                </a>
+              )}
+              {socialLinks.youtube && socialLinks.youtube !== "#" && (
+                <a
+                  href={socialLinks.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-red-500 transition-colors"
+                >
+                  <FaYoutube className="h-5 w-5" />
+                </a>
+              )}
+              {socialLinks.whatsapp && socialLinks.whatsapp !== "#" && (
+                <a
+                  href={socialLinks.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-500 transition-colors"
+                >
+                  <FaWhatsapp className="h-5 w-5" />
+                </a>
+              )}
+              {socialLinks.facebook && socialLinks.facebook !== "#" && (
+                <a
+                  href={socialLinks.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 transition-colors"
+                >
+                  <FaFacebook className="h-5 w-5" />
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         {!isAdmin && !isPWA && deferredPrompt && (
           <div className="-mt-2">

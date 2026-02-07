@@ -67,11 +67,7 @@ export default function VillageForm({ onCancel }) {
           'Authorization': `Bearer ${token}`
         }
       })
-      //if (!res.ok) throw new Error("Failed to save village")
-console.log('sending this data');
-
-       await res.json()
-      //console.log("Saved village:", result)
+      await res.json()
       onCancel()
       fetchVillages()
     } catch (err) {

@@ -17,7 +17,6 @@ import {
 } from "react-icons/fi"
 import { BiLogoWhatsapp, BiLogoYoutube, BiLogoFacebook, BiLogoTelegram, BiLogoInstagram } from "react-icons/bi"
 import Link from "next/link"
-import Image from "next/image"
 import { useParams } from "next/navigation"
 import { usePatel } from "../../../components/patelContext"
 

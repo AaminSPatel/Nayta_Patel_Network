@@ -108,11 +108,13 @@ export default function NewsPage() {
     verifiedNews,
   ]);
 
-  // Pagination
+  // Pagination - account for featured news on page 1
+  const featuredNewsItems = filteredNews.slice(0, 3);
+  const regularNews = filteredNews.slice(3);
   const indexOfLastNews = currentPage * newsPerPage;
   const indexOfFirstNews = indexOfLastNews - newsPerPage;
-  const currentNews = filteredNews.slice(indexOfFirstNews, indexOfLastNews);
-  const totalPages = Math.ceil(filteredNews.length / newsPerPage);
+  const currentNews = regularNews.slice(indexOfFirstNews, indexOfLastNews);
+  const totalPages = Math.ceil(regularNews.length / newsPerPage);
 
   // Get unique locations and categories for filters
   const locations = [
@@ -144,7 +146,7 @@ export default function NewsPage() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        body: submitFormData,
+        body: formData,
       });
 
       const data = await response.json();
@@ -465,10 +467,7 @@ export default function NewsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(currentNews.length < 3
-                ? currentNews.slice(3, currentNews.length)
-                : currentNews
-              ).map((item, index) => (
+              {currentNews.slice(currentPage === 1 ? 3 : 0).map((item, index) => (
                 <motion.div
                   key={index}
                   className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer group"
@@ -570,21 +569,80 @@ export default function NewsPage() {
                   <FaChevronLeft className="text-orange-500" />
                 </motion.button>
 
-                {[...Array(totalPages)].map((_, index) => (
-                  <motion.button
-                    key={index}
-                    onClick={() => setCurrentPage(index + 1)}
-                    className={`px-4 py-2 rounded-full font-bold ${
-                      currentPage === index + 1
-                        ? "bg-orange-500 text-white"
-                        : "bg-white text-orange-500 hover:bg-orange-50"
-                    }`}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    {index + 1}
-                  </motion.button>
-                ))}
+                {/* Generate pagination numbers */}
+                {(() => {
+                  const pages = [];
+                  const delta = 1; // Number of pages to show around current page
+
+                  // Always show first page
+                  if (1 < currentPage - delta) {
+                    pages.push(
+                      <motion.button
+                        key={1}
+                        onClick={() => setCurrentPage(1)}
+                        className="px-4 py-2 rounded-full font-bold bg-white text-orange-500 hover:bg-orange-50"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        1
+                      </motion.button>
+                    );
+                    if (2 < currentPage - delta) {
+                      pages.push(
+                        <span key="start-ellipsis" className="px-2 py-2 text-orange-500">
+                          ...
+                        </span>
+                      );
+                    }
+                  }
+
+                  // Show pages around current page
+                  for (
+                    let i = Math.max(1, currentPage - delta);
+                    i <= Math.min(totalPages, currentPage + delta);
+                    i++
+                  ) {
+                    pages.push(
+                      <motion.button
+                        key={i}
+                        onClick={() => setCurrentPage(i)}
+                        className={`px-4 py-2 rounded-full font-bold ${
+                          currentPage === i
+                            ? "bg-orange-500 text-white"
+                            : "bg-white text-orange-500 hover:bg-orange-50"
+                        }`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        {i}
+                      </motion.button>
+                    );
+                  }
+
+                  // Always show last page
+                  if (totalPages > currentPage + delta) {
+                    if (totalPages - 1 > currentPage + delta) {
+                      pages.push(
+                        <span key="end-ellipsis" className="px-2 py-2 text-orange-500">
+                          ...
+                        </span>
+                      );
+                    }
+                    pages.push(
+                      <motion.button
+                        key={totalPages}
+                        onClick={() => setCurrentPage(totalPages)}
+                        className="px-4 py-2 rounded-full font-bold bg-white text-orange-500 hover:bg-orange-50"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        {totalPages}
+                      </motion.button>
+                    );
+                  }
+
+                  return pages;
+                })()}
 
                 <motion.button
                   onClick={() =>
@@ -694,7 +752,7 @@ function PublishNewsForm({ onSubmit, onCancel, currentUser }) {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
-    category: "",
+    category: "Farming",
     location: "",
     publisher_name: currentUser?.name || "",
   });
@@ -720,7 +778,7 @@ function PublishNewsForm({ onSubmit, onCancel, currentUser }) {
     setIsUploading(true);
 
     try {
-      const token = localStorage.getItem("token");
+      // Prepare form data
       const submitFormData = new FormData();
 
       // Append all form fields
@@ -734,32 +792,19 @@ function PublishNewsForm({ onSubmit, onCancel, currentUser }) {
       if (imageFile) {
         submitFormData.append("image", imageFile);
       }
-      //console.log(submitFormData);
 
-      const response = await fetch(`${path}/api/news`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: submitFormData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to submit news");
-      }
-
-      // Call onSubmit callback if provided
+      // Call onSubmit callback with form data
       if (onSubmit) {
-        await onSubmit(data);
+        console.log('submitFormData',submitFormData);
+        
+        await onSubmit(submitFormData);
       }
 
       // Reset form on success
       setFormData({
         title: "",
         content: "",
-        category: "",
+        category: "Farming",
         location: "",
         publisher_name: currentUser?.name || "",
       });

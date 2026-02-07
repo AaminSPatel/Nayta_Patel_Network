@@ -203,9 +203,30 @@ const similarNews = news.filter(
               <span>{new Date(selectedNews?.publish_date).toLocaleDateString('en-IN')}</span>
             </div>
             </div>
-            <div className="flex items-center gap-2  bg-orange-300 px-3 py-1 rounded-full">
-              <FaUser />
-              <span>{selectedNews?.publisher?.fullname}</span>
+            <div className="flex items-center gap-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white px-4 py-2 rounded-full shadow-md">
+              {selectedNews?.publisher?.profilepic?.url ? (
+                <img
+                  src={selectedNews.publisher.profilepic.url}
+                  alt={selectedNews.publisher.fullname}
+                  className="w-8 h-8 rounded-full border-2 border-white"
+                />
+              ) : (
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <FaUser className="text-white text-sm" />
+                </div>
+              )}
+              <div className="flex flex-col">
+                <span className="font-semibold text-sm">{selectedNews?.publisher?.fullname}</span>
+                {selectedNews?.publisher?.role === 'ambassador' && (
+                  <span className="text-xs opacity-90">Ambassador</span>
+                )}
+              </div>
+              {selectedNews?.publisher?.mobile && (
+                <div className="flex items-center gap-1 text-xs opacity-90">
+                  <span>📱</span>
+                  <span>{selectedNews.publisher.mobile}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -293,7 +314,8 @@ const RecommendedNews = ({ news, currentId }) => {
     (item) =>
       item._id !== currentId &&
       (item.category === selectedNews?.category ||
-        item.location === selectedNews?.location)
+        item.location === selectedNews?.location) &&
+      item.verificationStatus === 'verified'
   );
 
   if (!similarNews.length) return null;

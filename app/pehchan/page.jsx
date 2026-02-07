@@ -11,9 +11,13 @@ import {
   FiChevronRight,
   FiDownload,
   FiRotateCcw,
+  FiBook,
+  FiLogIn,
+  FiUser,
+  FiMapPin,
+  FiSend,
 } from "react-icons/fi"
 import Link from "next/link"
-import Image from "next/image"
 import html2canvas from "html2canvas"
 import { usePatel } from "../../components/patelContext"
 import BusinessCard4 from "../../components/BusinessCard4.jsx";
@@ -31,7 +35,7 @@ import { FaIdCard } from "react-icons/fa"
 const categories = ["सभी", "कृषि", "व्यवसाय", "तकनीकी", "शिक्षा", "स्वास्थ्य"]
 const villages = ["सभी", "सरसावा", "रामपुर", "गोकुलपुर"]
 const professions = ["सभी", "किसान", "दर्जी", "मैकेनिक", "शिक्षिका", "दुकानदार", "नर्स"]
-
+/* 
 function ImageCarousel({ image, autoPlay = true }) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -141,7 +145,7 @@ function BusinessCard({ story }) {
     </div>
   )
 }
-
+ */
 
 function StoryCard({ story, index }) {
   const [liked, setLiked] = useState(false)
@@ -669,7 +673,7 @@ export default function HomePage() {
         {/* Header Section */}
         <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent mb-6 pt-2">
-            मेरा काम मेरी पहचान
+            अपने काम से चमकते नाम
           </h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -704,6 +708,204 @@ export default function HomePage() {
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         )}
       </div>
+              <SuccessStories/>
+
     </div>
   )
 }
+
+
+const SuccessStories = () => {
+  // const { data: session } = useSession()
+  const [formData, setFormData] = useState({
+    name: "",
+    story: "",
+    village: "",
+  });
+  const { user, path } = usePatel();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(path + "/api/stories/apply", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setIsSuccess(true);
+        setFormData({ name: "", story: "", village: "" });
+      }
+    } catch (error) {
+      console.error("Error submitting story:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-emerald-50 to-white">
+      <div className="max-w-4xl mx-auto">
+        {!user ? (
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white p-8 rounded-xl shadow-lg text-center"
+          >
+            <FiBook className="mx-auto text-5xl text-emerald-600 mb-4" />
+            <h3 className="text-2xl font-bold text-gray-800 mb-3">
+              अपनी सफलता की कहानी साझा करें!
+            </h3>
+            <p className="text-gray-600 mb-6">
+              क्या आपने कोई अनोखी सफलता हासिल की है? हमारे समुदाय के साथ बाँटें
+              और सैकड़ों किसानों को प्रेरित करें!
+            </p>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => signIn()}
+              className="px-6 py-3 bg-emerald-600 text-white rounded-lg font-medium flex items-center justify-center mx-auto gap-2"
+            >
+              <FiLogIn /> लॉग इन करके शुरू करें
+            </motion.button>
+            <p className="mt-4 text-sm text-gray-500">
+              केवल पंजीकृत सदस्य ही कहानियाँ साझा कर सकते हैं
+            </p>
+          </motion.div>
+        ) : isSuccess ? (
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white p-8 rounded-xl shadow-lg text-center"
+          >
+            <div className="text-emerald-600 text-5xl mb-4">✓</div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-3">
+              धन्यवाद! आपकी कहानी सबमिट हो गई है
+            </h3>
+            <p className="text-gray-600 mb-6">
+              हमारी टीम आपकी प्रेरक कहानी की समीक्षा करेगी और जल्द ही इसे हमारे
+              समुदाय के साथ साझा करेगी।
+            </p>
+            <button
+              onClick={() => setIsSuccess(false)}
+              className="px-6 py-2 border border-emerald-600 text-emerald-600 rounded-lg font-medium"
+            >
+              एक और कहानी साझा करें
+            </button>
+          </motion.div>
+        ) : (
+          <motion.form
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onSubmit={handleSubmit}
+            className="bg-white p-6 sm:p-8 rounded-xl shadow-lg"
+          >
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold text-emerald-800 mb-2">
+                अपनी सफलता की कहानी लिखें
+              </h3>
+              <p className="text-gray-600">
+                आपकी कहानी हजारों किसान भाइयों को नई राह दिखा सकती है!
+              </p>
+            </div>
+
+            <div className="space-y-5">
+              <div>
+                <label className="block text-gray-700 mb-2 flex items-center gap-1">
+                  <FiUser className="text-emerald-600" /> आपका नाम
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className=" text-gray-700 mb-2 flex items-center gap-1">
+                  <FiMapPin className="text-emerald-600" /> आपका गाँव
+                </label>
+                <input
+                  type="text"
+                  value={formData.village}
+                  onChange={(e) =>
+                    setFormData({ ...formData, village: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 mb-2 flex items-center gap-1">
+                  <FiBook className="text-emerald-600" /> आपकी सफलता की कहानी
+                </label>
+                <textarea
+                  value={formData.story}
+                  onChange={(e) =>
+                    setFormData({ ...formData, story: e.target.value })
+                  }
+                  rows={6}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  placeholder="हमें बताएं कि आपने कैसे सफलता हासिल की... (कम से कम 100 शब्द)"
+                  required
+                  minLength={100}
+                />
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 bg-emerald-600 text-white rounded-lg font-medium flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    सबमिट कर रहे हैं...
+                  </>
+                ) : (
+                  <>
+                    <FiSend /> अपनी कहानी साझा करें
+                  </>
+                )}
+              </motion.button>
+            </div>
+          </motion.form>
+        )}
+      </div>
+    </section>
+  );
+};

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   FiSettings,
   FiEdit2,
@@ -12,11 +12,7 @@ import {
   FiMessageSquare,
   FiFileText,
   FiStar,
-  FiHeart,
-  FiChevronDown,
-  FiChevronUp,
-  FiCalendar,
-  FiEye,
+
 } from "react-icons/fi";
 import { FaRegThumbsUp } from "react-icons/fa";
 import ProfileHeader from "./profile-header";

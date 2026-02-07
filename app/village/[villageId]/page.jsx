@@ -653,7 +653,7 @@ const RecommendedNews = ({ news, dist }) => {
   const router = useRouter();
 const {formatDate}= usePatel()
   const filteredNews = news.filter((item) =>
-    item.location?.toLowerCase().includes(dist.toLowerCase())
+    item.location?.toLowerCase().includes(dist.toLowerCase()) && item.verificationStatus === 'verified'
   );
 
   //if (!filteredNews.length) return news.slice(0.3);
@@ -674,7 +674,7 @@ const {formatDate}= usePatel()
           1024: { slidesPerView: 3 },
         }}
       >
-        {(filteredNews.length > 3 ? filteredNews : news.slice(0,4)).map((item) => (
+        {(filteredNews.length > 3 ? filteredNews : news.filter(item => item.verificationStatus === 'verified').slice(0,4)).map((item) => (
           <SwiperSlide key={item._id}>
             <div
               onClick={() => router.push(`/news/${item._id}`)}

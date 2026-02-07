@@ -69,6 +69,12 @@ const [isPWA, setIsPWA] = useState(false);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const siteBrand = "Nayta Patel Network";
   const siteLogo = "/tactor.png";
+  const socialLinks = {
+    whatsapp:'https://chat.whatsapp.com/ECjLqsnPeWm3mU4UNC362s',
+    facebook:'https://www.facebook.com/share/1DwJ8YHjuJ/',
+    instagram:'https://www.instagram.com/nayta_patel_network/',
+    youtube:'https://youtube.com/@naytapatelnetwork?si=uLOzdrY0UMbxllEE',
+  }
 
   const tags = [
     // Farming & Agriculture
@@ -427,8 +433,12 @@ const fetchPosts = useCallback(async () => {
   const fetchNews = useCallback(async () => {
     try {
       const response = await axios.get(path + "/api/news");
-      setNews(response.data.reverse());
-      //console.log('news',response.data);
+      // Filter out duplicates based on _id to prevent double posts
+      const uniqueNews = response.data.filter((item, index, self) =>
+        index === self.findIndex((t) => t._id === item._id)
+      );
+      setNews(uniqueNews.reverse());
+      //console.log('news',uniqueNews);
     } catch (err) {
       setError(err.message);
     }
@@ -996,7 +1006,7 @@ function removeAsterisks(str) {
         news,formatContent,
         setNews,
         path,
-        posts,
+        posts,socialLinks,
         setPosts,
         blogs,
         setBlogs,
