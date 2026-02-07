@@ -460,8 +460,13 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
     <EventCubeSlider />
   </div>
 </section>
+
+    <section className="overflow-hidden">
+      
       <CommunityCarousel doubledGallery={doubledGallery} />
+      </section>  
       {/* --- Compact Community Section --- */}
+   
       <section className="py-8 bg-emerald-900 text-white overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-6">
