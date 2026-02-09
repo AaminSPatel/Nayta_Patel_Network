@@ -437,13 +437,13 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
 
       {!user ? (
        <Link href="/signup">
-            <button className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl text-lg font-bold shadow-lg shadow-emerald-900/20 transition-all active:scale-95">
+            <button className="w-auto bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl text-lg font-bold shadow-lg shadow-emerald-900/20 transition-all active:scale-95">
               अभी जुड़ें (Sign Up)
             </button>
           </Link>
       ) : (
         <div className="flex flex-col gap-3">
-         <Link href="https://chat.whatsapp.com/IABp5obYWKEIMcHLVTDkNs" className="w-full sm:w-auto">
+         <Link href="https://chat.whatsapp.com/IABp5obYWKEIMcHLVTDkNs" className="w-auto">
             <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl text-lg font-bold flex items-center justify-center gap-3 shadow-xl shadow-green-900/20 transition-all animate-bounce-subtle">
               <FaWhatsapp size={24} /> 
               WhatsApp ग्रुप ज्वाइन करें
@@ -512,7 +512,7 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
                 <div
                   key={i}
                   onClick={item.action ? item.action : null}
-                  className="flex-shrink-0 w-40 bg-white/10 p-4 rounded-xl border border-white/10 backdrop-blur-sm active:scale-95 transition-all"
+                  className="flex-shrink-0 w-36 bg-white/10 p-4 rounded-xl border border-white/10 backdrop-blur-sm active:scale-95 transition-all"
                 >
                   <div
                     className={`${item.color} w-10 h-10 rounded-lg flex items-center justify-center mb-3`}
@@ -1280,12 +1280,7 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
 
 const CommunityCarousel = ({ doubledGallery }) => {
   const getTagColor = (cat) => {
-    // Apne categories ke matching names yahan check karein
-    if (
-      cat?.includes("Gaon") ||
-      cat?.includes("आपका गाँव") ||
-      cat?.includes("गाँव")
-    )
+    if (cat?.includes("Gaon") || cat?.includes("आपका गाँव") || cat?.includes("गाँव"))
       return "bg-amber-500/20";
     if (cat === "News" || cat === "समाचार") return "bg-red-500/20";
     if (cat === "Ambassador" || cat === "एम्बेसडर") return "bg-purple-500/20";
@@ -1293,71 +1288,91 @@ const CommunityCarousel = ({ doubledGallery }) => {
     return "bg-emerald-600/20";
   };
 
+  const isLoading = !doubledGallery || doubledGallery.length === 0;
+
   return (
     <div className="py-8 bg-white overflow-hidden relative border-y border-gray-100">
       {/* Header Section */}
       <div className="px-6 mb-6 flex items-center justify-between">
         <div>
-          <h3 className="text-black font-bold text-xl glegoo">
-            समाज की झलकियां
-          </h3>
+          <h3 className="text-black font-bold text-xl glegoo">समाज की झलकियां</h3>
           <div className="h-1 w-12 bg-emerald-500 rounded-full mt-1"></div>
         </div>
-        <span className="text-amber-500 text-xs font-medium animate-pulse">
-          ● Live Feed
-        </span>
+        <span className="text-amber-500 text-xs font-medium animate-pulse">● Live Feed</span>
       </div>
 
-      {/* Animation Container */}
-      <div className="flex relative w-full">
+      <div className="flex relative w-full items-center">
         <motion.div
-          className="flex gap-4 px-4"
-          animate={{ x: ["0%", "-50%"] }}
+          className="flex gap-8 px-4 py-10" // Padding badhayi hai taki scale hote waqt card kate nahi
+          animate={!isLoading ? { x: ["0%", "-50%"] } : {}}
           transition={{
             x: {
               repeat: Infinity,
               repeatType: "loop",
-              duration: 35,
+              duration: 40, // Thoda slow kiya taki effect dikhe
               ease: "linear",
             },
           }}
         >
-          {doubledGallery?.map((item, index) => (
-            <Link href={item.link || "#"} key={index}>
-              <div className="flex-shrink-0 w-44 h-56 rounded-3xl overflow-hidden relative group border border-gray-200 shadow-xl active:scale-95 transition-transform bg-gray-100">
-                {/* --- Simple HTML Image Tag --- */}
-                <img
-                  src={item.url}
-                  alt={item.label}
-                  loading="lazy" // Sirf screen ke paas aane par load hogi (Data save karega)
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
-                />
+          {isLoading ? (
+            [...Array(6)].map((_, i) => (
+              <div key={i} className="flex-shrink-0 w-44 h-56 rounded-3xl bg-gray-200 animate-pulse" />
+            ))
+          ) : (
+            doubledGallery?.map((item, index) => (
+              <motion.div
+                key={index}
+                // --- Scale Up/Down Logic ---
+                initial={{ scale: 0.85,  opacity: 0.7 }}
+                whileInView={{ scale: 1.1, opacity: 1 }}
+                viewport={{ 
+                    once: false, 
+                    amount: 0.8, // Jab card 80% screen mein dikhega tab bda hoga
+                    margin: "0px -10% 0px -10%" // Center focus badhane ke liye
+                }}
+                transition={{ duration: 0.5 }}
+                className="flex-shrink-0"
+              >
+                <Link href={item.link || "#"}>
+                  <div className="w-44 h-56 rounded-3xl overflow-hidden relative group border border-gray-200 shadow-xl active:scale-95 transition-transform bg-gray-100">
+                    <img
+                      src={item.url}
+                      alt={item.label}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+                    />
+                    
+                    <div className="absolute top-3 left-3 z-20">
+                      <span className={`${getTagColor(item.category)} text-white text-[9px] font-black uppercase px-2.5 py-1 rounded-lg shadow-lg backdrop-blur-sm`}>
+                        {item.category}
+                      </span>
+                    </div>
 
-                {/* Top Category Tag */}
-                <div className="absolute top-3 left-3 z-20">
-                  <span
-                    className={`${getTagColor(item.category)} text-white text-[9px] font-black uppercase px-2.5 py-1 rounded-lg shadow-lg backdrop-blur-sm`}
-                  >
-                    {item.category}
-                  </span>
-                </div>
-
-                {/* Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
-                <div className="absolute inset-0 z-20 flex items-end p-4">
-                  <p className="text-white text-xs font-semibold leading-tight line-clamp-2 drop-shadow-md">
-                    {item.label}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+                    <div className="absolute inset-0 z-20 flex items-end p-4">
+                      <p className="text-white text-xs font-semibold leading-tight line-clamp-2">
+                        {item.label}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))
+          )}
         </motion.div>
 
-        {/* Fades - White background ke liye from-white use kiya he */}
-        <div className="absolute inset-y-0 left-0 w-12 md:w-24 bg-gradient-to-r from-white via-white/50 to-transparent z-30 pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-12 md:w-24 bg-gradient-to-l from-white via-white/50 to-transparent z-30 pointer-events-none" />
+        {/* Shadow Fades */}
+      {/*   <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-emerald-400/40 via-emerald-400/20 to-transparent z-30 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-emerald-400/40 via-emerald-400/20 to-transparent z-30 pointer-events-none" />
+         <div className="absolute inset-y-0 top-0 w-full h-8 bg-gradient-to-b from-emerald-400/40 via-emerald-400/20 to-transparent z-30 pointer-events-none" />
+         */}
+         <div className="absolute flex sm:hidden inset-x-0 -bottom-10 w-full h-20 z-30 pointer-events-none" >
+        
+         
+         <Image src={'/bgcorosel.png'} alt="" fill/>
+         </div>
       </div>
     </div>
   );
 };
+
