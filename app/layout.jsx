@@ -10,19 +10,19 @@ import InstallPWA from "../components/InstallPWA";
 const inter = Inter({ subsets: ["latin"] });
 import { Suspense } from "react";
 import PwaTabBar from "../components/PwaTabBar";
-/* import AdSenseProvider from '../components/AdSenseProvider';
- */ import { ThemeProvider } from "../components/theme-provider";
+import AdSenseProvider from "../components/AdSenseProvider";
+import { ThemeProvider } from "../components/theme-provider";
 
 export const metadata = {
   title: {
-    default: "Nayta Patel Network - Digital Voice of Rural India",
+    default: "Nayta Patel Network - Gramin Nayta Patel Samaj ki Aawaj",
     template: "%s | Nayta Patel Samaj",
   },
   description:
     "नायता पटेल नेटवर्क - नायता पटेल समाज का प्रमुख प्लेटफॉर्म | Daily news, inspiring stories, agricultural tips, and community updates for Nayta Patel members. Join us to empower rural communities through education, farming innovations, and social development initiatives. नायता पटेल समाज की ताज़ा खबरें, सफलता की कहानियाँ, कृषि ज्ञान और सामुदायिक कार्यक्रमों की जानकारी।",
   keywords: [
     "Nayta Patel Samaj",
-    "Patel Community",
+    "Nayta Patel Community",
     "Rural Development India",
     "Agricultural Empowerment",
     "Digital India Villages",
@@ -32,10 +32,10 @@ export const metadata = {
     "Nyta Patel",
     "Patel Nayta",
     "Nayta Patel Samaj",
-    "Nayta Samaj",
+    "Nayta Samaj Ujjain",
     "Nayta Patel in Indore",
     "Nayata Patel Network",
-    "Patel Nayata",
+    "Patel Nayata News",
     "Indore",
     "Ujjain",
     "Dewas",
@@ -49,10 +49,10 @@ export const metadata = {
     "भारत",
     "ग्रामीण विकास",
     "किसान सशक्तिकरण",
-    "डिजिटल भारत गाँव",
+    "Nayta Patel News",
   ],
   generator: "Nayta Patel Network and Community",
-  applicationName: "Nayta Patel Samaj Portal",
+  applicationName: "Nayta Patel Network",
   authors: [{ name: "Nayta Patel Network Team" }],
   creator: "Nayta Patel Community Development Group",
   publisher: "Nayta Patel Digital Initiative",
@@ -151,7 +151,12 @@ export default function RootLayout({ children }) {
         {/* Windows Pinned Sites */}
         <meta name="msapplication-TileColor" content="#047857" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
-     <script src="https://cdn.counter.dev/script.js" data-id="95795ebe-d6a8-4887-abef-7dbb03a06eb2" data-utcoffset="6"></script>
+     <script
+        src="https://cdn.counter.dev/script.js"
+        data-id="95795ebe-d6a8-4887-abef-7dbb03a06eb2"
+        data-utcoffset="6"
+        defer
+      ></script>
       </head>
       <body className={inter.className}>
         <Suspense fallback={<Loader />}>
@@ -170,6 +175,7 @@ export default function RootLayout({ children }) {
                   <Header />
                   <main className="flex-1">
                     <GoogleAnalytics />
+                    <AdSenseProvider />
                     {<WhatsAppGroupButton />}
                     {children}
                     <InstallPWA />

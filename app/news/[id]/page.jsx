@@ -1,7 +1,7 @@
 "use client"
 import { useParams, useRouter } from 'next/navigation';
-import { FaTimes, FaChevronLeft, FaChevronRight, FaShare, FaEye, FaCalendarAlt, FaUser, FaMapMarkerAlt, FaWhatsapp, FaFacebook, FaTelegram, FaTwitter } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+import { FaTimes,  FaShare, FaEye, FaCalendarAlt, FaUser, FaMapMarkerAlt, FaWhatsapp, FaFacebook, FaTelegram, FaTwitter } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { usePatel } from '../../../components/patelContext';
 import Head from 'next/head';

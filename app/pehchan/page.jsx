@@ -54,7 +54,7 @@ function ImageCarousel({ image, autoPlay = true }) {
       <div className="relative w-full h-48 overflow-hidden rounded-t-xl">
         <Image
           src={image[0] || "/placeholder.svg"}
-          alt="Story image"
+            alt="नायता पटेल समाज की प्रेरक कहानी – Story preview"
           fill
           className="object-cover transition-transform duration-300 hover:scale-105"
         />
@@ -73,7 +73,13 @@ function ImageCarousel({ image, autoPlay = true }) {
           transition={{ duration: 0.5 }}
           className="absolute inset-0"
         >
-          <Image src={image[currentIndex] || "/placeholder.svg"} alt="Story image" fill className="object-cover" />
+          <Image
+            src={image[currentIndex] || "/placeholder.svg"}
+            alt="नायता पटेल समाज की प्रेरक कहानी – Story preview"
+            fill
+            loading="lazy"
+            className="object-cover"
+          />
         </motion.div>
       </AnimatePresence>
 
@@ -329,9 +335,10 @@ Array.from(businessCard).forEach(el => {
       <div className={`relative ${isFlipped ? "h-auto" : "h-full"}`}>
         {/* Front Side - Story Card */}
         <div className={`bg-white rounded-xl shadow-lg overflow-hidden border border-emerald-100 transition-all duration-300 ${isFlipped ? "hidden" : "block"}`}>
-          <img 
-            src={story.image.url} 
-            alt={story.name} 
+          <img
+            src={story.image.url}
+            alt={`${story.name} – ${story.profession || "प्रेरक कहानी"} | नायता पटेल समाज पहचान`}
+            loading="lazy"
             className="w-full h-56 sm:h-56 md:h-64 object-cover"
           />
           

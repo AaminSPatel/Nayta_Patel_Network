@@ -22,7 +22,7 @@ const sampleAds = [
     bgColor: "bg-white",
     textColor: "text-emerald-800",
   },
-/*  {
+  /*  {
     id: 2,
     title: "Safar Sathi",
     description: "सस्ते दामों पर Luxury स्टे। इंदौर, उज्जैन और देवास के होटल्स सिर्फ Safar Sathi पर!",
@@ -84,6 +84,29 @@ export default function AdSection() {
 
   if (!showAds) return null;
 
+  useEffect(() => {
+    // Render AdSense after Script is loaded (retry a few times)
+    if (typeof window === "undefined") return;
+
+    let attempts = 0;
+    const maxAttempts = 10; // ~10s
+    const interval = setInterval(() => {
+      attempts += 1;
+      try {
+        if (window.adsbygoogle && typeof window.adsbygoogle.push === "function") {
+          window.adsbygoogle.push({});
+          clearInterval(interval);
+        } else if (attempts >= maxAttempts) {
+          clearInterval(interval);
+        }
+      } catch (e) {
+        if (attempts >= maxAttempts) clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="my-8 px-4 relative">
       {/* Close button */}
@@ -99,6 +122,16 @@ export default function AdSection() {
         <h3 className="text-lg font-semibold text-center text-gray-700 mb-4">
           विज्ञापन
         </h3>
+
+        {/* AdSense ad slot */}
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block" }}
+          data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}
+          data-ad-slot={process.env.NEXT_DATA_AD_SLOT}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
 
         <Swiper
           modules={[Autoplay, Pagination, Navigation]}

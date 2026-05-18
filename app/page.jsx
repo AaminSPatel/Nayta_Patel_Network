@@ -337,7 +337,7 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
     <div className="flex flex-col min-h-screen bg-white">
       <Head>
         <title>
-          Nayta Patel Samaj | Empowering Farmers & Rural Communities in MP
+          नायता पटेल समाज | Mandi Prices, Village News & Community Hub – Indore, MP
         </title>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -346,11 +346,11 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="description"
-          content="A platform for daily mandi prices, village data, milk production updates, and rural development in Indore, Ujjain, Dhar, Dewas, Ratlam.Based on Nayata Patel samaj development, and youth growth in nayata patel samaj."
+          content="नायता पटेल समाज का आधिकारिक मंच। Daily mandi bhav, village directory, community news, inspiring stories from Indore, Ujjain, Dewas, Dhar, Ratlam. 250+ villages connected."
         />
         <meta
           name="keywords"
-          content="farming, milk, mandi prices, rural development, Nayta Patel, Indore, Ujjain, Dhar, Dewas, Ratlam, kisan, kisani, kheti, gaon, samaj, Nayata patel , nayata patel samaj"
+          content="nayta patel samaj, नायता पटेल समाज, mandi bhav indore, nayta patel network, village directory mp, dewas mandi price, ujjain kisan news, dhar gaon, ratlam samaj, nayata patel"
         />
         <meta name="author" content="Nayta Patel Network" />
 
@@ -358,11 +358,11 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
         <meta property="og:url" content={`${siteUrl}`} />
         <meta
           property="og:title"
-          content="Nayta Patel Samaj | Empowering Farmers & Rural Communities in MP"
+          content="नायता पटेल समाज | Mandi Prices, Village News & Community Hub"
         />
         <meta
           property="og:description"
-          content="Join 250+ villages in transforming agriculture and community life."
+          content="250+ गाँव, रोज़ाना मंडी भाव, समाज की खबरें — सब एक जगह। Join Nayta Patel Network."
         />
         <meta property="og:image" content={`${siteUrl}/hom2.jpeg`} />
 
@@ -370,21 +370,79 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
         <meta name="twitter:url" content={`${siteUrl}`} />
         <meta
           name="twitter:title"
-          content="Nayta Patel Samaj | Farming & Rural Growth Platform"
+          content="नायता पटेल समाज – Daily Mandi Bhav & Village News | Indore MP"
         />
         <meta
           name="twitter:description"
-          content="Stay updated with mandi prices, farming guides, and village empowerment programs."
+          content="नायता पटेल समाज का digital hub। Mandi prices, community stories, village directory — Indore, Ujjain, Dewas, Dhar, Ratlam."
         />
         <meta name="twitter:image" content={`${siteUrl}/home.png`} />
 
         <link rel="canonical" href={`${siteUrl}`} />
+
+        <script type="application/ld+json">{`
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://naytapatelnetwork.vercel.app/#website",
+      "url": "https://naytapatelnetwork.vercel.app/",
+      "name": "Nayta Patel Network",
+      "alternateName": ["नायता पटेल नेटवर्क", "नायता पटेल समाज", "नायता पटेल समाज"],
+      "description": "Community platform for Nayta Patel Samaj in Madhya Pradesh — mandi prices, village directory, news, and inspiring stories",
+      "inLanguage": ["hi", "en"],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://naytapatelnetwork.vercel.app/news?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://naytapatelnetwork.vercel.app/#organization",
+      "name": "Nayta Patel Network",
+      "alternateName": "नायता पटेल समाज",
+      "url": "https://naytapatelnetwork.vercel.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://naytapatelnetwork.vercel.app/logo1.png",
+        "width": 630,
+        "height": 630
+      },
+      "description": "Digital platform empowering Nayta Patel Samaj communities across Madhya Pradesh",
+      "areaServed": [
+        {"@type": "City", "name": "Indore"},
+        {"@type": "City", "name": "Ujjain"},
+        {"@type": "City", "name": "Dewas"},
+        {"@type": "City", "name": "Dhar"},
+        {"@type": "City", "name": "Ratlam"}
+      ],
+      "sameAs": []
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://naytapatelnetwork.vercel.app/#webpage",
+      "url": "https://naytapatelnetwork.vercel.app/",
+      "name": "नायता पटेल समाज | Mandi Prices, Village News & Community Hub – Indore, MP",
+      "isPartOf": {"@id": "https://naytapatelnetwork.vercel.app/#website"},
+      "about": {"@id": "https://naytapatelnetwork.vercel.app/#organization"},
+      "description": "नायता पटेल समाज का आधिकारिक मंच। Daily mandi bhav, village directory, community news from Indore, Ujjain, Dewas, Dhar, Ratlam.",
+      "inLanguage": ["hi", "en"]
+    }
+  ]
+}
+`}</script>
+
         <link rel="icon" href={`${siteUrl}/favicon.ico`} />
       </Head>
 
-     {/* Hero Section */}
+      {/* Hero Section */}
 {/* Hero Section */}
-<section className="relative h-[460px] flex items-center">
+      <section className="relative h-[460px] flex items-center">
   <div className="absolute inset-0 z-0 sm:w-auto w-screen">
     <Image
       src="/about1.avif"
@@ -408,6 +466,7 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
           नायता पटेल नेटवर्क{" "}
         </span>{" "}
         – इत्तेहाद, तरक्की और खुशहाली की डिजिटल आवाज़।
+        <span className="sr-only"> - Nayta Patel Samaj Community Platform Indore Madhya Pradesh</span>
       </h1>
       
       {user && (
@@ -761,7 +820,11 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
       {/* Event section */}
       <section className="relative w-full h-full sm:hidden flex items-center justify-center py-12 p-12 flex-col">
         <div className="absolute inset w-full h-28 shidden z-0 bottom-0 left-0">
-          <img src="./bg2.jpg" alt="" />
+          <img
+            src="./bg2.jpg"
+            alt="नायता पटेल समाज के आगामी कार्यक्रम और इवेंट्स – Rural MP community events"
+            loading="eager"
+          />
         </div>
         <motion.div
           initial="hidden"
@@ -1337,7 +1400,7 @@ const CommunityCarousel = ({ doubledGallery }) => {
                   <div className="w-44 h-56 rounded-3xl overflow-hidden relative group border border-gray-200 shadow-xl active:scale-95 transition-transform bg-gray-100">
                     <img
                       src={item.url}
-                      alt={item.label}
+                      alt={`${item.category || 'समाज'} – ${item.label?.substring(0,60) || 'नायता पटेल नेटवर्क'}`}
                       loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
                     />
@@ -1367,9 +1430,11 @@ const CommunityCarousel = ({ doubledGallery }) => {
          <div className="absolute inset-y-0 top-0 w-full h-8 bg-gradient-to-b from-emerald-400/40 via-emerald-400/20 to-transparent z-30 pointer-events-none" />
          */}
          <div className="absolute flex sm:hidden inset-x-0 -bottom-10 w-full h-20 z-30 pointer-events-none" >
-        
-         
-         <Image src={'/bgcorosel.png'} alt="" fill/>
+          <Image
+            src={"/bgcorosel.png"}
+            alt="नायता पटेल समाज की झलकियां – Community Carousel"
+            fill
+          />
          </div>
       </div>
     </div>
