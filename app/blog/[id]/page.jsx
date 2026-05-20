@@ -2,9 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getContentLengthWarningElement } from "../../../lib/minWords";
 import { DashboardTitle } from "../../../components/DashboardTitle";
-import { format } from "date-fns";
 import { FaArrowRight, FaFacebook, FaInstagram, FaLinkedin, FaLink, FaShareAlt, FaTwitter, FaWhatsapp } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
 
 export async function generateMetadata({ params }) {
   const { id } = params;

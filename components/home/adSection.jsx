@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Script from "next/script"; // Imported for safe script injection
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
@@ -10,7 +11,6 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-// Sample ad data - you can replace this with your actual ads
 const sampleAds = [
   {
     id: 1,
@@ -21,34 +21,14 @@ const sampleAds = [
     cta: "Install Now",
     bgColor: "bg-white",
     textColor: "text-emerald-800",
-  },
-  /*  {
-    id: 2,
-    title: "Safar Sathi",
-    description: "सस्ते दामों पर Luxury स्टे। इंदौर, उज्जैन और देवास के होटल्स सिर्फ Safar Sathi पर!",
-    image: "/safarsathi.png",
-    link: "exploreujjain.vercel.app/",
-    cta: "Visit Now",
-    bgColor: "bg-amber-50",
-    textColor: "text-amber-800",
-  },
-  
-  {
-    id: 3,
-    title: "समुदायिक कार्यक्रम",
-    description: "आगामी किसान सम्मेलन में भाग लें",
-    image: "/c3.png",
-    link: "/events/farmer-conference",
-    cta: "रजिस्टर करें",
-    bgColor: "bg-blue-50",
-    textColor: "text-blue-800"
-  } */
+  }
 ];
 
 export default function AdSection() {
   const [ads, setAds] = useState(sampleAds);
   const [showAds, setShowAds] = useState(true);
   const [adDismissed, setAdDismissed] = useState(false);
+  const [adScriptLoaded, setAdScriptLoaded] = useState(false);
 
   // Check if user has dismissed ads
   useEffect(() => {
@@ -64,6 +44,25 @@ export default function AdSection() {
     setAdDismissed(true);
     localStorage.setItem("adsDismissed", "true");
   };
+
+  // Safe Push logic when script actually emits load event
+  useEffect(() => {
+    if (!adScriptLoaded || !showAds || adDismissed) return;
+
+    const pushAd = () => {
+      try {
+        if (typeof window !== "undefined" && window.adsbygoogle) {
+          window.adsbygoogle.push({});
+        }
+      } catch (e) {
+        console.error("AdSense push error: ", e);
+      }
+    };
+
+    // Small timeout ensures DOM elements are rendered safely by Next.js before running push
+    const timer = setTimeout(pushAd, 500);
+    return () => clearTimeout(timer);
+  }, [adScriptLoaded, showAds, adDismissed]);
 
   if (adDismissed) {
     return (
@@ -84,31 +83,16 @@ export default function AdSection() {
 
   if (!showAds) return null;
 
-  useEffect(() => {
-    // Render AdSense after Script is loaded (retry a few times)
-    if (typeof window === "undefined") return;
-
-    let attempts = 0;
-    const maxAttempts = 10; // ~10s
-    const interval = setInterval(() => {
-      attempts += 1;
-      try {
-        if (window.adsbygoogle && typeof window.adsbygoogle.push === "function") {
-          window.adsbygoogle.push({});
-          clearInterval(interval);
-        } else if (attempts >= maxAttempts) {
-          clearInterval(interval);
-        }
-      } catch (e) {
-        if (attempts >= maxAttempts) clearInterval(interval);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section className="my-8 px-4 relative">
+      {/* Google AdSense Script Injected Safely */}
+      <Script
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+        onLoad={() => setAdScriptLoaded(true)}
+      />
+
       {/* Close button */}
       <button
         onClick={dismissAds}
@@ -123,16 +107,20 @@ export default function AdSection() {
           विज्ञापन
         </h3>
 
-        {/* AdSense ad slot */}
-        <ins
-          className="adsbygoogle"
-          style={{ display: "block" }}
-          data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}
-          data-ad-slot={process.env.NEXT_DATA_AD_SLOT}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
+        {/* AdSense ad slot wrapper to prevent layout shift */}
+        <div className="w-full text-center my-4 overflow-hidden min-h-[100px]">
+          <ins
+            className="adsbygoogle"
+            style={{ display: "block" }}
+            data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}
+            // Fixed variable name to be client accessible if you rename it in .env, or use standard fallback string
+            data-ad-slot={process.env.NEXT_PUBLIC_DATA_AD_SLOT || "YOUR_FALLBACK_SLOT_ID"} 
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          />
+        </div>
 
+        {/* Local Ads Swiper */}
         <Swiper
           modules={[Autoplay, Pagination, Navigation]}
           spaceBetween={20}
@@ -150,7 +138,7 @@ export default function AdSection() {
             dynamicBullets: true,
           }}
           navigation={true}
-          loop={true}
+          loop={ads.length > 1} // Disables loop glitch if only 1 ad is present
           className="ad-swiper pb-10"
         >
           {ads.map((ad) => (
@@ -159,7 +147,7 @@ export default function AdSection() {
                 whileHover={{ scale: 0.99 }}
                 className={`${ad.bgColor} rounded-xl overflow-hidden shadow-xl border border-gray-100 h-full flex mb-10`}
               >
-                <div className="relative h-64 w-64">
+                <div className="relative h-64 w-64 flex-shrink-0">
                   <Image
                     src={ad.image || "/placeholder.svg"}
                     alt={ad.title}
@@ -168,24 +156,26 @@ export default function AdSection() {
                   />
                 </div>
 
-                <div className="items-center flex flex-col justify-center py-2">
+                <div className="items-center flex flex-col justify-center py-2 w-full">
                   <div className="py-2 px-4 flex-grow flex flex-col items-center justify-start gap-y-6">
                     <h4 className={`font-bold text-lg mb-1 ${ad?.textColor}`}>
                       {ad?.title}
                     </h4>
-                    <p className="text-gray-700 text-sm mb-1">
+                    <p className="text-gray-700 text-sm mb-1 text-center">
                       {ad?.description}
                     </p>
                   </div>
 
-                  <div className="p-2 pt-0">
-                    <Link href={ad.link}>
-                      <button
-                        className={`w-full py-2 px-4 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors flex items-center justify-center`}
-                      >
-                        {ad.cta}
-                        <FaArrowRight className="ml-2" size={14} />
-                      </button>
+                  <div className="p-2 pt-0 w-full px-4">
+                    <Link href={ad.link} passHref legacyBehavior>
+                      <a target="_blank" rel="noopener noreferrer" className="w-full">
+                        <button
+                          className="w-full py-2 px-4 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors flex items-center justify-center"
+                        >
+                          {ad.cta}
+                          <FaArrowRight className="ml-2" size={14} />
+                        </button>
+                      </a>
                     </Link>
                   </div>
                 </div>
@@ -202,12 +192,10 @@ export default function AdSection() {
           width: 10px;
           height: 10px;
         }
-
         .ad-swiper .swiper-pagination-bullet-active {
           background: #059669;
           opacity: 1;
         }
-
         .ad-swiper .swiper-button-next,
         .ad-swiper .swiper-button-prev {
           color: #059669;
@@ -217,13 +205,11 @@ export default function AdSection() {
           border-radius: 50%;
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
         .ad-swiper .swiper-button-next:after,
         .ad-swiper .swiper-button-prev:after {
           font-size: 14px;
           font-weight: bold;
         }
-
         @media (max-width: 640px) {
           .ad-swiper .swiper-button-next,
           .ad-swiper .swiper-button-prev {
