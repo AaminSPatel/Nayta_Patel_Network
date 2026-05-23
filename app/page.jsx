@@ -704,7 +704,11 @@ const doubledGallery = [...dynamicGallery, ...dynamicGallery];
           </div>
         </div>
       </section>
-     <section className="container mx-auto px-4">
+      {/* Ad (Google) - Navigation tabs ke niche, gaon wale section ke uper */}
+      <AdSection />
+
+      {/* Village Section */}
+      <section className="container mx-auto px-4">
         <VillageSection priceData={priceData} />
       </section>
 
